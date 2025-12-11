@@ -73,10 +73,17 @@
             background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .login-logo span {
             font-size: 3rem;
+        }
+
+        .login-logo p {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .form-group {
@@ -138,6 +145,11 @@
             background: var(--bg-elevated);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--avanti-yellow);
         }
 
         .btn-success {
@@ -208,6 +220,7 @@
             background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .nav-menu {
@@ -386,11 +399,6 @@
             color: var(--success);
         }
 
-        .stat-change.down {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
         /* Cards */
         .card {
             background: var(--bg-card);
@@ -417,13 +425,6 @@
         }
 
         /* Filters */
-        .filters-row {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
         .filter-group {
             display: flex;
             align-items: center;
@@ -461,7 +462,6 @@
             font-family: inherit;
             font-size: 0.9rem;
             width: 250px;
-            position: relative;
         }
 
         .search-wrapper {
@@ -595,19 +595,11 @@
             font-size: 0.85rem;
         }
 
-        .sla-indicator.breached {
-            color: var(--danger);
-        }
+        .sla-indicator.breached { color: var(--danger); }
+        .sla-indicator.warning { color: var(--warning); }
+        .sla-indicator.ok { color: var(--success); }
 
-        .sla-indicator.warning {
-            color: var(--warning);
-        }
-
-        .sla-indicator.ok {
-            color: var(--success);
-        }
-
-        /* Ticket Detail Modal */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -710,9 +702,6 @@
             padding: 1rem;
             background: var(--bg-elevated);
             border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
         }
 
         .ticket-attachment img {
@@ -798,17 +787,12 @@
             margin-top: 0.75rem;
         }
 
-        /* Ticket Sidebar Info */
-        .ticket-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
+        /* Info Card */
         .info-card {
             background: var(--bg-secondary);
             padding: 1.25rem;
             border-radius: 0.75rem;
+            margin-bottom: 1rem;
         }
 
         .info-card h4 {
@@ -882,9 +866,14 @@
         }
 
         .faq-item-content {
+            display: none;
             padding: 0 1.25rem 1.25rem;
             color: var(--text-secondary);
             line-height: 1.7;
+        }
+
+        .faq-item.open .faq-item-content {
+            display: block;
         }
 
         /* Settings */
@@ -1001,6 +990,38 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
@@ -1042,43 +1063,6 @@
                 display: none;
             }
         }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 2000;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            border-color: var(--success);
-        }
-
-        .toast.error {
-            border-color: var(--danger);
-        }
-
-        /* Hidden */
-        .hidden {
-            display: none !important;
-        }
     </style>
 </head>
 <body>
@@ -1088,7 +1072,7 @@
             <div class="login-logo">
                 <span>🎫</span>
                 <h1>Avanti Help Desk</h1>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Admin Dashboard</p>
+                <p>Admin Dashboard</p>
             </div>
             <div id="loginError" class="error-message hidden"></div>
             <form id="loginForm">
@@ -1304,7 +1288,7 @@
                 <div class="page-header">
                     <div>
                         <h1>FAQ Articles</h1>
-                        <p>Manage help articles shown to users</p>
+                        <p>Manage help articles shown to users in the widget</p>
                     </div>
                     <button class="btn btn-primary" onclick="showAddFAQModal()">
                         ➕ Add Article
@@ -1372,14 +1356,14 @@
                         </div>
 
                         <div class="settings-section">
-                            <h3>🎨 Widget Settings</h3>
+                            <h3>📋 Widget Integration</h3>
                             <div class="settings-row">
                                 <div class="settings-row-info">
-                                    <h4>Widget Embed Code</h4>
-                                    <p>Copy this code to add widget to your website</p>
+                                    <h4>Widget Embed Instructions</h4>
+                                    <p>Add the widget to your Curriculum Tracker</p>
                                 </div>
-                                <button class="btn btn-sm btn-secondary" onclick="copyWidgetCode()">
-                                    📋 Copy Code
+                                <button class="btn btn-sm btn-secondary" onclick="showWidgetInstructions()">
+                                    📖 View Instructions
                                 </button>
                             </div>
                         </div>
@@ -1443,6 +1427,34 @@
         </div>
     </div>
 
+    <!-- Instructions Modal -->
+    <div class="modal-overlay" id="instructionsModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>📖 Widget Integration</h2>
+                <button class="modal-close" onclick="closeInstructionsModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <h3 style="margin-bottom: 1rem;">How to add the Help Widget to Curriculum Tracker:</h3>
+                <ol style="line-height: 2; color: var(--text-secondary);">
+                    <li>Download the <strong>help-widget-embed.html</strong> file</li>
+                    <li>Open your Curriculum Tracker's <strong>index.html</strong></li>
+                    <li>Copy everything from the widget file</li>
+                    <li>Paste it <strong>before the &lt;/body&gt;</strong> closing tag</li>
+                    <li>Deploy your changes - the widget will appear automatically!</li>
+                </ol>
+                <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        <strong>Note:</strong> The widget uses your existing Firebase project, so all tickets and FAQs sync automatically.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeInstructionsModal()">Got it!</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="toast" id="toast">
         <span id="toastIcon">✅</span>
@@ -1453,7 +1465,6 @@
         // ============================================
         // FIREBASE CONFIGURATION
         // ============================================
-        // ⚠️ IMPORTANT: Replace with your Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyDyyGAHNJvhuint86USW36eBJKfw_u3AcA",
             authDomain: "curriculum-dbb10.firebaseapp.com",
@@ -1484,6 +1495,7 @@
                 currentUser = user;
                 showApp();
                 loadData();
+                setupRealtimeListeners();
             } else {
                 showLogin();
             }
@@ -1534,15 +1546,12 @@
         });
 
         function navigateTo(page) {
-            // Update nav
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
 
-            // Update pages
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             document.getElementById(`${page}Page`)?.classList.remove('hidden');
 
-            // Close mobile sidebar
             document.getElementById('sidebar').classList.remove('open');
         }
 
@@ -1593,54 +1602,39 @@
                 renderFAQList();
             } catch (error) {
                 console.error('Error loading FAQs:', error);
-                // If collection doesn't exist, create default FAQs
-                if (faqs.length === 0) {
-                    await createDefaultFAQs();
-                }
             }
-        }
-
-        async function createDefaultFAQs() {
-            const defaultFAQs = [
-                {
-                    question: "How do I login to the Curriculum Tracker?",
-                    answer: "1. Open the Curriculum Tracker website\n2. Enter your email address\n3. Enter your password\n4. Click 'Login'\n\nIf you forgot your password, contact your Program Manager.",
-                    category: "getting-started",
-                    keywords: ["login", "sign in", "password", "access"]
-                },
-                {
-                    question: "How do I mark a chapter as complete?",
-                    answer: "1. Go to 'Chapters' section\n2. Select your subject and class\n3. Click on the chapter to expand\n4. Check completed topics\n5. Change status to 'Yes'\n6. Click 'Save'",
-                    category: "chapters",
-                    keywords: ["complete", "mark", "finish", "chapter"]
-                },
-                {
-                    question: "I forgot my password. How do I reset it?",
-                    answer: "Contact your Program Manager or school coordinator. They will reset your password from the admin panel and provide you with a new temporary password.",
-                    category: "troubleshooting",
-                    keywords: ["forgot", "password", "reset"]
-                },
-                {
-                    question: "The page is not loading. What should I do?",
-                    answer: "1. Refresh the page (Press F5)\n2. Clear browser cache (Ctrl+Shift+Delete)\n3. Try Chrome browser\n4. Check your internet connection\n\nIf still not working, contact support.",
-                    category: "troubleshooting",
-                    keywords: ["loading", "error", "not working"]
-                }
-            ];
-
-            for (const faq of defaultFAQs) {
-                await db.collection('helpdesk_faqs').add({
-                    ...faq,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }
-
-            await loadFAQs();
         }
 
         function refreshData() {
             showToast('Refreshing data...', 'info');
             loadData();
+        }
+
+        // ============================================
+        // REALTIME LISTENERS
+        // ============================================
+        function setupRealtimeListeners() {
+            db.collection('helpdesk_tickets')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    tickets = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    renderTicketsTable();
+                    renderRecentTickets();
+                    updateDashboard();
+                });
+
+            db.collection('helpdesk_faqs')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    faqs = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    renderFAQList();
+                });
         }
 
         // ============================================
@@ -1659,7 +1653,7 @@
 
             // Calculate SLA breached
             const now = new Date();
-            const slaHours = 24; // Default 24 hours
+            const slaHours = 24;
             const breached = tickets.filter(t => {
                 if (t.status === 'resolved' || t.status === 'closed') return false;
                 const created = t.createdAt?.toDate?.() || new Date(t.createdAt);
@@ -1810,7 +1804,8 @@
                             <p>${ticket.description || 'No description provided.'}</p>
                             ${ticket.screenshotUrl ? `
                                 <div class="ticket-attachment">
-                                    <img src="${ticket.screenshotUrl}" alt="Screenshot" onclick="window.open('${ticket.screenshotUrl}', '_blank')">
+                                    <p style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">📷 Attached Screenshot:</p>
+                                    <img src="${ticket.screenshotUrl}" alt="Screenshot" onclick="window.open('${ticket.screenshotUrl}', '_blank')" style="cursor: pointer;">
                                 </div>
                             ` : ''}
                         </div>
@@ -1954,12 +1949,10 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                // First response
                 if (!ticket.firstResponseAt) {
                     updateData.firstResponseAt = firebase.firestore.FieldValue.serverTimestamp();
                 }
 
-                // Resolve if needed
                 if (resolve) {
                     updateData.status = 'resolved';
                     updateData.resolvedAt = firebase.firestore.FieldValue.serverTimestamp();
@@ -1971,8 +1964,6 @@
 
                 showToast(resolve ? 'Ticket resolved!' : 'Reply sent!', 'success');
                 closeTicketModal();
-                await loadTickets();
-                updateDashboard();
 
             } catch (error) {
                 console.error('Error sending reply:', error);
@@ -1993,8 +1984,6 @@
 
                 await db.collection('helpdesk_tickets').doc(ticketId).update(updateData);
                 showToast('Status updated!', 'success');
-                await loadTickets();
-                updateDashboard();
             } catch (error) {
                 showToast('Failed to update status', 'error');
             }
@@ -2007,7 +1996,6 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 showToast('Priority updated!', 'success');
-                await loadTickets();
             } catch (error) {
                 showToast('Failed to update priority', 'error');
             }
@@ -2031,8 +2019,8 @@
             }
 
             container.innerHTML = faqs.map(faq => `
-                <div class="faq-item">
-                    <div class="faq-item-header" onclick="this.parentElement.classList.toggle('open')">
+                <div class="faq-item" id="faq-${faq.id}">
+                    <div class="faq-item-header" onclick="toggleFAQ('${faq.id}')">
                         <div class="faq-item-title">
                             <span>❓</span>
                             ${faq.question}
@@ -2050,6 +2038,11 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function toggleFAQ(faqId) {
+            const faqItem = document.getElementById(`faq-${faqId}`);
+            faqItem.classList.toggle('open');
         }
 
         function showAddFAQModal() {
@@ -2106,11 +2099,10 @@
                 } else {
                     data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection('helpdesk_faqs').add(data);
-                    showToast('FAQ added!', 'success');
+                    showToast('FAQ added! It will now appear in the widget.', 'success');
                 }
 
                 closeFAQModal();
-                await loadFAQs();
             } catch (error) {
                 showToast('Failed to save FAQ', 'error');
             }
@@ -2122,10 +2114,20 @@
             try {
                 await db.collection('helpdesk_faqs').doc(faqId).delete();
                 showToast('FAQ deleted!', 'success');
-                await loadFAQs();
             } catch (error) {
                 showToast('Failed to delete FAQ', 'error');
             }
+        }
+
+        // ============================================
+        // INSTRUCTIONS MODAL
+        // ============================================
+        function showWidgetInstructions() {
+            document.getElementById('instructionsModal').classList.add('active');
+        }
+
+        function closeInstructionsModal() {
+            document.getElementById('instructionsModal').classList.remove('active');
         }
 
         // ============================================
@@ -2200,43 +2202,6 @@
                 toast.classList.remove('show');
             }, 3000);
         }
-
-        function copyWidgetCode() {
-            const code = `<!-- Avanti Help Widget -->
-<script src="https://your-domain.com/help-widget.js"><\/script>
-<script>
-    AvantiHelpWidget.init({
-        firebaseConfig: { /* Your Firebase Config */ },
-        position: 'bottom-right'
-    });
-<\/script>`;
-
-            navigator.clipboard.writeText(code).then(() => {
-                showToast('Widget code copied!', 'success');
-            });
-        }
-
-        // Listen for real-time ticket updates
-        function setupRealtimeListeners() {
-            db.collection('helpdesk_tickets')
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(snapshot => {
-                    tickets = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
-                    renderTicketsTable();
-                    renderRecentTickets();
-                    updateDashboard();
-                });
-        }
-
-        // Initialize real-time listeners when app loads
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                setupRealtimeListeners();
-            }
-        });
     </script>
 </body>
 </html>
