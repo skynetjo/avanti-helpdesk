@@ -97,7 +97,7 @@
             font-size: 0.9rem;
         }
 
-        .form-group input {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.875rem 1rem;
             border: 1px solid var(--border-color);
@@ -109,7 +109,7 @@
             transition: all 0.2s;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--avanti-yellow);
             box-shadow: 0 0 0 3px rgba(244, 180, 26, 0.1);
@@ -388,17 +388,6 @@
             margin-top: 0.25rem;
         }
 
-        .stat-change {
-            font-size: 0.8rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 0.25rem;
-        }
-
-        .stat-change.up {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
         /* Cards */
         .card {
             background: var(--bg-card);
@@ -429,11 +418,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-
-        .filter-group label {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
+            flex-wrap: wrap;
         }
 
         .filter-select {
@@ -587,46 +572,32 @@
             color: #6b7280;
         }
 
-        /* SLA Indicator */
-        .sla-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .sla-indicator.breached { color: var(--danger); }
-        .sla-indicator.warning { color: var(--warning); }
-        .sla-indicator.ok { color: var(--success); }
-
         /* Modal */
-        .modal-overlay {
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: rgba(0, 0, 0, 0.7);
-            display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            padding: 2rem;
+            backdrop-filter: blur(4px);
         }
 
-        .modal-overlay.active {
+        .modal.active {
             display: flex;
         }
 
-        .modal {
+        .modal-content {
             background: var(--bg-card);
             border-radius: 1rem;
             width: 100%;
-            max-width: 800px;
+            max-width: 700px;
             max-height: 90vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto;
             border: 1px solid var(--border-color);
         }
 
@@ -636,6 +607,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            z-index: 10;
         }
 
         .modal-header h2 {
@@ -643,11 +618,11 @@
         }
 
         .modal-close {
-            background: transparent;
+            background: none;
             border: none;
-            color: var(--text-secondary);
             font-size: 1.5rem;
             cursor: pointer;
+            color: var(--text-secondary);
             padding: 0.5rem;
             line-height: 1;
         }
@@ -657,122 +632,171 @@
         }
 
         .modal-body {
-            flex: 1;
-            overflow-y: auto;
             padding: 1.5rem;
         }
 
-        .modal-footer {
-            padding: 1.5rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        /* Ticket Detail Content */
+        /* Ticket Detail */
         .ticket-detail-grid {
             display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 1.5rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        @media (max-width: 768px) {
-            .ticket-detail-grid {
-                grid-template-columns: 1fr;
-            }
+        .ticket-detail-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 0.75rem;
         }
 
-        .ticket-main {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+        .ticket-detail-item label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .ticket-detail-item span {
+            font-weight: 500;
         }
 
         .ticket-description {
             background: var(--bg-secondary);
             padding: 1.25rem;
             border-radius: 0.75rem;
-            line-height: 1.7;
-            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
         }
 
-        .ticket-attachment {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: var(--bg-elevated);
-            border-radius: 0.5rem;
+        .ticket-description h4 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
         }
 
-        .ticket-attachment img {
+        .ticket-description p {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* Screenshot Display */
+        .ticket-screenshot {
+            background: var(--bg-secondary);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-screenshot h4 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .ticket-screenshot img {
             max-width: 100%;
-            max-height: 200px;
             border-radius: 0.5rem;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .ticket-screenshot img:hover {
+            transform: scale(1.02);
+        }
+
+        .ticket-screenshot a {
+            color: var(--avanti-yellow);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .ticket-screenshot a:hover {
+            text-decoration: underline;
         }
 
         /* Conversation */
-        .conversation {
+        .conversation-section h4 {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .conversation-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .message {
             display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
         }
 
-        .conversation-message {
-            padding: 1rem;
-            border-radius: 0.75rem;
-            max-width: 85%;
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
         }
 
-        .conversation-message.user {
-            background: var(--bg-secondary);
-            align-self: flex-start;
+        .message-avatar.user {
+            background: var(--bg-elevated);
         }
 
-        .conversation-message.admin {
-            background: rgba(244, 180, 26, 0.1);
-            align-self: flex-end;
-            border: 1px solid rgba(244, 180, 26, 0.2);
+        .message-avatar.admin {
+            background: linear-gradient(135deg, var(--avanti-yellow), var(--avanti-orange));
+            color: var(--bg-primary);
         }
 
-        .conversation-message-header {
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
         }
 
-        .conversation-message-header strong {
-            color: var(--avanti-yellow);
+        .message-header strong {
+            font-size: 0.9rem;
         }
 
-        .conversation-message-header span {
-            color: var(--text-muted);
+        .message-header span {
             font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
-        .conversation-message p {
-            color: var(--text-secondary);
-            line-height: 1.6;
+        .message-text {
+            background: var(--bg-secondary);
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        /* Reply Box */
         .reply-box {
-            margin-top: 1rem;
+            display: flex;
+            gap: 0.75rem;
         }
 
         .reply-box textarea {
-            width: 100%;
-            padding: 1rem;
+            flex: 1;
+            padding: 0.75rem 1rem;
             border: 1px solid var(--border-color);
             border-radius: 0.75rem;
             background: var(--bg-secondary);
             color: var(--text-primary);
             font-family: inherit;
-            font-size: 0.95rem;
-            resize: vertical;
-            min-height: 100px;
+            resize: none;
+            min-height: 80px;
         }
 
         .reply-box textarea:focus {
@@ -780,61 +804,46 @@
             border-color: var(--avanti-yellow);
         }
 
-        .reply-box-actions {
+        .reply-actions {
             display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-            margin-top: 0.75rem;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        /* Info Card */
-        .info-card {
-            background: var(--bg-secondary);
-            padding: 1.25rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1rem;
+        /* Page Sections */
+        .page-section {
+            display: none;
         }
 
-        .info-card h4 {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
+        .page-section.active {
+            display: block;
         }
 
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .info-row label {
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
             color: var(--text-secondary);
-            font-size: 0.85rem;
         }
 
-        .info-row span {
-            font-weight: 500;
-            font-size: 0.9rem;
+        .empty-state span {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
         }
 
-        /* FAQ Section */
-        .faq-grid {
-            display: grid;
-            gap: 1rem;
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
         }
 
+        /* FAQ Management */
         .faq-item {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 0.75rem;
+            margin-bottom: 1rem;
             overflow: hidden;
         }
 
@@ -844,6 +853,7 @@
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
         .faq-item-header:hover {
@@ -854,10 +864,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-        }
-
-        .faq-item-title span {
-            color: var(--avanti-yellow);
+            font-weight: 500;
         }
 
         .faq-item-actions {
@@ -867,9 +874,9 @@
 
         .faq-item-content {
             display: none;
-            padding: 0 1.25rem 1.25rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
         }
 
         .faq-item.open .faq-item-content {
@@ -878,116 +885,17 @@
 
         /* Settings */
         .settings-section {
-            margin-bottom: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .settings-section h3 {
-            font-size: 1.1rem;
             margin-bottom: 1rem;
             padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--border-color);
-        }
-
-        .settings-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .settings-row-info h4 {
-            font-size: 0.95rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .settings-row-info p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* Toggle Switch */
-        .toggle {
-            position: relative;
-            width: 48px;
-            height: 26px;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-elevated);
-            border-radius: 26px;
-            transition: 0.3s;
-        }
-
-        .toggle-slider::before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background: white;
-            border-radius: 50%;
-            transition: 0.3s;
-        }
-
-        .toggle input:checked + .toggle-slider {
-            background: var(--avanti-yellow);
-        }
-
-        .toggle input:checked + .toggle-slider::before {
-            transform: translateX(22px);
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-muted);
-        }
-
-        .empty-state span {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h3 {
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        /* Loading */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--avanti-yellow);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         /* Toast */
@@ -1002,65 +910,50 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s;
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
             z-index: 2000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         .toast.show {
             transform: translateY(0);
-            opacity: 1;
         }
 
-        .toast.success { border-color: var(--success); }
-        .toast.error { border-color: var(--danger); }
+        /* Loading */
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--avanti-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-        /* Hidden */
-        .hidden {
-            display: none !important;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
             }
 
             .main-content {
                 margin-left: 0;
-            }
-
-            .mobile-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
                 padding: 1rem;
-                background: var(--bg-secondary);
-                border-bottom: 1px solid var(--border-color);
-                position: sticky;
-                top: 0;
-                z-index: 50;
             }
 
-            .mobile-header .menu-btn {
-                background: transparent;
-                border: none;
-                color: var(--text-primary);
-                font-size: 1.5rem;
-                cursor: pointer;
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-        }
 
-        @media (min-width: 1025px) {
-            .mobile-header {
-                display: none;
+            .ticket-detail-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1074,59 +967,50 @@
                 <h1>Avanti Help Desk</h1>
                 <p>Admin Dashboard</p>
             </div>
-            <div id="loginError" class="error-message hidden"></div>
-            <form id="loginForm">
+            
+            <div id="loginError" class="error-message" style="display: none;"></div>
+            
+            <form onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" id="loginEmail" placeholder="admin@avantifellows.org" required>
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn btn-primary">
-                    🔐 Login to Dashboard
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    Login to Dashboard
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- App Container -->
+    <!-- Main App -->
     <div class="app-container" id="appContainer">
-        <!-- Mobile Header -->
-        <div class="mobile-header">
-            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-            <h2 style="font-size: 1rem;">Avanti Help Desk</h2>
-            <div></div>
-        </div>
-
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <nav class="sidebar">
             <div class="sidebar-logo">
                 <span>🎫</span>
                 <h2>Avanti Help Desk</h2>
             </div>
-
-            <nav class="nav-menu">
-                <button class="nav-item active" data-page="dashboard">
-                    <span>📊</span>
-                    Dashboard
+            
+            <div class="nav-menu">
+                <button class="nav-item active" onclick="showPage('dashboard')">
+                    <span>📊</span> Dashboard
                 </button>
-                <button class="nav-item" data-page="tickets">
-                    <span>🎫</span>
-                    All Tickets
+                <button class="nav-item" onclick="showPage('tickets')">
+                    <span>🎫</span> All Tickets
                     <span class="nav-badge" id="openTicketsBadge">0</span>
                 </button>
-                <button class="nav-item" data-page="faq">
-                    <span>📚</span>
-                    FAQ Articles
+                <button class="nav-item" onclick="showPage('faqs')">
+                    <span>📚</span> FAQ Articles
                 </button>
-                <button class="nav-item" data-page="settings">
-                    <span>⚙️</span>
-                    Settings
+                <button class="nav-item" onclick="showPage('settings')">
+                    <span>⚙️</span> Settings
                 </button>
-            </nav>
-
+            </div>
+            
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">A</div>
@@ -1135,24 +1019,23 @@
                         <p id="userEmail">admin@avantifellows.org</p>
                     </div>
                 </div>
-                <button class="nav-item" onclick="logout()">
-                    <span>🚪</span>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="handleLogout()">
                     Logout
                 </button>
             </div>
-        </aside>
+        </nav>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- Dashboard Page -->
-            <div class="page" id="dashboardPage">
+            <section class="page-section active" id="dashboardPage">
                 <div class="page-header">
                     <div>
-                        <h1>Dashboard</h1>
-                        <p>Overview of your help desk performance</p>
+                        <h1>📊 Dashboard</h1>
+                        <p>Overview of your help desk</p>
                     </div>
-                    <button class="btn btn-secondary" onclick="refreshData()">
-                        🔄 Refresh
+                    <button class="btn btn-primary" onclick="showWidgetInstructions()">
+                        📋 Widget Setup Guide
                     </button>
                 </div>
 
@@ -1160,7 +1043,6 @@
                     <div class="stat-card">
                         <div class="stat-card-header">
                             <div class="stat-icon yellow">🎫</div>
-                            <span class="stat-change up" id="totalTicketsChange">+0 today</span>
                         </div>
                         <div class="stat-value" id="totalTickets">0</div>
                         <div class="stat-label">Total Tickets</div>
@@ -1188,75 +1070,10 @@
                     </div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon yellow">⏱️</div>
-                        </div>
-                        <div class="stat-value" id="avgResponseTime">-</div>
-                        <div class="stat-label">Avg Response Time</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon red">⚠️</div>
-                        </div>
-                        <div class="stat-value" id="slaBreached">0</div>
-                        <div class="stat-label">SLA Breached</div>
-                    </div>
-                </div>
-
                 <div class="card">
                     <div class="card-header">
-                        <h3>Recent Tickets</h3>
-                        <button class="btn btn-sm btn-secondary" onclick="navigateTo('tickets')">View All →</button>
-                    </div>
-                    <div class="card-body" style="padding: 0;">
-                        <table class="tickets-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Subject</th>
-                                    <th>Status</th>
-                                    <th>Priority</th>
-                                    <th>Created</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentTicketsTable">
-                                <tr>
-                                    <td colspan="5" class="loading">
-                                        <div class="loading-spinner"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- All Tickets Page -->
-            <div class="page hidden" id="ticketsPage">
-                <div class="page-header">
-                    <div>
-                        <h1>All Tickets</h1>
-                        <p>Manage and respond to support tickets</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="search-wrapper">
-                            <input type="text" class="search-input" id="ticketSearch" placeholder="Search tickets...">
-                        </div>
-                        <div class="filter-group">
-                            <label>Status:</label>
-                            <select class="filter-select" id="statusFilter">
-                                <option value="all">All</option>
-                                <option value="open">Open</option>
-                                <option value="in-progress">In Progress</option>
-                                <option value="resolved">Resolved</option>
-                                <option value="closed">Closed</option>
-                            </select>
-                        </div>
+                        <h3>🔥 Recent Tickets</h3>
+                        <button class="btn btn-secondary btn-sm" onclick="showPage('tickets')">View All</button>
                     </div>
                     <div class="card-body" style="padding: 0;">
                         <table class="tickets-table">
@@ -1266,28 +1083,78 @@
                                     <th>Subject</th>
                                     <th>User</th>
                                     <th>Status</th>
-                                    <th>Priority</th>
-                                    <th>SLA</th>
                                     <th>Created</th>
                                 </tr>
                             </thead>
-                            <tbody id="allTicketsTable">
+                            <tbody id="recentTicketsBody">
                                 <tr>
-                                    <td colspan="7" class="loading">
-                                        <div class="loading-spinner"></div>
-                                    </td>
+                                    <td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- FAQ Page -->
-            <div class="page hidden" id="faqPage">
+            <!-- Tickets Page -->
+            <section class="page-section" id="ticketsPage">
                 <div class="page-header">
                     <div>
-                        <h1>FAQ Articles</h1>
+                        <h1>🎫 All Tickets</h1>
+                        <p>Manage support tickets from users</p>
+                    </div>
+                    <div class="filter-group">
+                        <select class="filter-select" id="statusFilter" onchange="filterTickets()">
+                            <option value="all">All Status</option>
+                            <option value="open">Open</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        <select class="filter-select" id="schoolFilter" onchange="filterTickets()">
+                            <option value="all">All Schools</option>
+                            <option value="CoE Barwani">CoE Barwani</option>
+                            <option value="CoE Cuttack">CoE Cuttack</option>
+                            <option value="JNV Dhar">JNV Dhar</option>
+                            <option value="JNV Khargone">JNV Khargone</option>
+                            <option value="JNV Narsinghpur">JNV Narsinghpur</option>
+                            <option value="EMRS Alirajpur">EMRS Alirajpur</option>
+                        </select>
+                        <div class="search-wrapper">
+                            <input type="text" class="search-input" placeholder="Search tickets..." id="searchInput" oninput="filterTickets()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body" style="padding: 0;">
+                        <table class="tickets-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Subject</th>
+                                    <th>User</th>
+                                    <th>School</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allTicketsBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 2rem;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQs Page -->
+            <section class="page-section" id="faqsPage">
+                <div class="page-header">
+                    <div>
+                        <h1>📚 FAQ Articles</h1>
                         <p>Manage help articles shown to users in the widget</p>
                     </div>
                     <button class="btn btn-primary" onclick="showAddFAQModal()">
@@ -1295,162 +1162,133 @@
                     </button>
                 </div>
 
-                <div class="faq-grid" id="faqList">
-                    <div class="loading">
-                        <div class="loading-spinner"></div>
+                <div id="faqList">
+                    <div class="empty-state">
+                        <span>📚</span>
+                        <h3>Loading FAQs...</h3>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <!-- Settings Page -->
-            <div class="page hidden" id="settingsPage">
+            <section class="page-section" id="settingsPage">
                 <div class="page-header">
                     <div>
-                        <h1>Settings</h1>
+                        <h1>⚙️ Settings</h1>
                         <p>Configure your help desk</p>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="settings-section">
-                            <h3>🔔 Notifications</h3>
-                            <div class="settings-row">
-                                <div class="settings-row-info">
-                                    <h4>Email Notifications</h4>
-                                    <p>Receive email when new ticket is created</p>
-                                </div>
-                                <label class="toggle">
-                                    <input type="checkbox" id="emailNotifications" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="settings-section">
-                            <h3>⏱️ SLA Settings</h3>
-                            <div class="settings-row">
-                                <div class="settings-row-info">
-                                    <h4>First Response Time (Hours)</h4>
-                                    <p>Maximum time to send first response</p>
-                                </div>
-                                <select class="filter-select" id="slaFirstResponse">
-                                    <option value="4">4 hours</option>
-                                    <option value="8">8 hours</option>
-                                    <option value="24" selected>24 hours</option>
-                                    <option value="48">48 hours</option>
-                                </select>
-                            </div>
-                            <div class="settings-row">
-                                <div class="settings-row-info">
-                                    <h4>Resolution Time (Hours)</h4>
-                                    <p>Maximum time to resolve ticket</p>
-                                </div>
-                                <select class="filter-select" id="slaResolution">
-                                    <option value="24">24 hours</option>
-                                    <option value="48" selected>48 hours</option>
-                                    <option value="72">72 hours</option>
-                                    <option value="168">1 week</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="settings-section">
-                            <h3>📋 Widget Integration</h3>
-                            <div class="settings-row">
-                                <div class="settings-row-info">
-                                    <h4>Widget Embed Instructions</h4>
-                                    <p>Add the widget to your Curriculum Tracker</p>
-                                </div>
-                                <button class="btn btn-sm btn-secondary" onclick="showWidgetInstructions()">
-                                    📖 View Instructions
-                                </button>
-                            </div>
-                        </div>
+                <div class="settings-section">
+                    <h3>🔧 Quick Actions</h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="seedDefaultFAQs()">
+                            📥 Load All Default FAQs
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportTickets()">
+                            📊 Export Tickets to CSV
+                        </button>
                     </div>
+                    <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                        Click "Load All Default FAQs" to populate the FAQ database with 100+ questions from the Curriculum Tracker FAQ document.
+                    </p>
                 </div>
-            </div>
+
+                <div class="settings-section">
+                    <h3>📋 Widget Integration</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        The help widget is already integrated into the Curriculum Tracker. Users can access it by clicking the yellow help button on the bottom-right corner.
+                    </p>
+                </div>
+            </section>
         </main>
     </div>
 
     <!-- Ticket Detail Modal -->
-    <div class="modal-overlay" id="ticketModal">
-        <div class="modal">
+    <div class="modal" id="ticketModal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h2>🎫 Ticket Details</h2>
+                <h2 id="ticketModalTitle">Ticket Details</h2>
                 <button class="modal-close" onclick="closeTicketModal()">×</button>
             </div>
             <div class="modal-body" id="ticketModalBody">
-                <!-- Content loaded dynamically -->
+                <!-- Populated by JS -->
             </div>
         </div>
     </div>
 
-    <!-- Add FAQ Modal -->
-    <div class="modal-overlay" id="faqModal">
-        <div class="modal" style="max-width: 600px;">
+    <!-- FAQ Modal -->
+    <div class="modal" id="faqModal">
+        <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 id="faqModalTitle">➕ Add FAQ Article</h2>
+                <h2 id="faqModalTitle">Add FAQ Article</h2>
                 <button class="modal-close" onclick="closeFAQModal()">×</button>
             </div>
             <div class="modal-body">
-                <form id="faqForm">
-                    <input type="hidden" id="faqId">
-                    <div class="form-group">
-                        <label>Question</label>
-                        <input type="text" id="faqQuestion" placeholder="e.g., How do I reset my password?" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Answer</label>
-                        <textarea id="faqAnswer" rows="5" placeholder="Write the answer here..." required style="width:100%;padding:0.875rem;border:1px solid var(--border-color);border-radius:0.75rem;background:var(--bg-secondary);color:var(--text-primary);font-family:inherit;"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select id="faqCategory" class="filter-select" style="width:100%;padding:0.875rem;">
-                            <option value="getting-started">Getting Started</option>
-                            <option value="chapters">Chapters & Topics</option>
-                            <option value="progress">Progress Tracking</option>
-                            <option value="tests">Tests & Assessment</option>
-                            <option value="troubleshooting">Troubleshooting</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Keywords (comma separated)</label>
-                        <input type="text" id="faqKeywords" placeholder="e.g., password, reset, login">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeFAQModal()">Cancel</button>
+                <input type="hidden" id="faqId">
+                <div class="form-group">
+                    <label>Question *</label>
+                    <input type="text" id="faqQuestion" placeholder="What is the Curriculum Tracker?">
+                </div>
+                <div class="form-group">
+                    <label>Answer *</label>
+                    <textarea id="faqAnswer" rows="5" placeholder="Provide a detailed answer..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="faqCategory">
+                        <option value="getting-started">Getting Started</option>
+                        <option value="login">Login & Authentication</option>
+                        <option value="attendance">Attendance</option>
+                        <option value="curriculum">Curriculum & Progress</option>
+                        <option value="students">Student Features</option>
+                        <option value="feedback">Teacher Feedback</option>
+                        <option value="assets">Assets & Library</option>
+                        <option value="analytics">Analytics & Reports</option>
+                        <option value="mobile">Mobile App (PWA)</option>
+                        <option value="admin">Admin & Management</option>
+                        <option value="troubleshooting">Troubleshooting</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Keywords (comma separated)</label>
+                    <input type="text" id="faqKeywords" placeholder="login, password, access, forgot">
+                </div>
                 <button class="btn btn-primary" onclick="saveFAQ()">Save Article</button>
             </div>
         </div>
     </div>
 
     <!-- Instructions Modal -->
-    <div class="modal-overlay" id="instructionsModal">
-        <div class="modal" style="max-width: 600px;">
+    <div class="modal" id="instructionsModal">
+        <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
-                <h2>📖 Widget Integration</h2>
+                <h2>📋 Widget Setup Guide</h2>
                 <button class="modal-close" onclick="closeInstructionsModal()">×</button>
             </div>
             <div class="modal-body">
-                <h3 style="margin-bottom: 1rem;">How to add the Help Widget to Curriculum Tracker:</h3>
-                <ol style="line-height: 2; color: var(--text-secondary);">
-                    <li>Download the <strong>help-widget-embed.html</strong> file</li>
-                    <li>Open your Curriculum Tracker's <strong>index.html</strong></li>
-                    <li>Copy everything from the widget file</li>
-                    <li>Paste it <strong>before the &lt;/body&gt;</strong> closing tag</li>
-                    <li>Deploy your changes - the widget will appear automatically!</li>
-                </ol>
-                <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        <strong>Note:</strong> The widget uses your existing Firebase project, so all tickets and FAQs sync automatically.
-                    </p>
+                <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 1rem;">
+                    <h4 style="margin-bottom: 0.5rem;">✅ Widget Status: Active</h4>
+                    <p style="color: var(--text-secondary);">The help widget is already integrated into the Curriculum Tracker. No additional setup required!</p>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeInstructionsModal()">Got it!</button>
+                
+                <h4 style="margin-bottom: 0.75rem;">How it works:</h4>
+                <ol style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.25rem;">
+                    <li>Users see a yellow help button on the Curriculum Tracker</li>
+                    <li>They can search FAQs or raise support tickets</li>
+                    <li>Tickets appear in this dashboard for you to manage</li>
+                    <li>Users can track their ticket status in the widget</li>
+                </ol>
+                
+                <h4 style="margin: 1.5rem 0 0.75rem;">Key Features:</h4>
+                <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.25rem;">
+                    <li>Smart FAQ search with keyword matching</li>
+                    <li>Students only need Name + Student ID (no email required)</li>
+                    <li>Screenshot upload support</li>
+                    <li>Ticket tracking across sessions</li>
+                    <li>Real-time status updates</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -1462,16 +1300,14 @@
     </div>
 
     <script>
-        // ============================================
-        // FIREBASE CONFIGURATION
-        // ============================================
+        // Firebase Configuration - Use same config as Curriculum Tracker
         const firebaseConfig = {
-            apiKey: "AIzaSyDyyGAHNJvhuint86USW36eBJKfw_u3AcA",
-            authDomain: "curriculum-dbb10.firebaseapp.com",
-            projectId: "curriculum-dbb10",
-            storageBucket: "curriculum-dbb10.firebasestorage.app",
-            messagingSenderId: "706387632109",
-            appId: "1:706387632109:web:06c78a304fdbdc12f391e4"
+            apiKey: "AIzaSyBnlHB-T06XR0MDMB8vJxKigKBUaKQ4IJQ",
+            authDomain: "afcurriculumtracker.firebaseapp.com",
+            projectId: "afcurriculumtracker",
+            storageBucket: "afcurriculumtracker.firebasestorage.app",
+            messagingSenderId: "581aborting63687816",
+            appId: "1:581563687816:web:3b3e8b9b8b0f5b0c8b0f5b"
         };
 
         // Initialize Firebase
@@ -1480,140 +1316,62 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        // ============================================
-        // STATE
-        // ============================================
-        let currentUser = null;
+        // Global state
         let tickets = [];
         let faqs = [];
+        let currentUser = null;
 
-        // ============================================
-        // AUTHENTICATION
-        // ============================================
+        // Auth state observer
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
-                showApp();
-                loadData();
-                setupRealtimeListeners();
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').classList.add('active');
+                document.getElementById('userName').textContent = user.displayName || 'Admin';
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userAvatar').textContent = (user.displayName || user.email)[0].toUpperCase();
+                initializeDashboard();
             } else {
-                showLogin();
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('appContainer').classList.remove('active');
             }
         });
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        // Login handler
+        async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+            const error = document.getElementById('loginError');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
+            error.style.display = 'none';
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-            } catch (error) {
-                errorDiv.textContent = error.message;
-                errorDiv.classList.remove('hidden');
+            } catch (err) {
+                error.textContent = err.message;
+                error.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Login to Dashboard';
             }
-        });
+        }
 
-        function logout() {
+        // Logout handler
+        function handleLogout() {
             auth.signOut();
         }
 
-        function showLogin() {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('appContainer').classList.remove('active');
+        // Initialize dashboard
+        function initializeDashboard() {
+            loadTickets();
+            loadFAQs();
         }
 
-        function showApp() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('appContainer').classList.add('active');
-            
-            // Update user info
-            if (currentUser) {
-                document.getElementById('userName').textContent = currentUser.email.split('@')[0];
-                document.getElementById('userEmail').textContent = currentUser.email;
-                document.getElementById('userAvatar').textContent = currentUser.email[0].toUpperCase();
-            }
-        }
-
-        // ============================================
-        // NAVIGATION
-        // ============================================
-        document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                navigateTo(this.dataset.page);
-            });
-        });
-
-        function navigateTo(page) {
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
-
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`${page}Page`)?.classList.remove('hidden');
-
-            document.getElementById('sidebar').classList.remove('open');
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
-
-        // ============================================
-        // DATA LOADING
-        // ============================================
-        async function loadData() {
-            await Promise.all([
-                loadTickets(),
-                loadFAQs()
-            ]);
-            updateDashboard();
-        }
-
-        async function loadTickets() {
-            try {
-                const snapshot = await db.collection('helpdesk_tickets')
-                    .orderBy('createdAt', 'desc')
-                    .get();
-
-                tickets = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-
-                renderTicketsTable();
-                renderRecentTickets();
-            } catch (error) {
-                console.error('Error loading tickets:', error);
-            }
-        }
-
-        async function loadFAQs() {
-            try {
-                const snapshot = await db.collection('helpdesk_faqs')
-                    .orderBy('createdAt', 'desc')
-                    .get();
-
-                faqs = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-
-                renderFAQList();
-            } catch (error) {
-                console.error('Error loading FAQs:', error);
-            }
-        }
-
-        function refreshData() {
-            showToast('Refreshing data...', 'info');
-            loadData();
-        }
-
-        // ============================================
-        // REALTIME LISTENERS
-        // ============================================
-        function setupRealtimeListeners() {
+        // Load tickets with real-time updates
+        function loadTickets() {
             db.collection('helpdesk_tickets')
                 .orderBy('createdAt', 'desc')
                 .onSnapshot(snapshot => {
@@ -1621,11 +1379,14 @@
                         id: doc.id,
                         ...doc.data()
                     }));
+                    updateDashboard();
                     renderTicketsTable();
                     renderRecentTickets();
-                    updateDashboard();
                 });
+        }
 
+        // Load FAQs with real-time updates
+        function loadFAQs() {
             db.collection('helpdesk_faqs')
                 .orderBy('createdAt', 'desc')
                 .onSnapshot(snapshot => {
@@ -1637,300 +1398,257 @@
                 });
         }
 
-        // ============================================
-        // DASHBOARD
-        // ============================================
+        // Update dashboard stats
         function updateDashboard() {
+            const total = tickets.length;
             const open = tickets.filter(t => t.status === 'open').length;
             const inProgress = tickets.filter(t => t.status === 'in-progress').length;
             const resolved = tickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
 
-            document.getElementById('totalTickets').textContent = tickets.length;
+            document.getElementById('totalTickets').textContent = total;
             document.getElementById('openTickets').textContent = open;
             document.getElementById('inProgressTickets').textContent = inProgress;
             document.getElementById('resolvedTickets').textContent = resolved;
             document.getElementById('openTicketsBadge').textContent = open;
-
-            // Calculate SLA breached
-            const now = new Date();
-            const slaHours = 24;
-            const breached = tickets.filter(t => {
-                if (t.status === 'resolved' || t.status === 'closed') return false;
-                const created = t.createdAt?.toDate?.() || new Date(t.createdAt);
-                const hoursSince = (now - created) / (1000 * 60 * 60);
-                return hoursSince > slaHours && !t.firstResponseAt;
-            }).length;
-
-            document.getElementById('slaBreached').textContent = breached;
-
-            // Today's tickets
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const todayTickets = tickets.filter(t => {
-                const created = t.createdAt?.toDate?.() || new Date(t.createdAt);
-                return created >= today;
-            }).length;
-            document.getElementById('totalTicketsChange').textContent = `+${todayTickets} today`;
         }
 
-        // ============================================
-        // TICKETS TABLE
-        // ============================================
+        // Render tickets table
         function renderTicketsTable() {
-            const tbody = document.getElementById('allTicketsTable');
-            const searchQuery = document.getElementById('ticketSearch').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
+            const filteredTickets = getFilteredTickets();
+            const tbody = document.getElementById('allTicketsBody');
 
-            let filtered = tickets;
-
-            if (searchQuery) {
-                filtered = filtered.filter(t => 
-                    t.subject?.toLowerCase().includes(searchQuery) ||
-                    t.ticketId?.toLowerCase().includes(searchQuery) ||
-                    t.userName?.toLowerCase().includes(searchQuery)
-                );
-            }
-
-            if (statusFilter !== 'all') {
-                filtered = filtered.filter(t => t.status === statusFilter);
-            }
-
-            if (filtered.length === 0) {
+            if (filteredTickets.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <span>🎫</span>
-                                <h3>No tickets found</h3>
-                                <p>Try adjusting your filters</p>
-                            </div>
-                        </td>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">No tickets found</td>
                     </tr>
                 `;
                 return;
             }
 
-            tbody.innerHTML = filtered.map(ticket => {
-                const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
-                const slaStatus = getSLAStatus(ticket);
-
+            tbody.innerHTML = filteredTickets.map(ticket => {
+                const created = ticket.createdAt?.toDate?.() || new Date();
                 return `
                     <tr onclick="openTicketModal('${ticket.id}')">
-                        <td><span class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 6)}</span></td>
+                        <td class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 8)}</td>
+                        <td class="ticket-subject">
+                            ${ticket.subject}
+                            <small>${ticket.category}</small>
+                        </td>
                         <td>
-                            <span class="ticket-subject">
-                                ${ticket.subject || 'No Subject'}
-                                <small>${ticket.category || 'General'}</small>
+                            ${ticket.userName}
+                            ${ticket.userRole === 'Student' && ticket.studentId ? `<small style="display: block; color: var(--text-muted);">ID: ${ticket.studentId}</small>` : ''}
+                        </td>
+                        <td>${ticket.school}</td>
+                        <td>
+                            <span class="status-badge ${ticket.status}">
+                                <span class="status-dot"></span>
+                                ${formatStatus(ticket.status)}
                             </span>
                         </td>
-                        <td>${ticket.userName || 'Unknown'}</td>
-                        <td><span class="status-badge ${ticket.status}"><span class="status-dot"></span>${formatStatus(ticket.status)}</span></td>
-                        <td><span class="priority-badge ${ticket.priority || 'medium'}">${ticket.priority || 'Medium'}</span></td>
-                        <td><span class="sla-indicator ${slaStatus.class}">${slaStatus.text}</span></td>
+                        <td>
+                            <span class="priority-badge ${ticket.priority}">${ticket.priority}</span>
+                        </td>
                         <td>${formatDate(created)}</td>
                     </tr>
                 `;
             }).join('');
         }
 
+        // Render recent tickets
         function renderRecentTickets() {
-            const tbody = document.getElementById('recentTicketsTable');
-            const recent = tickets.slice(0, 5);
+            const recentTickets = tickets.slice(0, 5);
+            const tbody = document.getElementById('recentTicketsBody');
 
-            if (recent.length === 0) {
+            if (recentTickets.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5">
-                            <div class="empty-state">
-                                <span>🎫</span>
-                                <h3>No tickets yet</h3>
-                                <p>Tickets will appear here when users submit them</p>
-                            </div>
-                        </td>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">No tickets yet</td>
                     </tr>
                 `;
                 return;
             }
 
-            tbody.innerHTML = recent.map(ticket => {
-                const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
+            tbody.innerHTML = recentTickets.map(ticket => {
+                const created = ticket.createdAt?.toDate?.() || new Date();
                 return `
                     <tr onclick="openTicketModal('${ticket.id}')">
-                        <td><span class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 6)}</span></td>
+                        <td class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 8)}</td>
+                        <td class="ticket-subject">${ticket.subject}</td>
+                        <td>${ticket.userName}</td>
                         <td>
-                            <span class="ticket-subject">
-                                ${ticket.subject || 'No Subject'}
-                                <small>${ticket.category || 'General'}</small>
+                            <span class="status-badge ${ticket.status}">
+                                <span class="status-dot"></span>
+                                ${formatStatus(ticket.status)}
                             </span>
                         </td>
-                        <td><span class="status-badge ${ticket.status}"><span class="status-dot"></span>${formatStatus(ticket.status)}</span></td>
-                        <td><span class="priority-badge ${ticket.priority || 'medium'}">${ticket.priority || 'Medium'}</span></td>
                         <td>${formatDate(created)}</td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // Search and filter listeners
-        document.getElementById('ticketSearch').addEventListener('input', renderTicketsTable);
-        document.getElementById('statusFilter').addEventListener('change', renderTicketsTable);
+        // Filter tickets
+        function getFilteredTickets() {
+            const statusFilter = document.getElementById('statusFilter')?.value || 'all';
+            const schoolFilter = document.getElementById('schoolFilter')?.value || 'all';
+            const searchQuery = document.getElementById('searchInput')?.value.toLowerCase() || '';
 
-        // ============================================
-        // TICKET MODAL
-        // ============================================
+            return tickets.filter(ticket => {
+                const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
+                const matchesSchool = schoolFilter === 'all' || ticket.school === schoolFilter;
+                const matchesSearch = !searchQuery || 
+                    ticket.subject.toLowerCase().includes(searchQuery) ||
+                    ticket.userName.toLowerCase().includes(searchQuery) ||
+                    (ticket.ticketId || '').toLowerCase().includes(searchQuery) ||
+                    (ticket.studentId || '').toLowerCase().includes(searchQuery);
+                return matchesStatus && matchesSchool && matchesSearch;
+            });
+        }
+
+        function filterTickets() {
+            renderTicketsTable();
+        }
+
+        // Open ticket modal
         function openTicketModal(ticketId) {
             const ticket = tickets.find(t => t.id === ticketId);
             if (!ticket) return;
 
-            const modal = document.getElementById('ticketModal');
-            const body = document.getElementById('ticketModalBody');
-
-            const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
-            const slaStatus = getSLAStatus(ticket);
-
-            body.innerHTML = `
-                <div class="ticket-detail-grid">
-                    <div class="ticket-main">
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <span class="ticket-id" style="font-size: 1.1rem;">#${ticket.ticketId || ticket.id.slice(0, 6)}</span>
-                                <span class="status-badge ${ticket.status}"><span class="status-dot"></span>${formatStatus(ticket.status)}</span>
-                                <span class="priority-badge ${ticket.priority || 'medium'}">${ticket.priority || 'Medium'}</span>
-                            </div>
-                            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">${ticket.subject || 'No Subject'}</h2>
-                        </div>
-
-                        <div class="ticket-description">
-                            <p>${ticket.description || 'No description provided.'}</p>
-                            ${ticket.screenshotUrl ? `
-                                <div class="ticket-attachment">
-                                    <p style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">📷 Attached Screenshot:</p>
-                                    <img src="${ticket.screenshotUrl}" alt="Screenshot" onclick="window.open('${ticket.screenshotUrl}', '_blank')" style="cursor: pointer;">
-                                </div>
-                            ` : ''}
-                        </div>
-
-                        <div>
-                            <h3 style="font-size: 1rem; margin-bottom: 1rem;">💬 Conversation</h3>
-                            <div class="conversation" id="ticketConversation">
-                                <div class="conversation-message user">
-                                    <div class="conversation-message-header">
-                                        <strong>${ticket.userName || 'User'}</strong>
-                                        <span>${formatDateTime(created)}</span>
-                                    </div>
-                                    <p>${ticket.description || 'No description'}</p>
-                                </div>
-                                ${(ticket.replies || []).map(reply => `
-                                    <div class="conversation-message ${reply.isAdmin ? 'admin' : 'user'}">
-                                        <div class="conversation-message-header">
-                                            <strong>${reply.isAdmin ? 'Admin' : ticket.userName}</strong>
-                                            <span>${formatDateTime(reply.createdAt?.toDate?.() || new Date(reply.createdAt))}</span>
-                                        </div>
-                                        <p>${reply.message}</p>
-                                    </div>
-                                `).join('')}
-                            </div>
-
-                            <div class="reply-box">
-                                <textarea id="replyMessage" placeholder="Type your reply..."></textarea>
-                                <div class="reply-box-actions">
-                                    <button class="btn btn-sm btn-secondary" onclick="sendReply('${ticket.id}', false)">
-                                        💬 Send Reply
-                                    </button>
-                                    <button class="btn btn-sm btn-success" onclick="sendReply('${ticket.id}', true)">
-                                        ✅ Resolve & Reply
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+            const created = ticket.createdAt?.toDate?.() || new Date();
+            
+            document.getElementById('ticketModalTitle').textContent = `#${ticket.ticketId || ticket.id.slice(0, 8)} - ${ticket.subject}`;
+            
+            let screenshotHtml = '';
+            if (ticket.screenshotUrl) {
+                screenshotHtml = `
+                    <div class="ticket-screenshot">
+                        <h4>📷 Screenshot</h4>
+                        <img src="${ticket.screenshotUrl}" alt="Ticket Screenshot" onclick="window.open('${ticket.screenshotUrl}', '_blank')">
+                        <br>
+                        <a href="${ticket.screenshotUrl}" target="_blank">🔗 Open in new tab</a>
                     </div>
+                `;
+            }
+            
+            document.getElementById('ticketModalBody').innerHTML = `
+                <div class="ticket-detail-grid">
+                    <div class="ticket-detail-item">
+                        <label>User</label>
+                        <span>${ticket.userName}</span>
+                    </div>
+                    <div class="ticket-detail-item">
+                        <label>Role</label>
+                        <span>${ticket.userRole}${ticket.userRole === 'Student' && ticket.studentId ? ` (ID: ${ticket.studentId})` : ''}</span>
+                    </div>
+                    <div class="ticket-detail-item">
+                        <label>Email/Contact</label>
+                        <span>${ticket.userEmail || 'Not provided'}</span>
+                    </div>
+                    <div class="ticket-detail-item">
+                        <label>School</label>
+                        <span>${ticket.school}</span>
+                    </div>
+                    <div class="ticket-detail-item">
+                        <label>Category</label>
+                        <span>${ticket.category}</span>
+                    </div>
+                    <div class="ticket-detail-item">
+                        <label>Created</label>
+                        <span>${formatDateTime(created)}</span>
+                    </div>
+                    <div class="ticket-detail-item">
+                        <label>Status</label>
+                        <select id="ticketStatus" onchange="updateTicketStatus('${ticket.id}', this.value)">
+                            <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>Open</option>
+                            <option value="in-progress" ${ticket.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="resolved" ${ticket.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                            <option value="closed" ${ticket.status === 'closed' ? 'selected' : ''}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="ticket-detail-item">
+                        <label>Priority</label>
+                        <select id="ticketPriority" onchange="updateTicketPriority('${ticket.id}', this.value)">
+                            <option value="low" ${ticket.priority === 'low' ? 'selected' : ''}>Low</option>
+                            <option value="medium" ${ticket.priority === 'medium' ? 'selected' : ''}>Medium</option>
+                            <option value="high" ${ticket.priority === 'high' ? 'selected' : ''}>High</option>
+                        </select>
+                    </div>
+                </div>
 
-                    <div class="ticket-sidebar">
-                        <div class="info-card">
-                            <h4>Ticket Info</h4>
-                            <div class="info-row">
-                                <label>Status</label>
-                                <select class="filter-select" id="ticketStatus" onchange="updateTicketStatus('${ticket.id}', this.value)" style="padding: 0.4rem;">
-                                    <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>Open</option>
-                                    <option value="in-progress" ${ticket.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                                    <option value="resolved" ${ticket.status === 'resolved' ? 'selected' : ''}>Resolved</option>
-                                    <option value="closed" ${ticket.status === 'closed' ? 'selected' : ''}>Closed</option>
-                                </select>
-                            </div>
-                            <div class="info-row">
-                                <label>Priority</label>
-                                <select class="filter-select" id="ticketPriority" onchange="updateTicketPriority('${ticket.id}', this.value)" style="padding: 0.4rem;">
-                                    <option value="low" ${ticket.priority === 'low' ? 'selected' : ''}>Low</option>
-                                    <option value="medium" ${ticket.priority === 'medium' ? 'selected' : ''}>Medium</option>
-                                    <option value="high" ${ticket.priority === 'high' ? 'selected' : ''}>High</option>
-                                </select>
-                            </div>
-                            <div class="info-row">
-                                <label>SLA Status</label>
-                                <span class="sla-indicator ${slaStatus.class}">${slaStatus.text}</span>
-                            </div>
-                        </div>
+                <div class="ticket-description">
+                    <h4>📝 Description</h4>
+                    <p>${ticket.description}</p>
+                </div>
 
-                        <div class="info-card">
-                            <h4>User Info</h4>
-                            <div class="info-row">
-                                <label>Name</label>
-                                <span>${ticket.userName || 'Unknown'}</span>
-                            </div>
-                            <div class="info-row">
-                                <label>Email</label>
-                                <span style="font-size: 0.8rem;">${ticket.userEmail || 'N/A'}</span>
-                            </div>
-                            <div class="info-row">
-                                <label>School</label>
-                                <span>${ticket.school || 'N/A'}</span>
-                            </div>
-                            <div class="info-row">
-                                <label>Role</label>
-                                <span>${ticket.userRole || 'N/A'}</span>
-                            </div>
-                            ${ticket.studentId ? `
-                            <div class="info-row">
-                                <label>Student ID</label>
-                                <span>${ticket.studentId}</span>
-                            </div>
-                            ` : ''}
-                        </div>
+                ${screenshotHtml}
 
-                        <div class="info-card">
-                            <h4>Timeline</h4>
-                            <div class="info-row">
-                                <label>Created</label>
-                                <span>${formatDateTime(created)}</span>
-                            </div>
-                            ${ticket.firstResponseAt ? `
-                            <div class="info-row">
-                                <label>First Response</label>
-                                <span>${formatDateTime(ticket.firstResponseAt?.toDate?.() || new Date(ticket.firstResponseAt))}</span>
-                            </div>
-                            ` : ''}
-                            ${ticket.resolvedAt ? `
-                            <div class="info-row">
-                                <label>Resolved</label>
-                                <span>${formatDateTime(ticket.resolvedAt?.toDate?.() || new Date(ticket.resolvedAt))}</span>
-                            </div>
-                            ` : ''}
+                <div class="conversation-section">
+                    <h4>💬 Conversation</h4>
+                    <div class="conversation-messages" id="conversationMessages">
+                        ${renderConversation(ticket)}
+                    </div>
+                    <div class="reply-box">
+                        <textarea id="replyMessage" placeholder="Type your reply..."></textarea>
+                        <div class="reply-actions">
+                            <button class="btn btn-primary btn-sm" onclick="sendReply('${ticket.id}', false)">Send Reply</button>
+                            <button class="btn btn-success btn-sm" onclick="sendReply('${ticket.id}', true)">Reply & Resolve</button>
                         </div>
                     </div>
                 </div>
             `;
 
-            modal.classList.add('active');
+            document.getElementById('ticketModal').classList.add('active');
         }
 
         function closeTicketModal() {
             document.getElementById('ticketModal').classList.remove('active');
         }
 
-        async function sendReply(ticketId, resolve) {
+        function renderConversation(ticket) {
+            const messages = [];
+            
+            // Initial message
+            const created = ticket.createdAt?.toDate?.() || new Date();
+            messages.push(`
+                <div class="message">
+                    <div class="message-avatar user">👤</div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <strong>${ticket.userName}</strong>
+                            <span>${formatDateTime(created)}</span>
+                        </div>
+                        <div class="message-text">${ticket.description}</div>
+                    </div>
+                </div>
+            `);
+
+            // Replies
+            if (ticket.replies && ticket.replies.length > 0) {
+                ticket.replies.forEach(reply => {
+                    const replyDate = reply.timestamp?.toDate?.() || new Date(reply.timestamp);
+                    messages.push(`
+                        <div class="message">
+                            <div class="message-avatar ${reply.isAdmin ? 'admin' : 'user'}">${reply.isAdmin ? '🎫' : '👤'}</div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <strong>${reply.isAdmin ? 'Support Team' : ticket.userName}</strong>
+                                    <span>${formatDateTime(replyDate)}</span>
+                                </div>
+                                <div class="message-text">${reply.message}</div>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+
+            return messages.join('');
+        }
+
+        async function sendReply(ticketId, resolve = false) {
             const message = document.getElementById('replyMessage').value.trim();
             if (!message) {
-                showToast('Please enter a reply message', 'error');
+                showToast('Please enter a message', 'error');
                 return;
             }
 
@@ -1941,7 +1659,8 @@
                 replies.push({
                     message,
                     isAdmin: true,
-                    createdAt: new Date()
+                    timestamp: new Date(),
+                    adminEmail: currentUser.email
                 });
 
                 const updateData = {
@@ -1949,15 +1668,15 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                if (!ticket.firstResponseAt) {
-                    updateData.firstResponseAt = firebase.firestore.FieldValue.serverTimestamp();
-                }
-
                 if (resolve) {
                     updateData.status = 'resolved';
                     updateData.resolvedAt = firebase.firestore.FieldValue.serverTimestamp();
                 } else if (ticket.status === 'open') {
                     updateData.status = 'in-progress';
+                }
+
+                if (!ticket.firstResponseAt) {
+                    updateData.firstResponseAt = firebase.firestore.FieldValue.serverTimestamp();
                 }
 
                 await db.collection('helpdesk_tickets').doc(ticketId).update(updateData);
@@ -2012,7 +1731,7 @@
                     <div class="empty-state">
                         <span>📚</span>
                         <h3>No FAQ articles yet</h3>
-                        <p>Click "Add Article" to create your first FAQ</p>
+                        <p>Click "Add Article" to create your first FAQ or use "Load All Default FAQs" in Settings</p>
                     </div>
                 `;
                 return;
@@ -2077,7 +1796,7 @@
             const question = document.getElementById('faqQuestion').value.trim();
             const answer = document.getElementById('faqAnswer').value.trim();
             const category = document.getElementById('faqCategory').value;
-            const keywords = document.getElementById('faqKeywords').value.split(',').map(k => k.trim()).filter(k => k);
+            const keywords = document.getElementById('faqKeywords').value.split(',').map(k => k.trim().toLowerCase()).filter(k => k);
 
             if (!question || !answer) {
                 showToast('Please fill in all required fields', 'error');
@@ -2119,9 +1838,167 @@
             }
         }
 
-        // ============================================
-        // INSTRUCTIONS MODAL
-        // ============================================
+        // Seed default FAQs from the document
+        async function seedDefaultFAQs() {
+            if (!confirm('This will add all default FAQs to the database. Continue?')) return;
+
+            showToast('Loading FAQs... This may take a moment.', 'info');
+
+            const defaultFAQs = [
+                // Getting Started
+                { question: "What is the Curriculum Tracker?", answer: "The Curriculum Tracker is a web application built for Avanti Fellows' JNV and EMRS Program to track curriculum progress, attendance, teacher performance, and student activities across multiple schools.", category: "getting-started", keywords: ["curriculum", "tracker", "app", "what", "about", "avanti"] },
+                { question: "What subjects are covered?", answer: "Four core subjects: Physics, Chemistry, Mathematics, and Biology.", category: "getting-started", keywords: ["subjects", "physics", "chemistry", "maths", "mathematics", "biology", "covered"] },
+                { question: "What devices can I use to access the Curriculum Tracker?", answer: "You can access it from any device with a web browser - smartphones (Android/iOS), tablets, laptops, or desktop computers. Chrome browser is recommended for best performance.", category: "getting-started", keywords: ["devices", "phone", "mobile", "laptop", "tablet", "android", "iphone", "ios", "browser", "access"] },
+                { question: "Do I need to download an app from Play Store or App Store?", answer: "No! The Curriculum Tracker is a Progressive Web App (PWA). You can install it directly from your browser without going to any app store.", category: "getting-started", keywords: ["download", "app", "playstore", "appstore", "install", "pwa"] },
+                { question: "Does the app work offline?", answer: "Partially. You can view previously loaded data when offline. Any changes you make will automatically sync when you reconnect to the internet.", category: "getting-started", keywords: ["offline", "internet", "without", "connection", "sync"] },
+                { question: "Is my data safe and secure?", answer: "Yes. All data is stored securely in Google Firebase with authentication. Only authorized users can access data based on their role.", category: "getting-started", keywords: ["data", "safe", "secure", "security", "privacy", "firebase"] },
+                { question: "What is the current version of the app?", answer: "The current version is 3.5.0. You can see the version number in the footer or by checking the browser console.", category: "getting-started", keywords: ["version", "update", "current", "latest"] },
+                { question: "How do I know if there's a new update?", answer: "The app updates automatically. You'll see a yellow banner saying '🔄 Updating to latest version...' when an update is being installed.", category: "getting-started", keywords: ["update", "new", "version", "automatic", "banner"] },
+                { question: "Is the app free to use?", answer: "Yes, the app is completely free for all Avanti Fellows teachers and students. It's built using free-tier services like Firebase and Vercel.", category: "getting-started", keywords: ["free", "cost", "money", "charge", "paid"] },
+
+                // Login & Authentication
+                { question: "How do I login as a teacher?", answer: "Open the app → Select 'Teacher Login' tab → Enter your registered email and password → Click 'Login'.", category: "login", keywords: ["login", "teacher", "signin", "access", "enter"] },
+                { question: "How do I login as a student?", answer: "Open the app → Select 'Student Login' tab → Enter your Student ID → Enter password (default: pass123) → Click 'Login'.", category: "login", keywords: ["login", "student", "signin", "access", "enter", "student id"] },
+                { question: "What is the default password for students?", answer: "The default password for all students is 'pass123'. This may be changed by the administrator.", category: "login", keywords: ["password", "default", "student", "pass123"] },
+                { question: "I forgot my password. What should I do?", answer: "Contact your administrator or Program Manager. They can reset your password from the Firebase console.", category: "login", keywords: ["forgot", "password", "reset", "lost", "remember"] },
+                { question: "Why does it say 'Invalid email or password'?", answer: "Check the following:\n• Email spelling must be exact (including @domain)\n• Password is case-sensitive\n• No extra spaces before/after email or password\n• Your account may not be created yet - contact admin", category: "login", keywords: ["invalid", "email", "password", "wrong", "error", "incorrect"] },
+                { question: "Why does it say 'Your account has been archived'?", answer: "Your account has been deactivated by the administrator. This usually happens when a teacher leaves the program. Contact admin if this is a mistake.", category: "login", keywords: ["archived", "deactivated", "account", "disabled"] },
+                { question: "Why does it say 'Student not found'?", answer: "Your Student ID may not be in the system yet. Verify your ID with your teacher or wait for admin to add you.", category: "login", keywords: ["student", "not found", "id", "error"] },
+                { question: "Can I be logged in on multiple devices at once?", answer: "Yes, you can login from multiple devices. Your data syncs automatically across all devices.", category: "login", keywords: ["multiple", "devices", "login", "sync", "same time"] },
+                { question: "The login button is not working. What should I do?", answer: "Check your internet connection, try refreshing the page, or clear browser cache. If still not working, try a different browser.", category: "login", keywords: ["login", "button", "not working", "stuck", "loading"] },
+
+                // Teacher Attendance
+                { question: "How do I mark my daily attendance?", answer: "Click 'My Attendance' from sidebar → Allow location permission → Select status (Present/Leave/WFH) → Click Submit.", category: "attendance", keywords: ["attendance", "mark", "daily", "present", "leave", "submit"] },
+                { question: "Why does the app need my location?", answer: "GPS location is captured to verify that attendance is marked from the school premises. This helps maintain accountability.", category: "attendance", keywords: ["location", "gps", "permission", "why"] },
+                { question: "What if I don't allow location permission?", answer: "You must allow location permission to mark attendance. Without it, attendance cannot be submitted.", category: "attendance", keywords: ["location", "permission", "allow", "denied"] },
+                { question: "I forgot to mark attendance yesterday. Can I mark it now?", answer: "No, attendance can only be marked for the current day. Contact your Program Manager for manual corrections.", category: "attendance", keywords: ["forgot", "yesterday", "previous", "missed", "late"] },
+                { question: "Can I edit my attendance after submission?", answer: "No, attendance is locked after submission to prevent tampering. Contact admin for any corrections.", category: "attendance", keywords: ["edit", "change", "modify", "after", "submitted"] },
+                { question: "What attendance statuses are available?", answer: "Three statuses:\n• Present - You're at school\n• On Leave - You're taking a day off\n• Work from Home - You're working remotely", category: "attendance", keywords: ["status", "present", "leave", "wfh", "options"] },
+                { question: "Attendance shows 'Already marked for today'. What does this mean?", answer: "You've already submitted attendance for today. You cannot mark it twice.", category: "attendance", keywords: ["already", "marked", "twice", "duplicate"] },
+
+                // Student Attendance
+                { question: "How do I mark student attendance?", answer: "Click 'Student Attendance' → Select Grade (11/12) → Use 'Mark All Present' or mark individually → Select absence reason if absent → Save.", category: "attendance", keywords: ["student", "attendance", "mark", "class", "grade"] },
+                { question: "What does 'Mark All Present' do?", answer: "It marks all students in the selected grade as present with one click. You can then unmark individual absent students.", category: "attendance", keywords: ["mark all", "present", "bulk", "all students"] },
+                { question: "What absence reasons are available for students?", answer: "Three reasons:\n• Sick Leave - Student is unwell\n• Family Emergency - Family-related absence\n• Other - Any other reason (can add remarks)", category: "attendance", keywords: ["absence", "reason", "sick", "emergency", "other"] },
+                { question: "Can I edit student attendance after saving?", answer: "No, student attendance is locked after submission. Contact admin for corrections.", category: "attendance", keywords: ["edit", "student", "attendance", "change", "after"] },
+
+                // Curriculum & Progress
+                { question: "How do I update chapter progress?", answer: "Go to 'Curriculum' → Select Grade → Click on chapter to expand → Check completed topics → Mark test status → Save.", category: "curriculum", keywords: ["chapter", "progress", "update", "curriculum", "topics", "mark"] },
+                { question: "What do the chapter status colors mean?", answer: "Status colors:\n• Gray - Not Started (no topics completed)\n• Yellow - In Progress (some topics done)\n• Green - Completed (all topics + test done)\n• Red - Delayed (past target date, not complete)", category: "curriculum", keywords: ["color", "status", "gray", "yellow", "green", "red", "meaning"] },
+                { question: "Why can't I mark a chapter as complete?", answer: "A chapter can only be marked complete after: 1) All topics are checked, and 2) Test is marked as conducted.", category: "curriculum", keywords: ["complete", "chapter", "cannot", "mark", "test"] },
+                { question: "What is the 'Test Conducted' checkbox?", answer: "This indicates whether you've conducted the chapter test. It must be checked before marking a chapter complete.", category: "curriculum", keywords: ["test", "conducted", "checkbox", "chapter"] },
+                { question: "What is the target date?", answer: "The target date is the deadline by which a chapter should be completed. Chapters past this date show as 'Delayed' if incomplete.", category: "curriculum", keywords: ["target", "date", "deadline", "delayed"] },
+                { question: "How do I export curriculum data?", answer: "Go to Analytics or Chapter Details → Apply filters → Click 'Export to Excel'.", category: "curriculum", keywords: ["export", "excel", "download", "curriculum", "data"] },
+
+                // Student Features
+                { question: "What can students do in the app?", answer: "Students can: view attendance, complete profile, see curriculum progress, give teacher feedback, register for exams, view assigned assets, and request books.", category: "students", keywords: ["student", "features", "do", "access", "options"] },
+                { question: "What information is required in student profile?", answer: "Required fields include:\n• Personal: Name, Email, Phone, DOB, WhatsApp\n• Academic: Grade, Category, Stream, School, 10th %\n• Family: Parents' names, occupations, education, income\n• Address: Full address, state, district, pincode", category: "students", keywords: ["profile", "required", "information", "fields", "fill"] },
+                { question: "What is profile completion percentage?", answer: "It shows how much of your profile is filled. Aim for 100% by filling all required fields.", category: "students", keywords: ["profile", "completion", "percentage", "100"] },
+                { question: "What categories are available?", answer: "Categories: General, General EWS, OBC, SC, ST, PWD (Person with Disability).", category: "students", keywords: ["category", "general", "obc", "sc", "st", "ews", "pwd"] },
+                { question: "What streams are available?", answer: "Two streams: JEE (for engineering aspirants) and NEET (for medical aspirants).", category: "students", keywords: ["stream", "jee", "neet", "engineering", "medical"] },
+                { question: "How do students see curriculum progress?", answer: "Students login and go to 'Curriculum' tab to see subject-wise progress for all subjects in their grade.", category: "students", keywords: ["student", "curriculum", "progress", "view", "see"] },
+
+                // Teacher Feedback
+                { question: "How do I give feedback to my teachers?", answer: "When feedback is due, you'll see a notification. Click on a teacher → Rate each question (0-5) → Submit.", category: "feedback", keywords: ["feedback", "teacher", "give", "rating", "rate"] },
+                { question: "How often should I give feedback?", answer: "Feedback is collected every 2 months (bimonthly). You'll see a notification when it's time.", category: "feedback", keywords: ["feedback", "often", "frequency", "bimonthly", "when"] },
+                { question: "Is my feedback anonymous?", answer: "Yes, your feedback is completely anonymous. Teachers only see average scores, not individual responses.", category: "feedback", keywords: ["anonymous", "feedback", "privacy", "secret", "hidden"] },
+                { question: "Can I change my feedback after submitting?", answer: "No, feedback cannot be edited after submission. Think carefully before submitting.", category: "feedback", keywords: ["change", "edit", "feedback", "after", "submitted"] },
+
+                // Assets & Library
+                { question: "What is Asset Management?", answer: "A system to track books and chromebooks - adding them to inventory, assigning to students, and tracking returns.", category: "assets", keywords: ["asset", "management", "books", "chromebook", "inventory"] },
+                { question: "Do I need a special barcode scanner?", answer: "No! You can use your phone's camera to scan barcodes. No special hardware needed.", category: "assets", keywords: ["barcode", "scanner", "camera", "phone", "hardware"] },
+                { question: "How do I assign a book to a student?", answer: "Scan the book barcode → Select student from dropdown → Click Assign. Due date is auto-calculated.", category: "assets", keywords: ["assign", "book", "student", "scan", "barcode"] },
+                { question: "What is the return due date for books?", answer: "Books are due in 7 days from assignment. Chromebooks have no due date.", category: "assets", keywords: ["return", "due", "date", "book", "days"] },
+                { question: "How do students request books?", answer: "Students go to Assets tab → Request Book → Either from existing library or request new book.", category: "assets", keywords: ["request", "book", "student", "library"] },
+
+                // Analytics
+                { question: "What reports are available?", answer: "Available reports:\n• School-wise curriculum completion\n• Subject-wise progress\n• Teacher/Student attendance\n• Exam registration statistics\n• Teacher feedback summary\n• Leave utilization", category: "analytics", keywords: ["reports", "analytics", "available", "data", "statistics"] },
+                { question: "How do I export data to Excel?", answer: "Go to any analytics page → Apply desired filters → Click 'Export to Excel'.", category: "analytics", keywords: ["export", "excel", "download", "analytics", "data"] },
+                { question: "Who can access analytics?", answer: "Admins see all schools. Managers see assigned schools. Teachers see only their school.", category: "analytics", keywords: ["access", "analytics", "permission", "who", "view"] },
+
+                // Mobile PWA
+                { question: "How do I install on Android?", answer: "Open in Chrome → Wait for 'Add to Home Screen' popup OR tap menu (3 dots) → 'Install App' → Done!", category: "mobile", keywords: ["install", "android", "phone", "app", "chrome", "home screen"] },
+                { question: "How do I install on iPhone?", answer: "Open in Safari → Tap Share button → Scroll down → 'Add to Home Screen' → Tap 'Add'.", category: "mobile", keywords: ["install", "iphone", "ios", "safari", "app", "home screen"] },
+                { question: "Why isn't the install option appearing?", answer: "Make sure you're using Chrome (Android) or Safari (iPhone). Other browsers may not show the option.", category: "mobile", keywords: ["install", "option", "not showing", "browser", "chrome", "safari"] },
+                { question: "How do I update the PWA?", answer: "Updates are automatic. You'll see '🔄 Updating...' banner. No manual action needed.", category: "mobile", keywords: ["update", "pwa", "app", "version", "automatic"] },
+                { question: "My PWA shows old version. How do I update?", answer: "Close the app completely, reopen it. Or type forceUpdate() in browser console.", category: "mobile", keywords: ["old", "version", "update", "force", "pwa"] },
+                { question: "Does PWA use mobile data?", answer: "Yes, but minimal. The app is optimized for low bandwidth areas. Cached resources reduce data usage.", category: "mobile", keywords: ["data", "mobile", "internet", "usage", "bandwidth"] },
+
+                // Troubleshooting
+                { question: "The app shows a blank white screen. What do I do?", answer: "Try: 1) Refresh page, 2) Clear browser cache, 3) Try incognito mode, 4) Try different browser.", category: "troubleshooting", keywords: ["blank", "white", "screen", "loading", "not showing", "empty"] },
+                { question: "Data is not loading. What should I check?", answer: "Check internet connection, wait a few seconds for data to load, try refreshing. Check browser console for errors.", category: "troubleshooting", keywords: ["data", "not loading", "slow", "stuck", "waiting"] },
+                { question: "I see 'Permission denied' error. What does it mean?", answer: "You don't have access to that data. This could be role-based restriction or Firebase rules issue. Contact admin.", category: "troubleshooting", keywords: ["permission", "denied", "access", "error", "blocked"] },
+                { question: "The camera won't open for barcode scanning. How do I fix it?", answer: "Allow camera permission in browser settings. On mobile: Settings → Apps → Browser → Permissions → Camera → Allow.", category: "troubleshooting", keywords: ["camera", "barcode", "permission", "not working", "scan"] },
+                { question: "Export to Excel is not working. What should I do?", answer: "Check popup blocker settings, try different browser, check downloads folder. File might already be downloaded.", category: "troubleshooting", keywords: ["export", "excel", "not working", "download", "popup"] },
+                { question: "My attendance GPS shows wrong location. Is this a problem?", answer: "Small variations (few hundred meters) are normal. If significantly wrong, check GPS is enabled and try outdoors.", category: "troubleshooting", keywords: ["gps", "location", "wrong", "incorrect", "inaccurate"] },
+                { question: "The app is very slow. How can I speed it up?", answer: "Clear browser cache, close other apps/tabs, check internet speed, try during off-peak hours.", category: "troubleshooting", keywords: ["slow", "speed", "performance", "lag", "fast"] },
+
+                // Other
+                { question: "How do I contact support?", answer: "Contact your Program Manager first. For technical issues, use this help widget to raise a ticket or email anand.joshi@avantifellows.org.", category: "other", keywords: ["contact", "support", "help", "email", "manager"] },
+                { question: "Can I suggest new features?", answer: "Yes! Share feature requests with your Program Manager. Popular requests are considered for future updates.", category: "other", keywords: ["suggest", "feature", "request", "new", "idea"] }
+            ];
+
+            try {
+                const batch = db.batch();
+                let count = 0;
+
+                for (const faq of defaultFAQs) {
+                    const docRef = db.collection('helpdesk_faqs').doc();
+                    batch.set(docRef, {
+                        ...faq,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    count++;
+                }
+
+                await batch.commit();
+                showToast(`Successfully added ${count} FAQs!`, 'success');
+            } catch (error) {
+                console.error('Error seeding FAQs:', error);
+                showToast('Failed to load FAQs. Try again.', 'error');
+            }
+        }
+
+        // Export tickets to CSV
+        function exportTickets() {
+            if (tickets.length === 0) {
+                showToast('No tickets to export', 'error');
+                return;
+            }
+
+            const headers = ['Ticket ID', 'Subject', 'User', 'Role', 'Student ID', 'Email', 'School', 'Category', 'Status', 'Priority', 'Created', 'Description'];
+            const rows = tickets.map(t => {
+                const created = t.createdAt?.toDate?.() || new Date();
+                return [
+                    t.ticketId || t.id,
+                    `"${t.subject}"`,
+                    `"${t.userName}"`,
+                    t.userRole,
+                    t.studentId || '',
+                    t.userEmail || '',
+                    t.school,
+                    t.category,
+                    t.status,
+                    t.priority,
+                    created.toISOString(),
+                    `"${t.description.replace(/"/g, '""')}"`
+                ].join(',');
+            });
+
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `helpdesk-tickets-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast('Tickets exported!', 'success');
+        }
+
+        // Instructions modal
         function showWidgetInstructions() {
             document.getElementById('instructionsModal').classList.add('active');
         }
@@ -2130,9 +2007,16 @@
             document.getElementById('instructionsModal').classList.remove('active');
         }
 
-        // ============================================
-        // UTILITIES
-        // ============================================
+        // Navigation
+        function showPage(page) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(`${page}Page`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Utilities
         function formatStatus(status) {
             const map = {
                 'open': 'Open',
@@ -2167,28 +2051,6 @@
             });
         }
 
-        function getSLAStatus(ticket) {
-            if (ticket.status === 'resolved' || ticket.status === 'closed') {
-                return { class: 'ok', text: '✓ Resolved' };
-            }
-
-            const now = new Date();
-            const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
-            const hoursSince = (now - created) / (1000 * 60 * 60);
-            const slaHours = 24;
-
-            if (hoursSince > slaHours && !ticket.firstResponseAt) {
-                return { class: 'breached', text: '⚠️ Breached' };
-            }
-
-            if (hoursSince > slaHours * 0.75) {
-                return { class: 'warning', text: '⏰ Due Soon' };
-            }
-
-            const remaining = Math.ceil(slaHours - hoursSince);
-            return { class: 'ok', text: `${remaining}h left` };
-        }
-
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const icon = document.getElementById('toastIcon');
@@ -2196,11 +2058,9 @@
 
             icon.textContent = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
             msg.textContent = message;
-            toast.className = `toast ${type} show`;
 
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
     </script>
 </body>
