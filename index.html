@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avanti Help Desk - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    
+    <style>
+        :root {
+            --avanti-yellow: #F4B41A;
+            --avanti-orange: #E8A830;
+            --avanti-red: #C8342E;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-elevated: #222230;
+            --text-primary: #ffffff;
+            --text-secondary: #8a8a9a;
+            --text-muted: #5a5a6a;
+            --border-color: #2a2a3a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a2e 100%);
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo h1 {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-logo span {
+            font-size: 3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--avanti-yellow);
+            box-shadow: 0 0 0 3px rgba(244, 180, 26, 0.1);
+        }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
+            color: var(--bg-primary);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(244, 180, 26, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* App Layout */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-logo span {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 1.1rem;
+            background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-family: inherit;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(244, 180, 26, 0.1), rgba(232, 168, 48, 0.05));
+            color: var(--avanti-yellow);
+            border: 1px solid rgba(244, 180, 26, 0.2);
+        }
+
+        .nav-item span:first-child {
+            font-size: 1.1rem;
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-elevated);
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--avanti-yellow), var(--avanti-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--bg-primary);
+        }
+
+        .user-details h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .user-details p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--avanti-yellow);
+            transform: translateY(-2px);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-icon.yellow { background: rgba(244, 180, 26, 0.1); }
+        .stat-icon.green { background: rgba(16, 185, 129, 0.1); }
+        .stat-icon.red { background: rgba(239, 68, 68, 0.1); }
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); }
+
+        .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .stat-change.up {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-change.down {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Filters */
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--avanti-yellow);
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem;
+            padding-left: 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            width: 250px;
+            position: relative;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper::before {
+            content: "🔍";
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+        }
+
+        /* Tickets Table */
+        .tickets-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tickets-table th,
+        .tickets-table td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tickets-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tickets-table tr:hover {
+            background: var(--bg-elevated);
+        }
+
+        .tickets-table tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .ticket-id {
+            font-family: 'Space Mono', monospace;
+            color: var(--avanti-yellow);
+            font-size: 0.9rem;
+        }
+
+        .ticket-subject {
+            font-weight: 500;
+        }
+
+        .ticket-subject small {
+            display: block;
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-badge.open {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .status-badge.in-progress {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-badge.resolved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.closed {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Priority Badges */
+        .priority-badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-badge.high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .priority-badge.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .priority-badge.low {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+
+        /* SLA Indicator */
+        .sla-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .sla-indicator.breached {
+            color: var(--danger);
+        }
+
+        .sla-indicator.warning {
+            color: var(--warning);
+        }
+
+        .sla-indicator.ok {
+            color: var(--success);
+        }
+
+        /* Ticket Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Ticket Detail Content */
+        .ticket-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .ticket-detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ticket-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .ticket-description {
+            background: var(--bg-secondary);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .ticket-attachment {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ticket-attachment img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Conversation */
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .conversation-message {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            max-width: 85%;
+        }
+
+        .conversation-message.user {
+            background: var(--bg-secondary);
+            align-self: flex-start;
+        }
+
+        .conversation-message.admin {
+            background: rgba(244, 180, 26, 0.1);
+            align-self: flex-end;
+            border: 1px solid rgba(244, 180, 26, 0.2);
+        }
+
+        .conversation-message-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .conversation-message-header strong {
+            color: var(--avanti-yellow);
+        }
+
+        .conversation-message-header span {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .conversation-message p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Reply Box */
+        .reply-box {
+            margin-top: 1rem;
+        }
+
+        .reply-box textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .reply-box textarea:focus {
+            outline: none;
+            border-color: var(--avanti-yellow);
+        }
+
+        .reply-box-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        /* Ticket Sidebar Info */
+        .ticket-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--bg-secondary);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .info-row span {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* FAQ Section */
+        .faq-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .faq-item-header {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .faq-item-header:hover {
+            background: var(--bg-elevated);
+        }
+
+        .faq-item-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .faq-item-title span {
+            color: var(--avanti-yellow);
+        }
+
+        .faq-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .faq-item-content {
+            padding: 0 1.25rem 1.25rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Settings */
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+
+        .settings-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-row-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .settings-row-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-elevated);
+            border-radius: 26px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider::before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background: var(--avanti-yellow);
+        }
+
+        .toggle input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state span {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--avanti-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+
+            .mobile-header .menu-btn {
+                background: transparent;
+                border: none;
+                color: var(--text-primary);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .mobile-header {
+                display: none;
+            }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">
+                <span>🎫</span>
+                <h1>Avanti Help Desk</h1>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Admin Dashboard</p>
+            </div>
+            <div id="loginError" class="error-message hidden"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="admin@avantifellows.org" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    🔐 Login to Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <h2 style="font-size: 1rem;">Avanti Help Desk</h2>
+            <div></div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <span>🎫</span>
+                <h2>Avanti Help Desk</h2>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-page="dashboard">
+                    <span>📊</span>
+                    Dashboard
+                </button>
+                <button class="nav-item" data-page="tickets">
+                    <span>🎫</span>
+                    All Tickets
+                    <span class="nav-badge" id="openTicketsBadge">0</span>
+                </button>
+                <button class="nav-item" data-page="faq">
+                    <span>📚</span>
+                    FAQ Articles
+                </button>
+                <button class="nav-item" data-page="settings">
+                    <span>⚙️</span>
+                    Settings
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <h4 id="userName">Admin</h4>
+                        <p id="userEmail">admin@avantifellows.org</p>
+                    </div>
+                </div>
+                <button class="nav-item" onclick="logout()">
+                    <span>🚪</span>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page" id="dashboardPage">
+                <div class="page-header">
+                    <div>
+                        <h1>Dashboard</h1>
+                        <p>Overview of your help desk performance</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="refreshData()">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon yellow">🎫</div>
+                            <span class="stat-change up" id="totalTicketsChange">+0 today</span>
+                        </div>
+                        <div class="stat-value" id="totalTickets">0</div>
+                        <div class="stat-label">Total Tickets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon red">🔴</div>
+                        </div>
+                        <div class="stat-value" id="openTickets">0</div>
+                        <div class="stat-label">Open Tickets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon blue">🔵</div>
+                        </div>
+                        <div class="stat-value" id="inProgressTickets">0</div>
+                        <div class="stat-label">In Progress</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon green">✅</div>
+                        </div>
+                        <div class="stat-value" id="resolvedTickets">0</div>
+                        <div class="stat-label">Resolved</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon yellow">⏱️</div>
+                        </div>
+                        <div class="stat-value" id="avgResponseTime">-</div>
+                        <div class="stat-label">Avg Response Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon red">⚠️</div>
+                        </div>
+                        <div class="stat-value" id="slaBreached">0</div>
+                        <div class="stat-label">SLA Breached</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Tickets</h3>
+                        <button class="btn btn-sm btn-secondary" onclick="navigateTo('tickets')">View All →</button>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="tickets-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentTicketsTable">
+                                <tr>
+                                    <td colspan="5" class="loading">
+                                        <div class="loading-spinner"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Tickets Page -->
+            <div class="page hidden" id="ticketsPage">
+                <div class="page-header">
+                    <div>
+                        <h1>All Tickets</h1>
+                        <p>Manage and respond to support tickets</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="search-wrapper">
+                            <input type="text" class="search-input" id="ticketSearch" placeholder="Search tickets...">
+                        </div>
+                        <div class="filter-group">
+                            <label>Status:</label>
+                            <select class="filter-select" id="statusFilter">
+                                <option value="all">All</option>
+                                <option value="open">Open</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="tickets-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Subject</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>SLA</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allTicketsTable">
+                                <tr>
+                                    <td colspan="7" class="loading">
+                                        <div class="loading-spinner"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Page -->
+            <div class="page hidden" id="faqPage">
+                <div class="page-header">
+                    <div>
+                        <h1>FAQ Articles</h1>
+                        <p>Manage help articles shown to users</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddFAQModal()">
+                        ➕ Add Article
+                    </button>
+                </div>
+
+                <div class="faq-grid" id="faqList">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="page hidden" id="settingsPage">
+                <div class="page-header">
+                    <div>
+                        <h1>Settings</h1>
+                        <p>Configure your help desk</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="settings-section">
+                            <h3>🔔 Notifications</h3>
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Email Notifications</h4>
+                                    <p>Receive email when new ticket is created</p>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>⏱️ SLA Settings</h3>
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>First Response Time (Hours)</h4>
+                                    <p>Maximum time to send first response</p>
+                                </div>
+                                <select class="filter-select" id="slaFirstResponse">
+                                    <option value="4">4 hours</option>
+                                    <option value="8">8 hours</option>
+                                    <option value="24" selected>24 hours</option>
+                                    <option value="48">48 hours</option>
+                                </select>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Resolution Time (Hours)</h4>
+                                    <p>Maximum time to resolve ticket</p>
+                                </div>
+                                <select class="filter-select" id="slaResolution">
+                                    <option value="24">24 hours</option>
+                                    <option value="48" selected>48 hours</option>
+                                    <option value="72">72 hours</option>
+                                    <option value="168">1 week</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>🎨 Widget Settings</h3>
+                            <div class="settings-row">
+                                <div class="settings-row-info">
+                                    <h4>Widget Embed Code</h4>
+                                    <p>Copy this code to add widget to your website</p>
+                                </div>
+                                <button class="btn btn-sm btn-secondary" onclick="copyWidgetCode()">
+                                    📋 Copy Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>🎫 Ticket Details</h2>
+                <button class="modal-close" onclick="closeTicketModal()">×</button>
+            </div>
+            <div class="modal-body" id="ticketModalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add FAQ Modal -->
+    <div class="modal-overlay" id="faqModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="faqModalTitle">➕ Add FAQ Article</h2>
+                <button class="modal-close" onclick="closeFAQModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="faqForm">
+                    <input type="hidden" id="faqId">
+                    <div class="form-group">
+                        <label>Question</label>
+                        <input type="text" id="faqQuestion" placeholder="e.g., How do I reset my password?" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Answer</label>
+                        <textarea id="faqAnswer" rows="5" placeholder="Write the answer here..." required style="width:100%;padding:0.875rem;border:1px solid var(--border-color);border-radius:0.75rem;background:var(--bg-secondary);color:var(--text-primary);font-family:inherit;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="faqCategory" class="filter-select" style="width:100%;padding:0.875rem;">
+                            <option value="getting-started">Getting Started</option>
+                            <option value="chapters">Chapters & Topics</option>
+                            <option value="progress">Progress Tracking</option>
+                            <option value="tests">Tests & Assessment</option>
+                            <option value="troubleshooting">Troubleshooting</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Keywords (comma separated)</label>
+                        <input type="text" id="faqKeywords" placeholder="e.g., password, reset, login">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeFAQModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveFAQ()">Save Article</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toastIcon">✅</span>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        // ⚠️ IMPORTANT: Replace with your Firebase config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // ============================================
+        // STATE
+        // ============================================
+        let currentUser = null;
+        let tickets = [];
+        let faqs = [];
+
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                showApp();
+                loadData();
+            } else {
+                showLogin();
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        function logout() {
+            auth.signOut();
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appContainer').classList.remove('active');
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            
+            // Update user info
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.email.split('@')[0];
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userAvatar').textContent = currentUser.email[0].toUpperCase();
+            }
+        }
+
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                navigateTo(this.dataset.page);
+            });
+        });
+
+        function navigateTo(page) {
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+
+            // Update pages
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`${page}Page`)?.classList.remove('hidden');
+
+            // Close mobile sidebar
+            document.getElementById('sidebar').classList.remove('open');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // ============================================
+        // DATA LOADING
+        // ============================================
+        async function loadData() {
+            await Promise.all([
+                loadTickets(),
+                loadFAQs()
+            ]);
+            updateDashboard();
+        }
+
+        async function loadTickets() {
+            try {
+                const snapshot = await db.collection('helpdesk_tickets')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                tickets = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                renderTicketsTable();
+                renderRecentTickets();
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+            }
+        }
+
+        async function loadFAQs() {
+            try {
+                const snapshot = await db.collection('helpdesk_faqs')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                faqs = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                renderFAQList();
+            } catch (error) {
+                console.error('Error loading FAQs:', error);
+                // If collection doesn't exist, create default FAQs
+                if (faqs.length === 0) {
+                    await createDefaultFAQs();
+                }
+            }
+        }
+
+        async function createDefaultFAQs() {
+            const defaultFAQs = [
+                {
+                    question: "How do I login to the Curriculum Tracker?",
+                    answer: "1. Open the Curriculum Tracker website\n2. Enter your email address\n3. Enter your password\n4. Click 'Login'\n\nIf you forgot your password, contact your Program Manager.",
+                    category: "getting-started",
+                    keywords: ["login", "sign in", "password", "access"]
+                },
+                {
+                    question: "How do I mark a chapter as complete?",
+                    answer: "1. Go to 'Chapters' section\n2. Select your subject and class\n3. Click on the chapter to expand\n4. Check completed topics\n5. Change status to 'Yes'\n6. Click 'Save'",
+                    category: "chapters",
+                    keywords: ["complete", "mark", "finish", "chapter"]
+                },
+                {
+                    question: "I forgot my password. How do I reset it?",
+                    answer: "Contact your Program Manager or school coordinator. They will reset your password from the admin panel and provide you with a new temporary password.",
+                    category: "troubleshooting",
+                    keywords: ["forgot", "password", "reset"]
+                },
+                {
+                    question: "The page is not loading. What should I do?",
+                    answer: "1. Refresh the page (Press F5)\n2. Clear browser cache (Ctrl+Shift+Delete)\n3. Try Chrome browser\n4. Check your internet connection\n\nIf still not working, contact support.",
+                    category: "troubleshooting",
+                    keywords: ["loading", "error", "not working"]
+                }
+            ];
+
+            for (const faq of defaultFAQs) {
+                await db.collection('helpdesk_faqs').add({
+                    ...faq,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+
+            await loadFAQs();
+        }
+
+        function refreshData() {
+            showToast('Refreshing data...', 'info');
+            loadData();
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
+        function updateDashboard() {
+            const open = tickets.filter(t => t.status === 'open').length;
+            const inProgress = tickets.filter(t => t.status === 'in-progress').length;
+            const resolved = tickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
+
+            document.getElementById('totalTickets').textContent = tickets.length;
+            document.getElementById('openTickets').textContent = open;
+            document.getElementById('inProgressTickets').textContent = inProgress;
+            document.getElementById('resolvedTickets').textContent = resolved;
+            document.getElementById('openTicketsBadge').textContent = open;
+
+            // Calculate SLA breached
+            const now = new Date();
+            const slaHours = 24; // Default 24 hours
+            const breached = tickets.filter(t => {
+                if (t.status === 'resolved' || t.status === 'closed') return false;
+                const created = t.createdAt?.toDate?.() || new Date(t.createdAt);
+                const hoursSince = (now - created) / (1000 * 60 * 60);
+                return hoursSince > slaHours && !t.firstResponseAt;
+            }).length;
+
+            document.getElementById('slaBreached').textContent = breached;
+
+            // Today's tickets
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayTickets = tickets.filter(t => {
+                const created = t.createdAt?.toDate?.() || new Date(t.createdAt);
+                return created >= today;
+            }).length;
+            document.getElementById('totalTicketsChange').textContent = `+${todayTickets} today`;
+        }
+
+        // ============================================
+        // TICKETS TABLE
+        // ============================================
+        function renderTicketsTable() {
+            const tbody = document.getElementById('allTicketsTable');
+            const searchQuery = document.getElementById('ticketSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filtered = tickets;
+
+            if (searchQuery) {
+                filtered = filtered.filter(t => 
+                    t.subject?.toLowerCase().includes(searchQuery) ||
+                    t.ticketId?.toLowerCase().includes(searchQuery) ||
+                    t.userName?.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(t => t.status === statusFilter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <span>🎫</span>
+                                <h3>No tickets found</h3>
+                                <p>Try adjusting your filters</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(ticket => {
+                const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
+                const slaStatus = getSLAStatus(ticket);
+
+                return `
+                    <tr onclick="openTicketModal('${ticket.id}')">
+                        <td><span class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 6)}</span></td>
+                        <td>
+                            <span class="ticket-subject">
+                                ${ticket.subject || 'No Subject'}
+                                <small>${ticket.category || 'General'}</small>
+                            </span>
+                        </td>
+                        <td>${ticket.userName || 'Unknown'}</td>
+                        <td><span class="status-badge ${ticket.status}"><span class="status-dot"></span>${formatStatus(ticket.status)}</span></td>
+                        <td><span class="priority-badge ${ticket.priority || 'medium'}">${ticket.priority || 'Medium'}</span></td>
+                        <td><span class="sla-indicator ${slaStatus.class}">${slaStatus.text}</span></td>
+                        <td>${formatDate(created)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderRecentTickets() {
+            const tbody = document.getElementById('recentTicketsTable');
+            const recent = tickets.slice(0, 5);
+
+            if (recent.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <span>🎫</span>
+                                <h3>No tickets yet</h3>
+                                <p>Tickets will appear here when users submit them</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = recent.map(ticket => {
+                const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
+                return `
+                    <tr onclick="openTicketModal('${ticket.id}')">
+                        <td><span class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 6)}</span></td>
+                        <td>
+                            <span class="ticket-subject">
+                                ${ticket.subject || 'No Subject'}
+                                <small>${ticket.category || 'General'}</small>
+                            </span>
+                        </td>
+                        <td><span class="status-badge ${ticket.status}"><span class="status-dot"></span>${formatStatus(ticket.status)}</span></td>
+                        <td><span class="priority-badge ${ticket.priority || 'medium'}">${ticket.priority || 'Medium'}</span></td>
+                        <td>${formatDate(created)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Search and filter listeners
+        document.getElementById('ticketSearch').addEventListener('input', renderTicketsTable);
+        document.getElementById('statusFilter').addEventListener('change', renderTicketsTable);
+
+        // ============================================
+        // TICKET MODAL
+        // ============================================
+        function openTicketModal(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+
+            const modal = document.getElementById('ticketModal');
+            const body = document.getElementById('ticketModalBody');
+
+            const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
+            const slaStatus = getSLAStatus(ticket);
+
+            body.innerHTML = `
+                <div class="ticket-detail-grid">
+                    <div class="ticket-main">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <span class="ticket-id" style="font-size: 1.1rem;">#${ticket.ticketId || ticket.id.slice(0, 6)}</span>
+                                <span class="status-badge ${ticket.status}"><span class="status-dot"></span>${formatStatus(ticket.status)}</span>
+                                <span class="priority-badge ${ticket.priority || 'medium'}">${ticket.priority || 'Medium'}</span>
+                            </div>
+                            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">${ticket.subject || 'No Subject'}</h2>
+                        </div>
+
+                        <div class="ticket-description">
+                            <p>${ticket.description || 'No description provided.'}</p>
+                            ${ticket.screenshotUrl ? `
+                                <div class="ticket-attachment">
+                                    <img src="${ticket.screenshotUrl}" alt="Screenshot" onclick="window.open('${ticket.screenshotUrl}', '_blank')">
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div>
+                            <h3 style="font-size: 1rem; margin-bottom: 1rem;">💬 Conversation</h3>
+                            <div class="conversation" id="ticketConversation">
+                                <div class="conversation-message user">
+                                    <div class="conversation-message-header">
+                                        <strong>${ticket.userName || 'User'}</strong>
+                                        <span>${formatDateTime(created)}</span>
+                                    </div>
+                                    <p>${ticket.description || 'No description'}</p>
+                                </div>
+                                ${(ticket.replies || []).map(reply => `
+                                    <div class="conversation-message ${reply.isAdmin ? 'admin' : 'user'}">
+                                        <div class="conversation-message-header">
+                                            <strong>${reply.isAdmin ? 'Admin' : ticket.userName}</strong>
+                                            <span>${formatDateTime(reply.createdAt?.toDate?.() || new Date(reply.createdAt))}</span>
+                                        </div>
+                                        <p>${reply.message}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="reply-box">
+                                <textarea id="replyMessage" placeholder="Type your reply..."></textarea>
+                                <div class="reply-box-actions">
+                                    <button class="btn btn-sm btn-secondary" onclick="sendReply('${ticket.id}', false)">
+                                        💬 Send Reply
+                                    </button>
+                                    <button class="btn btn-sm btn-success" onclick="sendReply('${ticket.id}', true)">
+                                        ✅ Resolve & Reply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-sidebar">
+                        <div class="info-card">
+                            <h4>Ticket Info</h4>
+                            <div class="info-row">
+                                <label>Status</label>
+                                <select class="filter-select" id="ticketStatus" onchange="updateTicketStatus('${ticket.id}', this.value)" style="padding: 0.4rem;">
+                                    <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>Open</option>
+                                    <option value="in-progress" ${ticket.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="resolved" ${ticket.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                                    <option value="closed" ${ticket.status === 'closed' ? 'selected' : ''}>Closed</option>
+                                </select>
+                            </div>
+                            <div class="info-row">
+                                <label>Priority</label>
+                                <select class="filter-select" id="ticketPriority" onchange="updateTicketPriority('${ticket.id}', this.value)" style="padding: 0.4rem;">
+                                    <option value="low" ${ticket.priority === 'low' ? 'selected' : ''}>Low</option>
+                                    <option value="medium" ${ticket.priority === 'medium' ? 'selected' : ''}>Medium</option>
+                                    <option value="high" ${ticket.priority === 'high' ? 'selected' : ''}>High</option>
+                                </select>
+                            </div>
+                            <div class="info-row">
+                                <label>SLA Status</label>
+                                <span class="sla-indicator ${slaStatus.class}">${slaStatus.text}</span>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>User Info</h4>
+                            <div class="info-row">
+                                <label>Name</label>
+                                <span>${ticket.userName || 'Unknown'}</span>
+                            </div>
+                            <div class="info-row">
+                                <label>Email</label>
+                                <span style="font-size: 0.8rem;">${ticket.userEmail || 'N/A'}</span>
+                            </div>
+                            <div class="info-row">
+                                <label>School</label>
+                                <span>${ticket.school || 'N/A'}</span>
+                            </div>
+                            <div class="info-row">
+                                <label>Role</label>
+                                <span>${ticket.userRole || 'N/A'}</span>
+                            </div>
+                            ${ticket.studentId ? `
+                            <div class="info-row">
+                                <label>Student ID</label>
+                                <span>${ticket.studentId}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Timeline</h4>
+                            <div class="info-row">
+                                <label>Created</label>
+                                <span>${formatDateTime(created)}</span>
+                            </div>
+                            ${ticket.firstResponseAt ? `
+                            <div class="info-row">
+                                <label>First Response</label>
+                                <span>${formatDateTime(ticket.firstResponseAt?.toDate?.() || new Date(ticket.firstResponseAt))}</span>
+                            </div>
+                            ` : ''}
+                            ${ticket.resolvedAt ? `
+                            <div class="info-row">
+                                <label>Resolved</label>
+                                <span>${formatDateTime(ticket.resolvedAt?.toDate?.() || new Date(ticket.resolvedAt))}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeTicketModal() {
+            document.getElementById('ticketModal').classList.remove('active');
+        }
+
+        async function sendReply(ticketId, resolve) {
+            const message = document.getElementById('replyMessage').value.trim();
+            if (!message) {
+                showToast('Please enter a reply message', 'error');
+                return;
+            }
+
+            try {
+                const ticket = tickets.find(t => t.id === ticketId);
+                const replies = ticket.replies || [];
+                
+                replies.push({
+                    message,
+                    isAdmin: true,
+                    createdAt: new Date()
+                });
+
+                const updateData = {
+                    replies,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // First response
+                if (!ticket.firstResponseAt) {
+                    updateData.firstResponseAt = firebase.firestore.FieldValue.serverTimestamp();
+                }
+
+                // Resolve if needed
+                if (resolve) {
+                    updateData.status = 'resolved';
+                    updateData.resolvedAt = firebase.firestore.FieldValue.serverTimestamp();
+                } else if (ticket.status === 'open') {
+                    updateData.status = 'in-progress';
+                }
+
+                await db.collection('helpdesk_tickets').doc(ticketId).update(updateData);
+
+                showToast(resolve ? 'Ticket resolved!' : 'Reply sent!', 'success');
+                closeTicketModal();
+                await loadTickets();
+                updateDashboard();
+
+            } catch (error) {
+                console.error('Error sending reply:', error);
+                showToast('Failed to send reply', 'error');
+            }
+        }
+
+        async function updateTicketStatus(ticketId, status) {
+            try {
+                const updateData = {
+                    status,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (status === 'resolved' || status === 'closed') {
+                    updateData.resolvedAt = firebase.firestore.FieldValue.serverTimestamp();
+                }
+
+                await db.collection('helpdesk_tickets').doc(ticketId).update(updateData);
+                showToast('Status updated!', 'success');
+                await loadTickets();
+                updateDashboard();
+            } catch (error) {
+                showToast('Failed to update status', 'error');
+            }
+        }
+
+        async function updateTicketPriority(ticketId, priority) {
+            try {
+                await db.collection('helpdesk_tickets').doc(ticketId).update({
+                    priority,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast('Priority updated!', 'success');
+                await loadTickets();
+            } catch (error) {
+                showToast('Failed to update priority', 'error');
+            }
+        }
+
+        // ============================================
+        // FAQ MANAGEMENT
+        // ============================================
+        function renderFAQList() {
+            const container = document.getElementById('faqList');
+
+            if (faqs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span>📚</span>
+                        <h3>No FAQ articles yet</h3>
+                        <p>Click "Add Article" to create your first FAQ</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = faqs.map(faq => `
+                <div class="faq-item">
+                    <div class="faq-item-header" onclick="this.parentElement.classList.toggle('open')">
+                        <div class="faq-item-title">
+                            <span>❓</span>
+                            ${faq.question}
+                        </div>
+                        <div class="faq-item-actions" onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-secondary" onclick="editFAQ('${faq.id}')">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteFAQ('${faq.id}')">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="faq-item-content">
+                        <p style="white-space: pre-wrap;">${faq.answer}</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
+                            Category: ${faq.category} | Keywords: ${(faq.keywords || []).join(', ')}
+                        </p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showAddFAQModal() {
+            document.getElementById('faqModalTitle').textContent = '➕ Add FAQ Article';
+            document.getElementById('faqId').value = '';
+            document.getElementById('faqQuestion').value = '';
+            document.getElementById('faqAnswer').value = '';
+            document.getElementById('faqCategory').value = 'getting-started';
+            document.getElementById('faqKeywords').value = '';
+            document.getElementById('faqModal').classList.add('active');
+        }
+
+        function editFAQ(faqId) {
+            const faq = faqs.find(f => f.id === faqId);
+            if (!faq) return;
+
+            document.getElementById('faqModalTitle').textContent = '✏️ Edit FAQ Article';
+            document.getElementById('faqId').value = faq.id;
+            document.getElementById('faqQuestion').value = faq.question;
+            document.getElementById('faqAnswer').value = faq.answer;
+            document.getElementById('faqCategory').value = faq.category;
+            document.getElementById('faqKeywords').value = (faq.keywords || []).join(', ');
+            document.getElementById('faqModal').classList.add('active');
+        }
+
+        function closeFAQModal() {
+            document.getElementById('faqModal').classList.remove('active');
+        }
+
+        async function saveFAQ() {
+            const id = document.getElementById('faqId').value;
+            const question = document.getElementById('faqQuestion').value.trim();
+            const answer = document.getElementById('faqAnswer').value.trim();
+            const category = document.getElementById('faqCategory').value;
+            const keywords = document.getElementById('faqKeywords').value.split(',').map(k => k.trim()).filter(k => k);
+
+            if (!question || !answer) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                const data = {
+                    question,
+                    answer,
+                    category,
+                    keywords,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (id) {
+                    await db.collection('helpdesk_faqs').doc(id).update(data);
+                    showToast('FAQ updated!', 'success');
+                } else {
+                    data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('helpdesk_faqs').add(data);
+                    showToast('FAQ added!', 'success');
+                }
+
+                closeFAQModal();
+                await loadFAQs();
+            } catch (error) {
+                showToast('Failed to save FAQ', 'error');
+            }
+        }
+
+        async function deleteFAQ(faqId) {
+            if (!confirm('Are you sure you want to delete this FAQ?')) return;
+
+            try {
+                await db.collection('helpdesk_faqs').doc(faqId).delete();
+                showToast('FAQ deleted!', 'success');
+                await loadFAQs();
+            } catch (error) {
+                showToast('Failed to delete FAQ', 'error');
+            }
+        }
+
+        // ============================================
+        // UTILITIES
+        // ============================================
+        function formatStatus(status) {
+            const map = {
+                'open': 'Open',
+                'in-progress': 'In Progress',
+                'resolved': 'Resolved',
+                'closed': 'Closed'
+            };
+            return map[status] || status;
+        }
+
+        function formatDate(date) {
+            const now = new Date();
+            const diff = now - date;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            if (days === 0) return 'Today';
+            if (days === 1) return 'Yesterday';
+            if (days < 7) return `${days} days ago`;
+
+            return date.toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short'
+            });
+        }
+
+        function formatDateTime(date) {
+            return date.toLocaleString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getSLAStatus(ticket) {
+            if (ticket.status === 'resolved' || ticket.status === 'closed') {
+                return { class: 'ok', text: '✓ Resolved' };
+            }
+
+            const now = new Date();
+            const created = ticket.createdAt?.toDate?.() || new Date(ticket.createdAt);
+            const hoursSince = (now - created) / (1000 * 60 * 60);
+            const slaHours = 24;
+
+            if (hoursSince > slaHours && !ticket.firstResponseAt) {
+                return { class: 'breached', text: '⚠️ Breached' };
+            }
+
+            if (hoursSince > slaHours * 0.75) {
+                return { class: 'warning', text: '⏰ Due Soon' };
+            }
+
+            const remaining = Math.ceil(slaHours - hoursSince);
+            return { class: 'ok', text: `${remaining}h left` };
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+
+            icon.textContent = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            msg.textContent = message;
+            toast.className = `toast ${type} show`;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function copyWidgetCode() {
+            const code = `<!-- Avanti Help Widget -->
+<script src="https://your-domain.com/help-widget.js"><\/script>
+<script>
+    AvantiHelpWidget.init({
+        firebaseConfig: { /* Your Firebase Config */ },
+        position: 'bottom-right'
+    });
+<\/script>`;
+
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('Widget code copied!', 'success');
+            });
+        }
+
+        // Listen for real-time ticket updates
+        function setupRealtimeListeners() {
+            db.collection('helpdesk_tickets')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    tickets = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    renderTicketsTable();
+                    renderRecentTickets();
+                    updateDashboard();
+                });
+        }
+
+        // Initialize real-time listeners when app loads
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                setupRealtimeListeners();
+            }
+        });
+    </script>
+</body>
+</html>
