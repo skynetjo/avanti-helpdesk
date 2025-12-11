@@ -3,1304 +3,1063 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avanti Help Desk - Admin Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-    
+    <title>Avanti Help Desk - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --avanti-yellow: #F4B41A;
-            --avanti-orange: #E8A830;
-            --avanti-red: #C8342E;
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a24;
-            --bg-elevated: #222230;
-            --text-primary: #ffffff;
-            --text-secondary: #8a8a9a;
-            --text-muted: #5a5a6a;
-            --border-color: #2a2a3a;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'DM Sans', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: #0a0a0f;
+            color: #ffffff;
             min-height: 100vh;
         }
-
-        /* Login Screen */
-        .login-screen {
+        
+        /* Login Page */
+        .login-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a2e 100%);
+            padding: 20px;
         }
-
-        .login-card {
-            background: var(--bg-card);
-            padding: 3rem;
-            border-radius: 1.5rem;
+        
+        .login-box {
+            background: #12121a;
+            border-radius: 20px;
+            padding: 40px;
             width: 100%;
-            max-width: 400px;
-            border: 1px solid var(--border-color);
+            max-width: 420px;
+            border: 1px solid #2a2a3a;
         }
-
-        .login-logo {
+        
+        .login-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 30px;
         }
-
-        .login-logo h1 {
-            font-size: 1.5rem;
-            margin-top: 1rem;
-            background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        
+        .login-header .logo-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
         }
-
-        .login-logo span {
-            font-size: 3rem;
+        
+        .login-header h1 {
+            color: #F4B41A;
+            font-size: 28px;
+            margin-bottom: 8px;
         }
-
-        .login-logo p {
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
+        
+        .login-header p {
+            color: #8a8a9a;
+            font-size: 14px;
         }
-
+        
+        .login-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .login-error.show {
+            display: block;
+        }
+        
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
         }
-
+        
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+            color: #8a8a9a;
+            font-size: 13px;
+            margin-bottom: 8px;
         }
-
-        .form-group input, .form-group select, .form-group textarea {
+        
+        .form-group input {
             width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+            padding: 14px 16px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 15px;
             font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.2s;
+            transition: border-color 0.2s;
         }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        
+        .form-group input:focus {
             outline: none;
-            border-color: var(--avanti-yellow);
-            box-shadow: 0 0 0 3px rgba(244, 180, 26, 0.1);
+            border-color: #F4B41A;
         }
-
-        .btn {
-            padding: 0.875rem 1.5rem;
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #F4B41A, #E8A830);
             border: none;
-            border-radius: 0.75rem;
-            font-family: inherit;
-            font-size: 1rem;
+            border-radius: 10px;
+            color: #0a0a0f;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            font-family: inherit;
         }
-
-        .btn-primary {
-            background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
-            color: var(--bg-primary);
-            width: 100%;
-        }
-
-        .btn-primary:hover {
+        
+        .login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(244, 180, 26, 0.3);
         }
-
-        .btn-secondary {
-            background: var(--bg-elevated);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
+        
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
-
-        .btn-secondary:hover {
-            background: var(--bg-card);
-            border-color: var(--avanti-yellow);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        /* App Layout */
-        .app-container {
+        
+        /* Dashboard Layout */
+        .dashboard {
             display: none;
             min-height: 100vh;
         }
-
-        .app-container.active {
-            display: block;
+        
+        .dashboard.show {
+            display: flex;
         }
-
+        
         /* Sidebar */
         .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 260px;
-            height: 100vh;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border-color);
-            padding: 1.5rem;
+            background: #12121a;
+            border-right: 1px solid #2a2a3a;
+            padding: 24px 0;
             display: flex;
             flex-direction: column;
-            z-index: 100;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
         }
-
-        .sidebar-logo {
+        
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid #2a2a3a;
+            margin-bottom: 24px;
+        }
+        
+        .sidebar-header h2 {
+            color: #F4B41A;
+            font-size: 20px;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1.5rem;
+            gap: 10px;
         }
-
-        .sidebar-logo span {
-            font-size: 1.5rem;
-        }
-
-        .sidebar-logo h2 {
-            font-size: 1.1rem;
-            background: linear-gradient(90deg, var(--avanti-yellow), var(--avanti-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-menu {
+        
+        .sidebar-nav {
             flex: 1;
         }
-
+        
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.875rem 1rem;
-            border-radius: 0.75rem;
-            color: var(--text-secondary);
+            gap: 12px;
+            padding: 14px 24px;
+            color: #8a8a9a;
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 0.25rem;
             border: none;
-            background: transparent;
+            background: none;
             width: 100%;
-            font-family: inherit;
-            font-size: 0.95rem;
             text-align: left;
+            font-size: 15px;
+            font-family: inherit;
         }
-
+        
         .nav-item:hover {
-            background: var(--bg-elevated);
-            color: var(--text-primary);
+            background: rgba(244, 180, 26, 0.1);
+            color: #F4B41A;
         }
-
+        
         .nav-item.active {
-            background: linear-gradient(90deg, rgba(244, 180, 26, 0.1), rgba(232, 168, 48, 0.05));
-            color: var(--avanti-yellow);
-            border: 1px solid rgba(244, 180, 26, 0.2);
+            background: rgba(244, 180, 26, 0.15);
+            color: #F4B41A;
+            border-left: 3px solid #F4B41A;
         }
-
-        .nav-item span:first-child {
-            font-size: 1.1rem;
-            width: 1.5rem;
-            text-align: center;
+        
+        .nav-item .icon {
+            font-size: 18px;
         }
-
-        .nav-badge {
+        
+        .nav-item .badge {
             margin-left: auto;
-            background: var(--danger);
+            background: #ef4444;
             color: white;
-            font-size: 0.7rem;
-            padding: 0.15rem 0.5rem;
-            border-radius: 1rem;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
             font-weight: 600;
         }
-
+        
         .sidebar-footer {
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
+            padding: 20px 24px;
+            border-top: 1px solid #2a2a3a;
         }
-
+        
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            background: var(--bg-elevated);
-            border-radius: 0.75rem;
-            margin-bottom: 0.75rem;
+            gap: 12px;
+            margin-bottom: 16px;
         }
-
+        
         .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--avanti-yellow), var(--avanti-orange));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: var(--bg-primary);
-        }
-
-        .user-details h4 {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .user-details p {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            padding: 2rem;
-            min-height: 100vh;
-        }
-
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-        }
-
-        .page-header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
-        .page-header p {
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            transition: all 0.2s;
-        }
-
-        .stat-card:hover {
-            border-color: var(--avanti-yellow);
-            transform: translateY(-2px);
-        }
-
-        .stat-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .stat-icon {
             width: 40px;
             height: 40px;
-            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #F4B41A, #E8A830);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .stat-icon.yellow { background: rgba(244, 180, 26, 0.1); }
-        .stat-icon.green { background: rgba(16, 185, 129, 0.1); }
-        .stat-icon.red { background: rgba(239, 68, 68, 0.1); }
-        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); }
-
-        .stat-value {
-            font-family: 'Space Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 0.25rem;
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-header h3 {
-            font-size: 1.1rem;
             font-weight: 600;
+            color: #0a0a0f;
         }
-
-        .card-body {
-            padding: 1.5rem;
+        
+        .user-details h4 {
+            font-size: 14px;
+            color: #fff;
         }
-
-        /* Filters */
-        .filter-group {
+        
+        .user-details p {
+            font-size: 12px;
+            color: #8a8a9a;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            color: #8a8a9a;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .logout-btn:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 28px;
+            color: #fff;
+        }
+        
+        .page-header p {
+            color: #8a8a9a;
+            margin-top: 4px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
+            font-family: inherit;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #F4B41A, #E8A830);
+            color: #0a0a0f;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(244, 180, 26, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #1a1a24;
+            border: 1px solid #2a2a3a !important;
+            color: #fff;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #F4B41A !important;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            padding: 24px;
+        }
+        
+        .stat-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-card .label {
+            color: #8a8a9a;
+            font-size: 14px;
+        }
+        
+        .stat-card.open .value { color: #ef4444; }
+        .stat-card.progress .value { color: #f59e0b; }
+        .stat-card.resolved .value { color: #10b981; }
+        
+        /* Filters */
+        .filters-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
-
-        .filter-select {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+        
+        .filter-input {
+            padding: 10px 16px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            min-width: 200px;
             font-family: inherit;
-            font-size: 0.9rem;
-            cursor: pointer;
         }
-
-        .filter-select:focus {
+        
+        .filter-input:focus {
             outline: none;
-            border-color: var(--avanti-yellow);
+            border-color: #F4B41A;
         }
-
-        .search-input {
-            padding: 0.5rem 1rem;
-            padding-left: 2.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+        
+        .filter-select {
+            padding: 10px 16px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
             font-family: inherit;
-            font-size: 0.9rem;
-            width: 250px;
         }
-
-        .search-wrapper {
-            position: relative;
-        }
-
-        .search-wrapper::before {
-            content: "🔍";
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.9rem;
-        }
-
+        
         /* Tickets Table */
         .tickets-table {
-            width: 100%;
-            border-collapse: collapse;
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            overflow: hidden;
         }
-
-        .tickets-table th,
-        .tickets-table td {
-            padding: 1rem 1.25rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 120px 1fr 150px 120px 100px 100px;
+            padding: 16px 20px;
+            background: #1a1a24;
+            border-bottom: 1px solid #2a2a3a;
+            font-weight: 600;
+            color: #8a8a9a;
+            font-size: 13px;
         }
-
-        .tickets-table th {
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .tickets-table tr:hover {
-            background: var(--bg-elevated);
-        }
-
-        .tickets-table tr {
+        
+        .ticket-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 150px 120px 100px 100px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #2a2a3a;
+            align-items: center;
             cursor: pointer;
             transition: background 0.2s;
         }
-
+        
+        .ticket-row:hover {
+            background: rgba(244, 180, 26, 0.05);
+        }
+        
+        .ticket-row:last-child {
+            border-bottom: none;
+        }
+        
         .ticket-id {
             font-family: 'Space Mono', monospace;
-            color: var(--avanti-yellow);
-            font-size: 0.9rem;
+            color: #F4B41A;
+            font-size: 13px;
         }
-
+        
         .ticket-subject {
             font-weight: 500;
         }
-
-        .ticket-subject small {
-            display: block;
-            color: var(--text-muted);
-            font-weight: 400;
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
+        
+        .ticket-user {
+            color: #8a8a9a;
+            font-size: 13px;
         }
-
-        /* Status Badges */
+        
+        .ticket-date {
+            color: #8a8a9a;
+            font-size: 13px;
+        }
+        
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.35rem 0.75rem;
-            border-radius: 2rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .status-badge.open {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .status-badge.in-progress {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .status-badge.resolved {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .status-badge.closed {
-            background: rgba(107, 114, 128, 0.1);
-            color: #6b7280;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
-        }
-
-        /* Priority Badges */
-        .priority-badge {
-            padding: 0.25rem 0.6rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: 600;
-            text-transform: uppercase;
         }
-
-        .priority-badge.high {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
+        
+        .status-badge.open {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
         }
-
-        .priority-badge.medium {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
+        
+        .status-badge.in-progress {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
         }
-
-        .priority-badge.low {
-            background: rgba(107, 114, 128, 0.1);
-            color: #6b7280;
+        
+        .status-badge.resolved {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
         }
-
+        
+        .action-btn {
+            padding: 6px 12px;
+            background: #2a2a3a;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .action-btn:hover {
+            background: #F4B41A;
+            color: #0a0a0f;
+        }
+        
         /* Modal */
-        .modal {
-            display: none;
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(4px);
+            padding: 20px;
         }
-
-        .modal.active {
+        
+        .modal-overlay.show {
             display: flex;
         }
-
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 1rem;
+        
+        .modal {
+            background: #12121a;
+            border-radius: 20px;
             width: 100%;
             max-width: 700px;
             max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid var(--border-color);
+            border: 1px solid #2a2a3a;
         }
-
+        
         .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            position: sticky;
-            top: 0;
-            background: var(--bg-card);
-            z-index: 10;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid #2a2a3a;
         }
-
+        
         .modal-header h2 {
-            font-size: 1.25rem;
+            font-size: 20px;
+            color: #fff;
         }
-
+        
         .modal-close {
-            background: none;
+            width: 36px;
+            height: 36px;
+            background: #2a2a3a;
             border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            padding: 0.5rem;
-            line-height: 1;
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        /* Ticket Detail */
-        .ticket-detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .ticket-detail-item {
-            background: var(--bg-secondary);
-            padding: 1rem;
-            border-radius: 0.75rem;
-        }
-
-        .ticket-detail-item label {
-            display: block;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .ticket-detail-item span {
-            font-weight: 500;
-        }
-
-        .ticket-description {
-            background: var(--bg-secondary);
-            padding: 1.25rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .ticket-description h4 {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-        }
-
-        .ticket-description p {
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        /* Screenshot Display */
-        .ticket-screenshot {
-            background: var(--bg-secondary);
-            padding: 1.25rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .ticket-screenshot h4 {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-        }
-
-        .ticket-screenshot img {
-            max-width: 100%;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .ticket-screenshot img:hover {
-            transform: scale(1.02);
-        }
-
-        .ticket-screenshot a {
-            color: var(--avanti-yellow);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .ticket-screenshot a:hover {
-            text-decoration: underline;
-        }
-
-        /* Conversation */
-        .conversation-section h4 {
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
-
-        .conversation-messages {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-        }
-
-        .message {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            flex-shrink: 0;
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
         }
-
-        .message-avatar.user {
-            background: var(--bg-elevated);
+        
+        .modal-close:hover {
+            background: #ef4444;
         }
-
-        .message-avatar.admin {
-            background: linear-gradient(135deg, var(--avanti-yellow), var(--avanti-orange));
-            color: var(--bg-primary);
+        
+        .modal-body {
+            padding: 24px;
         }
-
-        .message-content {
-            flex: 1;
+        
+        .detail-group {
+            margin-bottom: 20px;
         }
-
-        .message-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.25rem;
+        
+        .detail-label {
+            color: #8a8a9a;
+            font-size: 12px;
+            margin-bottom: 6px;
         }
-
-        .message-header strong {
-            font-size: 0.9rem;
+        
+        .detail-value {
+            color: #fff;
+            font-size: 15px;
         }
-
-        .message-header span {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+        
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-
-        .message-text {
-            background: var(--bg-secondary);
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            font-size: 0.95rem;
-            line-height: 1.5;
+        
+        .description-box {
+            background: #1a1a24;
+            border-radius: 10px;
+            padding: 16px;
+            line-height: 1.6;
         }
-
-        .reply-box {
-            display: flex;
-            gap: 0.75rem;
+        
+        .screenshot-section {
+            margin-top: 20px;
         }
-
-        .reply-box textarea {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+        
+        .screenshot-section img {
+            max-width: 100%;
+            border-radius: 10px;
+            border: 1px solid #2a2a3a;
+            cursor: pointer;
+        }
+        
+        .reply-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #2a2a3a;
+        }
+        
+        .reply-section h3 {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        
+        .reply-input {
+            width: 100%;
+            padding: 14px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
             font-family: inherit;
-            resize: none;
-            min-height: 80px;
+            margin-bottom: 12px;
         }
-
-        .reply-box textarea:focus {
+        
+        .reply-input:focus {
             outline: none;
-            border-color: var(--avanti-yellow);
+            border-color: #F4B41A;
         }
-
+        
         .reply-actions {
             display: flex;
+            gap: 12px;
+        }
+        
+        .existing-replies {
+            margin-top: 20px;
+        }
+        
+        .reply-item {
+            background: #1a1a24;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .reply-item.admin {
+            border-left: 3px solid #F4B41A;
+        }
+        
+        .reply-meta {
+            font-size: 12px;
+            color: #8a8a9a;
+            margin-bottom: 6px;
+        }
+        
+        /* FAQ Section */
+        .faq-grid {
+            display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 12px;
         }
-
-        /* Page Sections */
-        .page-section {
-            display: none;
+        
+        .faq-card {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
-
-        .page-section.active {
-            display: block;
+        
+        .faq-card .icon {
+            color: #F4B41A;
+            font-size: 24px;
         }
-
+        
+        .faq-card .content {
+            flex: 1;
+        }
+        
+        .faq-card h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        
+        .faq-card p {
+            color: #8a8a9a;
+            font-size: 13px;
+        }
+        
+        .faq-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .faq-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .faq-btn.edit {
+            background: #2a2a3a;
+            color: #F4B41A;
+        }
+        
+        .faq-btn.delete {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        
+        .faq-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Settings */
+        .settings-section {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .settings-section h3 {
+            margin-bottom: 16px;
+            font-size: 18px;
+            color: #F4B41A;
+        }
+        
+        .settings-section p {
+            color: #8a8a9a;
+            margin-bottom: 16px;
+        }
+        
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-secondary);
+            padding: 60px 20px;
+            color: #5a5a6a;
         }
-
-        .empty-state span {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 1rem;
+        
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
         }
-
+        
         .empty-state h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
+            color: #8a8a9a;
+            margin-bottom: 8px;
         }
-
-        /* FAQ Management */
-        .faq-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            margin-bottom: 1rem;
-            overflow: hidden;
-        }
-
-        .faq-item-header {
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .faq-item-header:hover {
-            background: var(--bg-elevated);
-        }
-
-        .faq-item-title {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 500;
-        }
-
-        .faq-item-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .faq-item-content {
-            display: none;
-            padding: 1rem 1.25rem;
-            border-top: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-        }
-
-        .faq-item.open .faq-item-content {
-            display: block;
-        }
-
-        /* Settings */
-        .settings-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .settings-section h3 {
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transform: translateY(150%);
-            transition: transform 0.3s ease;
-            z-index: 2000;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-        }
-
+        
         /* Loading */
-        .loading-spinner {
+        .loading {
+            display: inline-block;
             width: 20px;
             height: 20px;
-            border: 2px solid var(--border-color);
-            border-top-color: var(--avanti-yellow);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
-
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
+        
         /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                padding: 1rem;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-
+        @media (max-width: 1200px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-
-            .ticket-detail-grid {
-                grid-template-columns: 1fr;
+        }
+        
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+            }
+            .table-header,
+            .ticket-row {
+                grid-template-columns: 100px 1fr 120px 100px;
+            }
+            .table-header > *:nth-child(5),
+            .table-header > *:nth-child(6),
+            .ticket-row > *:nth-child(5),
+            .ticket-row > *:nth-child(6) {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div class="login-screen" id="loginScreen">
-        <div class="login-card">
-            <div class="login-logo">
-                <span>🎫</span>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="logo-icon">🎫</div>
                 <h1>Avanti Help Desk</h1>
                 <p>Admin Dashboard</p>
             </div>
             
-            <div id="loginError" class="error-message" style="display: none;"></div>
+            <div class="login-error" id="loginError"></div>
             
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="loginEmail" placeholder="admin@avantifellows.org" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn btn-primary" id="loginBtn">
-                    Login to Dashboard
-                </button>
-            </form>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail" placeholder="your.email@avantifellows.org">
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            
+            <button class="login-btn" id="loginBtn" onclick="AdminApp.login()">
+                Login to Dashboard
+            </button>
         </div>
     </div>
-
-    <!-- Main App -->
-    <div class="app-container" id="appContainer">
+    
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
         <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-logo">
-                <span>🎫</span>
-                <h2>Avanti Help Desk</h2>
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🎫 Avanti Help Desk</h2>
             </div>
             
-            <div class="nav-menu">
-                <button class="nav-item active" onclick="showPage('dashboard')">
-                    <span>📊</span> Dashboard
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-page="dashboard" onclick="AdminApp.showPage('dashboard')">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
                 </button>
-                <button class="nav-item" onclick="showPage('tickets')">
-                    <span>🎫</span> All Tickets
-                    <span class="nav-badge" id="openTicketsBadge">0</span>
+                <button class="nav-item" data-page="tickets" onclick="AdminApp.showPage('tickets')">
+                    <span class="icon">🎫</span>
+                    <span>All Tickets</span>
+                    <span class="badge" id="ticketsBadge" style="display:none;">0</span>
                 </button>
-                <button class="nav-item" onclick="showPage('faqs')">
-                    <span>📚</span> FAQ Articles
+                <button class="nav-item" data-page="faqs" onclick="AdminApp.showPage('faqs')">
+                    <span class="icon">📚</span>
+                    <span>FAQ Articles</span>
                 </button>
-                <button class="nav-item" onclick="showPage('settings')">
-                    <span>⚙️</span> Settings
+                <button class="nav-item" data-page="settings" onclick="AdminApp.showPage('settings')">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
                 </button>
-            </div>
+            </nav>
             
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">A</div>
                     <div class="user-details">
                         <h4 id="userName">Admin</h4>
-                        <p id="userEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="81e0e5ece8efc1e0f7e0eff5e8e7e4ededeef6f2afeef3e6">[email&#160;protected]</a></p>
+                        <p id="userEmailDisplay">admin</p>
                     </div>
                 </div>
-                <button class="btn btn-secondary" style="width: 100%;" onclick="handleLogout()">
-                    Logout
+                <button class="logout-btn" onclick="AdminApp.logout()">
+                    🚪 Logout
                 </button>
             </div>
-        </nav>
-
+        </div>
+        
         <!-- Main Content -->
-        <main class="main-content">
+        <div class="main-content">
             <!-- Dashboard Page -->
-            <section class="page-section active" id="dashboardPage">
+            <div class="page" id="dashboardPage">
                 <div class="page-header">
                     <div>
-                        <h1>📊 Dashboard</h1>
-                        <p>Overview of your help desk</p>
+                        <h1>Dashboard</h1>
+                        <p>Overview of support tickets</p>
                     </div>
-                    <button class="btn btn-primary" onclick="showWidgetInstructions()">
-                        📋 Widget Setup Guide
-                    </button>
                 </div>
-
+                
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon yellow">🎫</div>
-                        </div>
-                        <div class="stat-value" id="totalTickets">0</div>
-                        <div class="stat-label">Total Tickets</div>
+                        <div class="icon">📊</div>
+                        <div class="value" id="statTotal">0</div>
+                        <div class="label">Total Tickets</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon red">🔴</div>
-                        </div>
-                        <div class="stat-value" id="openTickets">0</div>
-                        <div class="stat-label">Open Tickets</div>
+                    <div class="stat-card open">
+                        <div class="icon">🔴</div>
+                        <div class="value" id="statOpen">0</div>
+                        <div class="label">Open</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon blue">🔵</div>
-                        </div>
-                        <div class="stat-value" id="inProgressTickets">0</div>
-                        <div class="stat-label">In Progress</div>
+                    <div class="stat-card progress">
+                        <div class="icon">🟡</div>
+                        <div class="value" id="statProgress">0</div>
+                        <div class="label">In Progress</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon green">✅</div>
-                        </div>
-                        <div class="stat-value" id="resolvedTickets">0</div>
-                        <div class="stat-label">Resolved</div>
+                    <div class="stat-card resolved">
+                        <div class="icon">🟢</div>
+                        <div class="value" id="statResolved">0</div>
+                        <div class="label">Resolved</div>
                     </div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3>🔥 Recent Tickets</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="showPage('tickets')">View All</button>
+                
+                <h2 style="margin-bottom: 20px;">Recent Tickets</h2>
+                <div class="tickets-table" id="recentTicketsTable">
+                    <div class="table-header">
+                        <div>Ticket ID</div>
+                        <div>Subject</div>
+                        <div>User</div>
+                        <div>School</div>
+                        <div>Status</div>
+                        <div>Action</div>
                     </div>
-                    <div class="card-body" style="padding: 0;">
-                        <table class="tickets-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Subject</th>
-                                    <th>User</th>
-                                    <th>Status</th>
-                                    <th>Created</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentTicketsBody">
-                                <tr>
-                                    <td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <div id="recentTicketsList"></div>
                 </div>
-            </section>
-
+            </div>
+            
             <!-- Tickets Page -->
-            <section class="page-section" id="ticketsPage">
+            <div class="page" id="ticketsPage" style="display: none;">
                 <div class="page-header">
                     <div>
-                        <h1>🎫 All Tickets</h1>
-                        <p>Manage support tickets from users</p>
+                        <h1>All Tickets</h1>
+                        <p>Manage support tickets</p>
                     </div>
-                    <div class="filter-group">
-                        <select class="filter-select" id="statusFilter" onchange="filterTickets()">
-                            <option value="all">All Status</option>
-                            <option value="open">Open</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="resolved">Resolved</option>
-                            <option value="closed">Closed</option>
-                        </select>
-                        <select class="filter-select" id="schoolFilter" onchange="filterTickets()">
-                            <option value="all">All Schools</option>
-                            <option value="CoE Barwani">CoE Barwani</option>
-                            <option value="CoE Cuttack">CoE Cuttack</option>
-                            <option value="JNV Dhar">JNV Dhar</option>
-                            <option value="JNV Khargone">JNV Khargone</option>
-                            <option value="JNV Narsinghpur">JNV Narsinghpur</option>
-                            <option value="EMRS Alirajpur">EMRS Alirajpur</option>
-                        </select>
-                        <div class="search-wrapper">
-                            <input type="text" class="search-input" placeholder="Search tickets..." id="searchInput" oninput="filterTickets()">
-                        </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="AdminApp.exportTickets()">
+                            📥 Export CSV
+                        </button>
                     </div>
                 </div>
-
-                <div class="card">
-                    <div class="card-body" style="padding: 0;">
-                        <table class="tickets-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Subject</th>
-                                    <th>User</th>
-                                    <th>School</th>
-                                    <th>Status</th>
-                                    <th>Priority</th>
-                                    <th>Created</th>
-                                </tr>
-                            </thead>
-                            <tbody id="allTicketsBody">
-                                <tr>
-                                    <td colspan="7" style="text-align: center; padding: 2rem;">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                
+                <div class="filters-bar">
+                    <input type="text" class="filter-input" id="searchInput" placeholder="🔍 Search tickets..." oninput="AdminApp.filterTickets()">
+                    <select class="filter-select" id="statusFilter" onchange="AdminApp.filterTickets()">
+                        <option value="">All Status</option>
+                        <option value="open">Open</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                    <select class="filter-select" id="schoolFilter" onchange="AdminApp.filterTickets()">
+                        <option value="">All Schools</option>
+                        <option value="CoE Barwani">CoE Barwani</option>
+                        <option value="CoE Cuttack">CoE Cuttack</option>
+                        <option value="JNV Dhar">JNV Dhar</option>
+                        <option value="JNV Khargone">JNV Khargone</option>
+                        <option value="JNV Narsinghpur">JNV Narsinghpur</option>
+                        <option value="EMRS Alirajpur">EMRS Alirajpur</option>
+                    </select>
                 </div>
-            </section>
-
+                
+                <div class="tickets-table">
+                    <div class="table-header">
+                        <div>Ticket ID</div>
+                        <div>Subject</div>
+                        <div>User</div>
+                        <div>School</div>
+                        <div>Status</div>
+                        <div>Action</div>
+                    </div>
+                    <div id="allTicketsList"></div>
+                </div>
+            </div>
+            
             <!-- FAQs Page -->
-            <section class="page-section" id="faqsPage">
+            <div class="page" id="faqsPage" style="display: none;">
                 <div class="page-header">
                     <div>
-                        <h1>📚 FAQ Articles</h1>
-                        <p>Manage help articles shown to users in the widget</p>
+                        <h1>FAQ Articles</h1>
+                        <p>Manage help articles shown to users</p>
                     </div>
-                    <button class="btn btn-primary" onclick="showAddFAQModal()">
-                        ➕ Add Article
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="AdminApp.showAddFAQ()">
+                            + Add Article
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="faq-grid" id="faqsList"></div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div class="page" id="settingsPage" style="display: none;">
+                <div class="page-header">
+                    <div>
+                        <h1>Settings</h1>
+                        <p>Configure the help desk</p>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>📚 Load Default FAQs</h3>
+                    <p>Load pre-configured FAQ articles for the Curriculum Tracker.</p>
+                    <button class="btn btn-primary" onclick="AdminApp.loadDefaultFAQs()">
+                        Load All Default FAQs
                     </button>
                 </div>
-
-                <div id="faqList">
-                    <div class="empty-state">
-                        <span>📚</span>
-                        <h3>Loading FAQs...</h3>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Settings Page -->
-            <section class="page-section" id="settingsPage">
-                <div class="page-header">
-                    <div>
-                        <h1>⚙️ Settings</h1>
-                        <p>Configure your help desk</p>
-                    </div>
-                </div>
-
+                
                 <div class="settings-section">
-                    <h3>🔧 Quick Actions</h3>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="seedDefaultFAQs()">
-                            📥 Load All Default FAQs
-                        </button>
-                        <button class="btn btn-secondary" onclick="exportTickets()">
-                            📊 Export Tickets to CSV
-                        </button>
-                    </div>
-                    <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
-                        Click "Load All Default FAQs" to populate the FAQ database with 100+ questions from the Curriculum Tracker FAQ document.
-                    </p>
+                    <h3>🗑️ Clear All FAQs</h3>
+                    <p>Remove all FAQ articles. This cannot be undone.</p>
+                    <button class="btn btn-secondary" style="border-color: #ef4444 !important; color: #ef4444;" onclick="AdminApp.clearAllFAQs()">
+                        Clear All FAQs
+                    </button>
                 </div>
-
-                <div class="settings-section">
-                    <h3>📋 Widget Integration</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-                        The help widget is already integrated into the Curriculum Tracker. Users can access it by clicking the yellow help button on the bottom-right corner.
-                    </p>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Ticket Detail Modal -->
-    <div class="modal" id="ticketModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="ticketModalTitle">Ticket Details</h2>
-                <button class="modal-close" onclick="closeTicketModal()">×</button>
-            </div>
-            <div class="modal-body" id="ticketModalBody">
-                <!-- Populated by JS -->
             </div>
         </div>
     </div>
-
-    <!-- FAQ Modal -->
-    <div class="modal" id="faqModal">
-        <div class="modal-content" style="max-width: 500px;">
+    
+    <!-- Ticket Modal -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="modal">
             <div class="modal-header">
-                <h2 id="faqModalTitle">Add FAQ Article</h2>
-                <button class="modal-close" onclick="closeFAQModal()">×</button>
+                <h2 id="modalTitle">Ticket Details</h2>
+                <button class="modal-close" onclick="AdminApp.closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+    
+    <!-- FAQ Modal -->
+    <div class="modal-overlay" id="faqModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="faqModalTitle">Add FAQ</h2>
+                <button class="modal-close" onclick="AdminApp.closeFAQModal()">×</button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="faqId">
                 <div class="form-group">
-                    <label>Question *</label>
-                    <input type="text" id="faqQuestion" placeholder="What is the Curriculum Tracker?">
+                    <label>Question</label>
+                    <input type="text" id="faqQuestion" placeholder="Enter the question">
                 </div>
                 <div class="form-group">
-                    <label>Answer *</label>
-                    <textarea id="faqAnswer" rows="5" placeholder="Provide a detailed answer..."></textarea>
+                    <label>Answer</label>
+                    <textarea class="reply-input" id="faqAnswer" placeholder="Enter the answer"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Category</label>
-                    <select id="faqCategory">
+                    <select class="filter-select" id="faqCategory" style="width: 100%;">
                         <option value="getting-started">Getting Started</option>
-                        <option value="login">Login & Authentication</option>
+                        <option value="login">Login</option>
                         <option value="attendance">Attendance</option>
-                        <option value="curriculum">Curriculum & Progress</option>
-                        <option value="students">Student Features</option>
-                        <option value="feedback">Teacher Feedback</option>
-                        <option value="assets">Assets & Library</option>
-                        <option value="analytics">Analytics & Reports</option>
-                        <option value="mobile">Mobile App (PWA)</option>
-                        <option value="admin">Admin & Management</option>
-                        <option value="troubleshooting">Troubleshooting</option>
+                        <option value="curriculum">Curriculum</option>
+                        <option value="students">Students</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="technical">Technical</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Keywords (comma separated)</label>
-                    <input type="text" id="faqKeywords" placeholder="login, password, access, forgot">
+                    <label>Keywords (comma-separated)</label>
+                    <input type="text" id="faqKeywords" placeholder="login, password, reset">
                 </div>
-                <button class="btn btn-primary" onclick="saveFAQ()">Save Article</button>
+                <button class="btn btn-primary" style="width: 100%;" onclick="AdminApp.saveFAQ()">
+                    Save FAQ
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Instructions Modal -->
-    <div class="modal" id="instructionsModal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h2>📋 Widget Setup Guide</h2>
-                <button class="modal-close" onclick="closeInstructionsModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 1rem;">
-                    <h4 style="margin-bottom: 0.5rem;">✅ Widget Status: Active</h4>
-                    <p style="color: var(--text-secondary);">The help widget is already integrated into the Curriculum Tracker. No additional setup required!</p>
-                </div>
-                
-                <h4 style="margin-bottom: 0.75rem;">How it works:</h4>
-                <ol style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.25rem;">
-                    <li>Users see a yellow help button on the Curriculum Tracker</li>
-                    <li>They can search FAQs or raise support tickets</li>
-                    <li>Tickets appear in this dashboard for you to manage</li>
-                    <li>Users can track their ticket status in the widget</li>
-                </ol>
-                
-                <h4 style="margin: 1.5rem 0 0.75rem;">Key Features:</h4>
-                <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.25rem;">
-                    <li>Smart FAQ search with keyword matching</li>
-                    <li>Students only need Name + Student ID (no email required)</li>
-                    <li>Screenshot upload support</li>
-                    <li>Ticket tracking across sessions</li>
-                    <li>Real-time status updates</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <span id="toastIcon">✅</span>
-        <span id="toastMessage">Success!</span>
-    </div>
-
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        // Firebase Configuration - Same as Curriculum Tracker
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Firebase Config - Same as Curriculum Tracker
         const firebaseConfig = {
             apiKey: "AIzaSyDyyGAHNJvhuint86USW36eBJKfw_u3AcA",
             authDomain: "curriculum-dbb10.firebaseapp.com",
@@ -1309,751 +1068,426 @@
             messagingSenderId: "706387632109",
             appId: "1:706387632109:web:06c78a304fdbdc12f391e4"
         };
-
-        // Initialize Firebase
+        
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const storage = firebase.storage();
-
-        // Global state
-        let tickets = [];
-        let faqs = [];
-        let currentUser = null;
-
-        // Auth state observer
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('appContainer').classList.add('active');
-                document.getElementById('userName').textContent = user.displayName || 'Admin';
-                document.getElementById('userEmail').textContent = user.email;
-                document.getElementById('userAvatar').textContent = (user.displayName || user.email)[0].toUpperCase();
-                initializeDashboard();
-            } else {
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.getElementById('appContainer').classList.remove('active');
-            }
-        });
-
-        // Login handler
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const btn = document.getElementById('loginBtn');
-            const error = document.getElementById('loginError');
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
-            error.style.display = 'none';
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-            } catch (err) {
-                error.textContent = err.message;
-                error.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'Login to Dashboard';
-            }
-        }
-
-        // Logout handler
-        function handleLogout() {
-            auth.signOut();
-        }
-
-        // Initialize dashboard
-        function initializeDashboard() {
-            loadTickets();
-            loadFAQs();
-        }
-
-        // Load tickets with real-time updates
-        function loadTickets() {
-            db.collection('helpdesk_tickets')
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(snapshot => {
-                    tickets = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
-                    updateDashboard();
-                    renderTicketsTable();
-                    renderRecentTickets();
+        
+        const AdminApp = {
+            tickets: [],
+            faqs: [],
+            editingFaqId: null,
+            
+            init: function() {
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        this.showDashboard(user);
+                    } else {
+                        this.showLogin();
+                    }
                 });
-        }
-
-        // Load FAQs with real-time updates
-        function loadFAQs() {
-            db.collection('helpdesk_faqs')
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(snapshot => {
-                    faqs = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
-                    renderFAQList();
+            },
+            
+            login: async function() {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const btn = document.getElementById('loginBtn');
+                const error = document.getElementById('loginError');
+                
+                if (!email || !password) {
+                    error.textContent = 'Please enter email and password';
+                    error.classList.add('show');
+                    return;
+                }
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loading"></span>';
+                error.classList.remove('show');
+                
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } catch (err) {
+                    error.textContent = err.message;
+                    error.classList.add('show');
+                    btn.disabled = false;
+                    btn.textContent = 'Login to Dashboard';
+                }
+            },
+            
+            logout: async function() {
+                await auth.signOut();
+            },
+            
+            showLogin: function() {
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('dashboard').classList.remove('show');
+            },
+            
+            showDashboard: function(user) {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboard').classList.add('show');
+                
+                document.getElementById('userName').textContent = user.email.split('@')[0];
+                document.getElementById('userEmailDisplay').textContent = user.email;
+                document.getElementById('userAvatar').textContent = user.email[0].toUpperCase();
+                
+                this.loadTickets();
+                this.loadFAQs();
+            },
+            
+            showPage: function(page) {
+                document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                
+                document.getElementById(page + 'Page').style.display = 'block';
+                document.querySelector('.nav-item[data-page="' + page + '"]').classList.add('active');
+            },
+            
+            loadTickets: function() {
+                db.collection('helpdesk_tickets')
+                    .orderBy('createdAt', 'desc')
+                    .onSnapshot(snap => {
+                        this.tickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        this.renderStats();
+                        this.renderTickets();
+                    });
+            },
+            
+            renderStats: function() {
+                const total = this.tickets.length;
+                const open = this.tickets.filter(t => t.status === 'open').length;
+                const progress = this.tickets.filter(t => t.status === 'in-progress').length;
+                const resolved = this.tickets.filter(t => t.status === 'resolved').length;
+                
+                document.getElementById('statTotal').textContent = total;
+                document.getElementById('statOpen').textContent = open;
+                document.getElementById('statProgress').textContent = progress;
+                document.getElementById('statResolved').textContent = resolved;
+                
+                const badge = document.getElementById('ticketsBadge');
+                if (open > 0) {
+                    badge.textContent = open;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            },
+            
+            renderTickets: function() {
+                const recent = document.getElementById('recentTicketsList');
+                const all = document.getElementById('allTicketsList');
+                
+                if (this.tickets.length === 0) {
+                    const empty = '<div class="empty-state"><div class="icon">🎫</div><h3>No tickets yet</h3><p>Tickets will appear here when users submit them.</p></div>';
+                    recent.innerHTML = empty;
+                    all.innerHTML = empty;
+                    return;
+                }
+                
+                const renderRow = (t) => {
+                    return '<div class="ticket-row" onclick="AdminApp.viewTicket(\'' + t.id + '\')">' +
+                        '<div class="ticket-id">#' + (t.ticketId || t.id.slice(0,8)) + '</div>' +
+                        '<div class="ticket-subject">' + t.subject + '</div>' +
+                        '<div class="ticket-user">' + t.userName + '</div>' +
+                        '<div class="ticket-date">' + (t.school || 'N/A') + '</div>' +
+                        '<div><span class="status-badge ' + t.status + '">' + t.status.replace('-', ' ') + '</span></div>' +
+                        '<div><button class="action-btn">View</button></div>' +
+                    '</div>';
+                };
+                
+                recent.innerHTML = this.tickets.slice(0, 5).map(renderRow).join('');
+                all.innerHTML = this.tickets.map(renderRow).join('');
+            },
+            
+            filterTickets: function() {
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                const status = document.getElementById('statusFilter').value;
+                const school = document.getElementById('schoolFilter').value;
+                
+                const filtered = this.tickets.filter(t => {
+                    const matchSearch = !search || 
+                        (t.subject && t.subject.toLowerCase().includes(search)) ||
+                        (t.userName && t.userName.toLowerCase().includes(search)) ||
+                        (t.ticketId && t.ticketId.toLowerCase().includes(search));
+                    const matchStatus = !status || t.status === status;
+                    const matchSchool = !school || t.school === school;
+                    return matchSearch && matchStatus && matchSchool;
                 });
-        }
-
-        // Update dashboard stats
-        function updateDashboard() {
-            const total = tickets.length;
-            const open = tickets.filter(t => t.status === 'open').length;
-            const inProgress = tickets.filter(t => t.status === 'in-progress').length;
-            const resolved = tickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
-
-            document.getElementById('totalTickets').textContent = total;
-            document.getElementById('openTickets').textContent = open;
-            document.getElementById('inProgressTickets').textContent = inProgress;
-            document.getElementById('resolvedTickets').textContent = resolved;
-            document.getElementById('openTicketsBadge').textContent = open;
-        }
-
-        // Render tickets table
-        function renderTicketsTable() {
-            const filteredTickets = getFilteredTickets();
-            const tbody = document.getElementById('allTicketsBody');
-
-            if (filteredTickets.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 2rem;">No tickets found</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = filteredTickets.map(ticket => {
-                const created = ticket.createdAt?.toDate?.() || new Date();
-                return `
-                    <tr onclick="openTicketModal('${ticket.id}')">
-                        <td class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 8)}</td>
-                        <td class="ticket-subject">
-                            ${ticket.subject}
-                            <small>${ticket.category}</small>
-                        </td>
-                        <td>
-                            ${ticket.userName}
-                            ${ticket.userRole === 'Student' && ticket.studentId ? `<small style="display: block; color: var(--text-muted);">ID: ${ticket.studentId}</small>` : ''}
-                        </td>
-                        <td>${ticket.school}</td>
-                        <td>
-                            <span class="status-badge ${ticket.status}">
-                                <span class="status-dot"></span>
-                                ${formatStatus(ticket.status)}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="priority-badge ${ticket.priority}">${ticket.priority}</span>
-                        </td>
-                        <td>${formatDate(created)}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // Render recent tickets
-        function renderRecentTickets() {
-            const recentTickets = tickets.slice(0, 5);
-            const tbody = document.getElementById('recentTicketsBody');
-
-            if (recentTickets.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 2rem;">No tickets yet</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = recentTickets.map(ticket => {
-                const created = ticket.createdAt?.toDate?.() || new Date();
-                return `
-                    <tr onclick="openTicketModal('${ticket.id}')">
-                        <td class="ticket-id">#${ticket.ticketId || ticket.id.slice(0, 8)}</td>
-                        <td class="ticket-subject">${ticket.subject}</td>
-                        <td>${ticket.userName}</td>
-                        <td>
-                            <span class="status-badge ${ticket.status}">
-                                <span class="status-dot"></span>
-                                ${formatStatus(ticket.status)}
-                            </span>
-                        </td>
-                        <td>${formatDate(created)}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // Filter tickets
-        function getFilteredTickets() {
-            const statusFilter = document.getElementById('statusFilter')?.value || 'all';
-            const schoolFilter = document.getElementById('schoolFilter')?.value || 'all';
-            const searchQuery = document.getElementById('searchInput')?.value.toLowerCase() || '';
-
-            return tickets.filter(ticket => {
-                const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
-                const matchesSchool = schoolFilter === 'all' || ticket.school === schoolFilter;
-                const matchesSearch = !searchQuery || 
-                    ticket.subject.toLowerCase().includes(searchQuery) ||
-                    ticket.userName.toLowerCase().includes(searchQuery) ||
-                    (ticket.ticketId || '').toLowerCase().includes(searchQuery) ||
-                    (ticket.studentId || '').toLowerCase().includes(searchQuery);
-                return matchesStatus && matchesSchool && matchesSearch;
-            });
-        }
-
-        function filterTickets() {
-            renderTicketsTable();
-        }
-
-        // Open ticket modal
-        function openTicketModal(ticketId) {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (!ticket) return;
-
-            const created = ticket.createdAt?.toDate?.() || new Date();
+                
+                const all = document.getElementById('allTicketsList');
+                if (filtered.length === 0) {
+                    all.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>No matching tickets</h3></div>';
+                    return;
+                }
+                
+                all.innerHTML = filtered.map(t => {
+                    return '<div class="ticket-row" onclick="AdminApp.viewTicket(\'' + t.id + '\')">' +
+                        '<div class="ticket-id">#' + (t.ticketId || t.id.slice(0,8)) + '</div>' +
+                        '<div class="ticket-subject">' + t.subject + '</div>' +
+                        '<div class="ticket-user">' + t.userName + '</div>' +
+                        '<div class="ticket-date">' + (t.school || 'N/A') + '</div>' +
+                        '<div><span class="status-badge ' + t.status + '">' + t.status.replace('-', ' ') + '</span></div>' +
+                        '<div><button class="action-btn">View</button></div>' +
+                    '</div>';
+                }).join('');
+            },
             
-            document.getElementById('ticketModalTitle').textContent = `#${ticket.ticketId || ticket.id.slice(0, 8)} - ${ticket.subject}`;
+            viewTicket: function(id) {
+                const t = this.tickets.find(x => x.id === id);
+                if (!t) return;
+                
+                const date = t.createdAt && t.createdAt.toDate ? t.createdAt.toDate() : new Date();
+                const replies = (t.replies || []).map(r => {
+                    const rDate = r.timestamp && r.timestamp.toDate ? r.timestamp.toDate() : new Date(r.timestamp);
+                    return '<div class="reply-item ' + (r.isAdmin ? 'admin' : '') + '">' +
+                        '<div class="reply-meta">' + (r.isAdmin ? '👤 Admin' : '👤 User') + ' • ' + rDate.toLocaleString() + '</div>' +
+                        '<div>' + r.message + '</div>' +
+                    '</div>';
+                }).join('');
+                
+                document.getElementById('modalTitle').textContent = 'Ticket #' + (t.ticketId || t.id.slice(0,8));
+                document.getElementById('modalBody').innerHTML = 
+                    '<div class="detail-row">' +
+                        '<div class="detail-group"><div class="detail-label">User Name</div><div class="detail-value">' + t.userName + '</div></div>' +
+                        '<div class="detail-group"><div class="detail-label">Role</div><div class="detail-value">' + (t.userRole || 'N/A') + '</div></div>' +
+                    '</div>' +
+                    '<div class="detail-row">' +
+                        '<div class="detail-group"><div class="detail-label">' + (t.userRole === 'Student' ? 'Student ID' : 'Email') + '</div><div class="detail-value">' + (t.userRole === 'Student' ? t.studentId : t.userEmail || 'N/A') + '</div></div>' +
+                        '<div class="detail-group"><div class="detail-label">School</div><div class="detail-value">' + (t.school || 'N/A') + '</div></div>' +
+                    '</div>' +
+                    '<div class="detail-row">' +
+                        '<div class="detail-group"><div class="detail-label">Category</div><div class="detail-value">' + (t.category || 'N/A') + '</div></div>' +
+                        '<div class="detail-group"><div class="detail-label">Created</div><div class="detail-value">' + date.toLocaleString() + '</div></div>' +
+                    '</div>' +
+                    '<div class="detail-row">' +
+                        '<div class="detail-group"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge ' + t.status + '">' + t.status.replace('-',' ') + '</span></div></div>' +
+                    '</div>' +
+                    '<div class="detail-group"><div class="detail-label">Subject</div><div class="detail-value">' + t.subject + '</div></div>' +
+                    '<div class="detail-group"><div class="detail-label">Description</div><div class="description-box">' + t.description + '</div></div>' +
+                    (t.screenshotUrl ? '<div class="screenshot-section"><div class="detail-label">Screenshot</div><img src="' + t.screenshotUrl + '" alt="Screenshot" onclick="window.open(\'' + t.screenshotUrl + '\', \'_blank\')"></div>' : '') +
+                    (replies ? '<div class="existing-replies"><div class="detail-label">Conversation</div>' + replies + '</div>' : '') +
+                    '<div class="reply-section">' +
+                        '<h3>Reply</h3>' +
+                        '<textarea class="reply-input" id="replyText" placeholder="Type your reply..."></textarea>' +
+                        '<div class="reply-actions">' +
+                            '<button class="btn btn-secondary" onclick="AdminApp.updateStatus(\'' + t.id + '\', \'in-progress\')">Mark In Progress</button>' +
+                            '<button class="btn btn-primary" onclick="AdminApp.sendReply(\'' + t.id + '\')">Send Reply & Resolve</button>' +
+                        '</div>' +
+                    '</div>';
+                
+                document.getElementById('ticketModal').classList.add('show');
+            },
             
-            let screenshotHtml = '';
-            if (ticket.screenshotUrl) {
-                screenshotHtml = `
-                    <div class="ticket-screenshot">
-                        <h4>📷 Screenshot</h4>
-                        <img src="${ticket.screenshotUrl}" alt="Ticket Screenshot" onclick="window.open('${ticket.screenshotUrl}', '_blank')">
-                        <br>
-                        <a href="${ticket.screenshotUrl}" target="_blank">🔗 Open in new tab</a>
-                    </div>
-                `;
-            }
+            closeModal: function() {
+                document.getElementById('ticketModal').classList.remove('show');
+            },
             
-            document.getElementById('ticketModalBody').innerHTML = `
-                <div class="ticket-detail-grid">
-                    <div class="ticket-detail-item">
-                        <label>User</label>
-                        <span>${ticket.userName}</span>
-                    </div>
-                    <div class="ticket-detail-item">
-                        <label>Role</label>
-                        <span>${ticket.userRole}${ticket.userRole === 'Student' && ticket.studentId ? ` (ID: ${ticket.studentId})` : ''}</span>
-                    </div>
-                    <div class="ticket-detail-item">
-                        <label>Email/Contact</label>
-                        <span>${ticket.userEmail || 'Not provided'}</span>
-                    </div>
-                    <div class="ticket-detail-item">
-                        <label>School</label>
-                        <span>${ticket.school}</span>
-                    </div>
-                    <div class="ticket-detail-item">
-                        <label>Category</label>
-                        <span>${ticket.category}</span>
-                    </div>
-                    <div class="ticket-detail-item">
-                        <label>Created</label>
-                        <span>${formatDateTime(created)}</span>
-                    </div>
-                    <div class="ticket-detail-item">
-                        <label>Status</label>
-                        <select id="ticketStatus" onchange="updateTicketStatus('${ticket.id}', this.value)">
-                            <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>Open</option>
-                            <option value="in-progress" ${ticket.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                            <option value="resolved" ${ticket.status === 'resolved' ? 'selected' : ''}>Resolved</option>
-                            <option value="closed" ${ticket.status === 'closed' ? 'selected' : ''}>Closed</option>
-                        </select>
-                    </div>
-                    <div class="ticket-detail-item">
-                        <label>Priority</label>
-                        <select id="ticketPriority" onchange="updateTicketPriority('${ticket.id}', this.value)">
-                            <option value="low" ${ticket.priority === 'low' ? 'selected' : ''}>Low</option>
-                            <option value="medium" ${ticket.priority === 'medium' ? 'selected' : ''}>Medium</option>
-                            <option value="high" ${ticket.priority === 'high' ? 'selected' : ''}>High</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="ticket-description">
-                    <h4>📝 Description</h4>
-                    <p>${ticket.description}</p>
-                </div>
-
-                ${screenshotHtml}
-
-                <div class="conversation-section">
-                    <h4>💬 Conversation</h4>
-                    <div class="conversation-messages" id="conversationMessages">
-                        ${renderConversation(ticket)}
-                    </div>
-                    <div class="reply-box">
-                        <textarea id="replyMessage" placeholder="Type your reply..."></textarea>
-                        <div class="reply-actions">
-                            <button class="btn btn-primary btn-sm" onclick="sendReply('${ticket.id}', false)">Send Reply</button>
-                            <button class="btn btn-success btn-sm" onclick="sendReply('${ticket.id}', true)">Reply & Resolve</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('ticketModal').classList.add('active');
-        }
-
-        function closeTicketModal() {
-            document.getElementById('ticketModal').classList.remove('active');
-        }
-
-        function renderConversation(ticket) {
-            const messages = [];
-            
-            // Initial message
-            const created = ticket.createdAt?.toDate?.() || new Date();
-            messages.push(`
-                <div class="message">
-                    <div class="message-avatar user">👤</div>
-                    <div class="message-content">
-                        <div class="message-header">
-                            <strong>${ticket.userName}</strong>
-                            <span>${formatDateTime(created)}</span>
-                        </div>
-                        <div class="message-text">${ticket.description}</div>
-                    </div>
-                </div>
-            `);
-
-            // Replies
-            if (ticket.replies && ticket.replies.length > 0) {
-                ticket.replies.forEach(reply => {
-                    const replyDate = reply.timestamp?.toDate?.() || new Date(reply.timestamp);
-                    messages.push(`
-                        <div class="message">
-                            <div class="message-avatar ${reply.isAdmin ? 'admin' : 'user'}">${reply.isAdmin ? '🎫' : '👤'}</div>
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <strong>${reply.isAdmin ? 'Support Team' : ticket.userName}</strong>
-                                    <span>${formatDateTime(replyDate)}</span>
-                                </div>
-                                <div class="message-text">${reply.message}</div>
-                            </div>
-                        </div>
-                    `);
+            updateStatus: async function(id, status) {
+                await db.collection('helpdesk_tickets').doc(id).update({
+                    status: status,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-            }
-
-            return messages.join('');
-        }
-
-        async function sendReply(ticketId, resolve = false) {
-            const message = document.getElementById('replyMessage').value.trim();
-            if (!message) {
-                showToast('Please enter a message', 'error');
-                return;
-            }
-
-            try {
-                const ticket = tickets.find(t => t.id === ticketId);
+                alert('Status updated!');
+            },
+            
+            sendReply: async function(id) {
+                const text = document.getElementById('replyText').value.trim();
+                if (!text) {
+                    alert('Please enter a reply');
+                    return;
+                }
+                
+                const ticket = this.tickets.find(t => t.id === id);
                 const replies = ticket.replies || [];
                 
                 replies.push({
-                    message,
+                    message: text,
                     isAdmin: true,
-                    timestamp: new Date(),
-                    adminEmail: currentUser.email
+                    timestamp: new Date()
                 });
-
-                const updateData = {
-                    replies,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                if (resolve) {
-                    updateData.status = 'resolved';
-                    updateData.resolvedAt = firebase.firestore.FieldValue.serverTimestamp();
-                } else if (ticket.status === 'open') {
-                    updateData.status = 'in-progress';
-                }
-
-                if (!ticket.firstResponseAt) {
-                    updateData.firstResponseAt = firebase.firestore.FieldValue.serverTimestamp();
-                }
-
-                await db.collection('helpdesk_tickets').doc(ticketId).update(updateData);
-
-                showToast(resolve ? 'Ticket resolved!' : 'Reply sent!', 'success');
-                closeTicketModal();
-
-            } catch (error) {
-                console.error('Error sending reply:', error);
-                showToast('Failed to send reply', 'error');
-            }
-        }
-
-        async function updateTicketStatus(ticketId, status) {
-            try {
-                const updateData = {
-                    status,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                if (status === 'resolved' || status === 'closed') {
-                    updateData.resolvedAt = firebase.firestore.FieldValue.serverTimestamp();
-                }
-
-                await db.collection('helpdesk_tickets').doc(ticketId).update(updateData);
-                showToast('Status updated!', 'success');
-            } catch (error) {
-                showToast('Failed to update status', 'error');
-            }
-        }
-
-        async function updateTicketPriority(ticketId, priority) {
-            try {
-                await db.collection('helpdesk_tickets').doc(ticketId).update({
-                    priority,
+                
+                await db.collection('helpdesk_tickets').doc(id).update({
+                    replies: replies,
+                    status: 'resolved',
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                showToast('Priority updated!', 'success');
-            } catch (error) {
-                showToast('Failed to update priority', 'error');
-            }
-        }
-
-        // ============================================
-        // FAQ MANAGEMENT
-        // ============================================
-        function renderFAQList() {
-            const container = document.getElementById('faqList');
-
-            if (faqs.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <span>📚</span>
-                        <h3>No FAQ articles yet</h3>
-                        <p>Click "Add Article" to create your first FAQ or use "Load All Default FAQs" in Settings</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = faqs.map(faq => `
-                <div class="faq-item" id="faq-${faq.id}">
-                    <div class="faq-item-header" onclick="toggleFAQ('${faq.id}')">
-                        <div class="faq-item-title">
-                            <span>❓</span>
-                            ${faq.question}
-                        </div>
-                        <div class="faq-item-actions" onclick="event.stopPropagation()">
-                            <button class="btn btn-sm btn-secondary" onclick="editFAQ('${faq.id}')">✏️</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteFAQ('${faq.id}')">🗑️</button>
-                        </div>
-                    </div>
-                    <div class="faq-item-content">
-                        <p style="white-space: pre-wrap;">${faq.answer}</p>
-                        <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
-                            Category: ${faq.category} | Keywords: ${(faq.keywords || []).join(', ')}
-                        </p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleFAQ(faqId) {
-            const faqItem = document.getElementById(`faq-${faqId}`);
-            faqItem.classList.toggle('open');
-        }
-
-        function showAddFAQModal() {
-            document.getElementById('faqModalTitle').textContent = '➕ Add FAQ Article';
-            document.getElementById('faqId').value = '';
-            document.getElementById('faqQuestion').value = '';
-            document.getElementById('faqAnswer').value = '';
-            document.getElementById('faqCategory').value = 'getting-started';
-            document.getElementById('faqKeywords').value = '';
-            document.getElementById('faqModal').classList.add('active');
-        }
-
-        function editFAQ(faqId) {
-            const faq = faqs.find(f => f.id === faqId);
-            if (!faq) return;
-
-            document.getElementById('faqModalTitle').textContent = '✏️ Edit FAQ Article';
-            document.getElementById('faqId').value = faq.id;
-            document.getElementById('faqQuestion').value = faq.question;
-            document.getElementById('faqAnswer').value = faq.answer;
-            document.getElementById('faqCategory').value = faq.category;
-            document.getElementById('faqKeywords').value = (faq.keywords || []).join(', ');
-            document.getElementById('faqModal').classList.add('active');
-        }
-
-        function closeFAQModal() {
-            document.getElementById('faqModal').classList.remove('active');
-        }
-
-        async function saveFAQ() {
-            const id = document.getElementById('faqId').value;
-            const question = document.getElementById('faqQuestion').value.trim();
-            const answer = document.getElementById('faqAnswer').value.trim();
-            const category = document.getElementById('faqCategory').value;
-            const keywords = document.getElementById('faqKeywords').value.split(',').map(k => k.trim().toLowerCase()).filter(k => k);
-
-            if (!question || !answer) {
-                showToast('Please fill in all required fields', 'error');
-                return;
-            }
-
-            try {
+                
+                alert('Reply sent and ticket resolved!');
+                this.closeModal();
+            },
+            
+            exportTickets: function() {
+                const headers = ['Ticket ID', 'Subject', 'User', 'Email', 'Student ID', 'School', 'Category', 'Status', 'Description', 'Created'];
+                const rows = this.tickets.map(t => {
+                    const date = t.createdAt && t.createdAt.toDate ? t.createdAt.toDate() : new Date();
+                    return [
+                        t.ticketId || t.id.slice(0,8),
+                        t.subject,
+                        t.userName,
+                        t.userEmail || '',
+                        t.studentId || '',
+                        t.school || '',
+                        t.category || '',
+                        t.status,
+                        (t.description || '').replace(/,/g, ';'),
+                        date.toISOString()
+                    ].join(',');
+                });
+                
+                const csv = [headers.join(',')].concat(rows).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'tickets_' + Date.now() + '.csv';
+                a.click();
+            },
+            
+            loadFAQs: function() {
+                db.collection('helpdesk_faqs')
+                    .orderBy('createdAt', 'desc')
+                    .onSnapshot(snap => {
+                        this.faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        this.renderFAQs();
+                    });
+            },
+            
+            renderFAQs: function() {
+                const list = document.getElementById('faqsList');
+                
+                if (this.faqs.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><div class="icon">📚</div><h3>No FAQs yet</h3><p>Add FAQ articles or load defaults from Settings.</p></div>';
+                    return;
+                }
+                
+                list.innerHTML = this.faqs.map(f => {
+                    return '<div class="faq-card">' +
+                        '<div class="icon">❓</div>' +
+                        '<div class="content">' +
+                            '<h4>' + f.question + '</h4>' +
+                            '<p>' + (f.answer ? f.answer.substring(0, 100) : '') + '...</p>' +
+                        '</div>' +
+                        '<div class="faq-actions">' +
+                            '<button class="faq-btn edit" onclick="AdminApp.editFAQ(\'' + f.id + '\')">✏️</button>' +
+                            '<button class="faq-btn delete" onclick="AdminApp.deleteFAQ(\'' + f.id + '\')">🗑️</button>' +
+                        '</div>' +
+                    '</div>';
+                }).join('');
+            },
+            
+            showAddFAQ: function() {
+                this.editingFaqId = null;
+                document.getElementById('faqModalTitle').textContent = 'Add FAQ';
+                document.getElementById('faqQuestion').value = '';
+                document.getElementById('faqAnswer').value = '';
+                document.getElementById('faqCategory').value = 'other';
+                document.getElementById('faqKeywords').value = '';
+                document.getElementById('faqModal').classList.add('show');
+            },
+            
+            editFAQ: function(id) {
+                const faq = this.faqs.find(f => f.id === id);
+                if (!faq) return;
+                
+                this.editingFaqId = id;
+                document.getElementById('faqModalTitle').textContent = 'Edit FAQ';
+                document.getElementById('faqQuestion').value = faq.question;
+                document.getElementById('faqAnswer').value = faq.answer;
+                document.getElementById('faqCategory').value = faq.category || 'other';
+                document.getElementById('faqKeywords').value = (faq.keywords || []).join(', ');
+                document.getElementById('faqModal').classList.add('show');
+            },
+            
+            closeFAQModal: function() {
+                document.getElementById('faqModal').classList.remove('show');
+            },
+            
+            saveFAQ: async function() {
+                const question = document.getElementById('faqQuestion').value.trim();
+                const answer = document.getElementById('faqAnswer').value.trim();
+                const category = document.getElementById('faqCategory').value;
+                const keywords = document.getElementById('faqKeywords').value.split(',').map(k => k.trim()).filter(k => k);
+                
+                if (!question || !answer) {
+                    alert('Please fill in question and answer');
+                    return;
+                }
+                
                 const data = {
-                    question,
-                    answer,
-                    category,
-                    keywords,
+                    question: question,
+                    answer: answer,
+                    category: category,
+                    keywords: keywords,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
-
-                if (id) {
-                    await db.collection('helpdesk_faqs').doc(id).update(data);
-                    showToast('FAQ updated!', 'success');
+                
+                if (this.editingFaqId) {
+                    await db.collection('helpdesk_faqs').doc(this.editingFaqId).update(data);
                 } else {
                     data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection('helpdesk_faqs').add(data);
-                    showToast('FAQ added! It will now appear in the widget.', 'success');
                 }
-
-                closeFAQModal();
-            } catch (error) {
-                showToast('Failed to save FAQ', 'error');
-            }
-        }
-
-        async function deleteFAQ(faqId) {
-            if (!confirm('Are you sure you want to delete this FAQ?')) return;
-
-            try {
-                await db.collection('helpdesk_faqs').doc(faqId).delete();
-                showToast('FAQ deleted!', 'success');
-            } catch (error) {
-                showToast('Failed to delete FAQ', 'error');
-            }
-        }
-
-        // Seed default FAQs from the document
-        async function seedDefaultFAQs() {
-            if (!confirm('This will add all default FAQs to the database. Continue?')) return;
-
-            showToast('Loading FAQs... This may take a moment.', 'info');
-
-            const defaultFAQs = [
-                // Getting Started
-                { question: "What is the Curriculum Tracker?", answer: "The Curriculum Tracker is a web application built for Avanti Fellows' JNV and EMRS Program to track curriculum progress, attendance, teacher performance, and student activities across multiple schools.", category: "getting-started", keywords: ["curriculum", "tracker", "app", "what", "about", "avanti"] },
-                { question: "What subjects are covered?", answer: "Four core subjects: Physics, Chemistry, Mathematics, and Biology.", category: "getting-started", keywords: ["subjects", "physics", "chemistry", "maths", "mathematics", "biology", "covered"] },
-                { question: "What devices can I use to access the Curriculum Tracker?", answer: "You can access it from any device with a web browser - smartphones (Android/iOS), tablets, laptops, or desktop computers. Chrome browser is recommended for best performance.", category: "getting-started", keywords: ["devices", "phone", "mobile", "laptop", "tablet", "android", "iphone", "ios", "browser", "access"] },
-                { question: "Do I need to download an app from Play Store or App Store?", answer: "No! The Curriculum Tracker is a Progressive Web App (PWA). You can install it directly from your browser without going to any app store.", category: "getting-started", keywords: ["download", "app", "playstore", "appstore", "install", "pwa"] },
-                { question: "Does the app work offline?", answer: "Partially. You can view previously loaded data when offline. Any changes you make will automatically sync when you reconnect to the internet.", category: "getting-started", keywords: ["offline", "internet", "without", "connection", "sync"] },
-                { question: "Is my data safe and secure?", answer: "Yes. All data is stored securely in Google Firebase with authentication. Only authorized users can access data based on their role.", category: "getting-started", keywords: ["data", "safe", "secure", "security", "privacy", "firebase"] },
-                { question: "What is the current version of the app?", answer: "The current version is 3.5.0. You can see the version number in the footer or by checking the browser console.", category: "getting-started", keywords: ["version", "update", "current", "latest"] },
-                { question: "How do I know if there's a new update?", answer: "The app updates automatically. You'll see a yellow banner saying '🔄 Updating to latest version...' when an update is being installed.", category: "getting-started", keywords: ["update", "new", "version", "automatic", "banner"] },
-                { question: "Is the app free to use?", answer: "Yes, the app is completely free for all Avanti Fellows teachers and students. It's built using free-tier services like Firebase and Vercel.", category: "getting-started", keywords: ["free", "cost", "money", "charge", "paid"] },
-
-                // Login & Authentication
-                { question: "How do I login as a teacher?", answer: "Open the app → Select 'Teacher Login' tab → Enter your registered email and password → Click 'Login'.", category: "login", keywords: ["login", "teacher", "signin", "access", "enter"] },
-                { question: "How do I login as a student?", answer: "Open the app → Select 'Student Login' tab → Enter your Student ID → Enter password (default: pass123) → Click 'Login'.", category: "login", keywords: ["login", "student", "signin", "access", "enter", "student id"] },
-                { question: "What is the default password for students?", answer: "The default password for all students is 'pass123'. This may be changed by the administrator.", category: "login", keywords: ["password", "default", "student", "pass123"] },
-                { question: "I forgot my password. What should I do?", answer: "Contact your administrator or Program Manager. They can reset your password from the Firebase console.", category: "login", keywords: ["forgot", "password", "reset", "lost", "remember"] },
-                { question: "Why does it say 'Invalid email or password'?", answer: "Check the following:\n• Email spelling must be exact (including @domain)\n• Password is case-sensitive\n• No extra spaces before/after email or password\n• Your account may not be created yet - contact admin", category: "login", keywords: ["invalid", "email", "password", "wrong", "error", "incorrect"] },
-                { question: "Why does it say 'Your account has been archived'?", answer: "Your account has been deactivated by the administrator. This usually happens when a teacher leaves the program. Contact admin if this is a mistake.", category: "login", keywords: ["archived", "deactivated", "account", "disabled"] },
-                { question: "Why does it say 'Student not found'?", answer: "Your Student ID may not be in the system yet. Verify your ID with your teacher or wait for admin to add you.", category: "login", keywords: ["student", "not found", "id", "error"] },
-                { question: "Can I be logged in on multiple devices at once?", answer: "Yes, you can login from multiple devices. Your data syncs automatically across all devices.", category: "login", keywords: ["multiple", "devices", "login", "sync", "same time"] },
-                { question: "The login button is not working. What should I do?", answer: "Check your internet connection, try refreshing the page, or clear browser cache. If still not working, try a different browser.", category: "login", keywords: ["login", "button", "not working", "stuck", "loading"] },
-
-                // Teacher Attendance
-                { question: "How do I mark my daily attendance?", answer: "Click 'My Attendance' from sidebar → Allow location permission → Select status (Present/Leave/WFH) → Click Submit.", category: "attendance", keywords: ["attendance", "mark", "daily", "present", "leave", "submit"] },
-                { question: "Why does the app need my location?", answer: "GPS location is captured to verify that attendance is marked from the school premises. This helps maintain accountability.", category: "attendance", keywords: ["location", "gps", "permission", "why"] },
-                { question: "What if I don't allow location permission?", answer: "You must allow location permission to mark attendance. Without it, attendance cannot be submitted.", category: "attendance", keywords: ["location", "permission", "allow", "denied"] },
-                { question: "I forgot to mark attendance yesterday. Can I mark it now?", answer: "No, attendance can only be marked for the current day. Contact your Program Manager for manual corrections.", category: "attendance", keywords: ["forgot", "yesterday", "previous", "missed", "late"] },
-                { question: "Can I edit my attendance after submission?", answer: "No, attendance is locked after submission to prevent tampering. Contact admin for any corrections.", category: "attendance", keywords: ["edit", "change", "modify", "after", "submitted"] },
-                { question: "What attendance statuses are available?", answer: "Three statuses:\n• Present - You're at school\n• On Leave - You're taking a day off\n• Work from Home - You're working remotely", category: "attendance", keywords: ["status", "present", "leave", "wfh", "options"] },
-                { question: "Attendance shows 'Already marked for today'. What does this mean?", answer: "You've already submitted attendance for today. You cannot mark it twice.", category: "attendance", keywords: ["already", "marked", "twice", "duplicate"] },
-
-                // Student Attendance
-                { question: "How do I mark student attendance?", answer: "Click 'Student Attendance' → Select Grade (11/12) → Use 'Mark All Present' or mark individually → Select absence reason if absent → Save.", category: "attendance", keywords: ["student", "attendance", "mark", "class", "grade"] },
-                { question: "What does 'Mark All Present' do?", answer: "It marks all students in the selected grade as present with one click. You can then unmark individual absent students.", category: "attendance", keywords: ["mark all", "present", "bulk", "all students"] },
-                { question: "What absence reasons are available for students?", answer: "Three reasons:\n• Sick Leave - Student is unwell\n• Family Emergency - Family-related absence\n• Other - Any other reason (can add remarks)", category: "attendance", keywords: ["absence", "reason", "sick", "emergency", "other"] },
-                { question: "Can I edit student attendance after saving?", answer: "No, student attendance is locked after submission. Contact admin for corrections.", category: "attendance", keywords: ["edit", "student", "attendance", "change", "after"] },
-
-                // Curriculum & Progress
-                { question: "How do I update chapter progress?", answer: "Go to 'Curriculum' → Select Grade → Click on chapter to expand → Check completed topics → Mark test status → Save.", category: "curriculum", keywords: ["chapter", "progress", "update", "curriculum", "topics", "mark"] },
-                { question: "What do the chapter status colors mean?", answer: "Status colors:\n• Gray - Not Started (no topics completed)\n• Yellow - In Progress (some topics done)\n• Green - Completed (all topics + test done)\n• Red - Delayed (past target date, not complete)", category: "curriculum", keywords: ["color", "status", "gray", "yellow", "green", "red", "meaning"] },
-                { question: "Why can't I mark a chapter as complete?", answer: "A chapter can only be marked complete after: 1) All topics are checked, and 2) Test is marked as conducted.", category: "curriculum", keywords: ["complete", "chapter", "cannot", "mark", "test"] },
-                { question: "What is the 'Test Conducted' checkbox?", answer: "This indicates whether you've conducted the chapter test. It must be checked before marking a chapter complete.", category: "curriculum", keywords: ["test", "conducted", "checkbox", "chapter"] },
-                { question: "What is the target date?", answer: "The target date is the deadline by which a chapter should be completed. Chapters past this date show as 'Delayed' if incomplete.", category: "curriculum", keywords: ["target", "date", "deadline", "delayed"] },
-                { question: "How do I export curriculum data?", answer: "Go to Analytics or Chapter Details → Apply filters → Click 'Export to Excel'.", category: "curriculum", keywords: ["export", "excel", "download", "curriculum", "data"] },
-
-                // Student Features
-                { question: "What can students do in the app?", answer: "Students can: view attendance, complete profile, see curriculum progress, give teacher feedback, register for exams, view assigned assets, and request books.", category: "students", keywords: ["student", "features", "do", "access", "options"] },
-                { question: "What information is required in student profile?", answer: "Required fields include:\n• Personal: Name, Email, Phone, DOB, WhatsApp\n• Academic: Grade, Category, Stream, School, 10th %\n• Family: Parents' names, occupations, education, income\n• Address: Full address, state, district, pincode", category: "students", keywords: ["profile", "required", "information", "fields", "fill"] },
-                { question: "What is profile completion percentage?", answer: "It shows how much of your profile is filled. Aim for 100% by filling all required fields.", category: "students", keywords: ["profile", "completion", "percentage", "100"] },
-                { question: "What categories are available?", answer: "Categories: General, General EWS, OBC, SC, ST, PWD (Person with Disability).", category: "students", keywords: ["category", "general", "obc", "sc", "st", "ews", "pwd"] },
-                { question: "What streams are available?", answer: "Two streams: JEE (for engineering aspirants) and NEET (for medical aspirants).", category: "students", keywords: ["stream", "jee", "neet", "engineering", "medical"] },
-                { question: "How do students see curriculum progress?", answer: "Students login and go to 'Curriculum' tab to see subject-wise progress for all subjects in their grade.", category: "students", keywords: ["student", "curriculum", "progress", "view", "see"] },
-
-                // Teacher Feedback
-                { question: "How do I give feedback to my teachers?", answer: "When feedback is due, you'll see a notification. Click on a teacher → Rate each question (0-5) → Submit.", category: "feedback", keywords: ["feedback", "teacher", "give", "rating", "rate"] },
-                { question: "How often should I give feedback?", answer: "Feedback is collected every 2 months (bimonthly). You'll see a notification when it's time.", category: "feedback", keywords: ["feedback", "often", "frequency", "bimonthly", "when"] },
-                { question: "Is my feedback anonymous?", answer: "Yes, your feedback is completely anonymous. Teachers only see average scores, not individual responses.", category: "feedback", keywords: ["anonymous", "feedback", "privacy", "secret", "hidden"] },
-                { question: "Can I change my feedback after submitting?", answer: "No, feedback cannot be edited after submission. Think carefully before submitting.", category: "feedback", keywords: ["change", "edit", "feedback", "after", "submitted"] },
-
-                // Assets & Library
-                { question: "What is Asset Management?", answer: "A system to track books and chromebooks - adding them to inventory, assigning to students, and tracking returns.", category: "assets", keywords: ["asset", "management", "books", "chromebook", "inventory"] },
-                { question: "Do I need a special barcode scanner?", answer: "No! You can use your phone's camera to scan barcodes. No special hardware needed.", category: "assets", keywords: ["barcode", "scanner", "camera", "phone", "hardware"] },
-                { question: "How do I assign a book to a student?", answer: "Scan the book barcode → Select student from dropdown → Click Assign. Due date is auto-calculated.", category: "assets", keywords: ["assign", "book", "student", "scan", "barcode"] },
-                { question: "What is the return due date for books?", answer: "Books are due in 7 days from assignment. Chromebooks have no due date.", category: "assets", keywords: ["return", "due", "date", "book", "days"] },
-                { question: "How do students request books?", answer: "Students go to Assets tab → Request Book → Either from existing library or request new book.", category: "assets", keywords: ["request", "book", "student", "library"] },
-
-                // Analytics
-                { question: "What reports are available?", answer: "Available reports:\n• School-wise curriculum completion\n• Subject-wise progress\n• Teacher/Student attendance\n• Exam registration statistics\n• Teacher feedback summary\n• Leave utilization", category: "analytics", keywords: ["reports", "analytics", "available", "data", "statistics"] },
-                { question: "How do I export data to Excel?", answer: "Go to any analytics page → Apply desired filters → Click 'Export to Excel'.", category: "analytics", keywords: ["export", "excel", "download", "analytics", "data"] },
-                { question: "Who can access analytics?", answer: "Admins see all schools. Managers see assigned schools. Teachers see only their school.", category: "analytics", keywords: ["access", "analytics", "permission", "who", "view"] },
-
-                // Mobile PWA
-                { question: "How do I install on Android?", answer: "Open in Chrome → Wait for 'Add to Home Screen' popup OR tap menu (3 dots) → 'Install App' → Done!", category: "mobile", keywords: ["install", "android", "phone", "app", "chrome", "home screen"] },
-                { question: "How do I install on iPhone?", answer: "Open in Safari → Tap Share button → Scroll down → 'Add to Home Screen' → Tap 'Add'.", category: "mobile", keywords: ["install", "iphone", "ios", "safari", "app", "home screen"] },
-                { question: "Why isn't the install option appearing?", answer: "Make sure you're using Chrome (Android) or Safari (iPhone). Other browsers may not show the option.", category: "mobile", keywords: ["install", "option", "not showing", "browser", "chrome", "safari"] },
-                { question: "How do I update the PWA?", answer: "Updates are automatic. You'll see '🔄 Updating...' banner. No manual action needed.", category: "mobile", keywords: ["update", "pwa", "app", "version", "automatic"] },
-                { question: "My PWA shows old version. How do I update?", answer: "Close the app completely, reopen it. Or type forceUpdate() in browser console.", category: "mobile", keywords: ["old", "version", "update", "force", "pwa"] },
-                { question: "Does PWA use mobile data?", answer: "Yes, but minimal. The app is optimized for low bandwidth areas. Cached resources reduce data usage.", category: "mobile", keywords: ["data", "mobile", "internet", "usage", "bandwidth"] },
-
-                // Troubleshooting
-                { question: "The app shows a blank white screen. What do I do?", answer: "Try: 1) Refresh page, 2) Clear browser cache, 3) Try incognito mode, 4) Try different browser.", category: "troubleshooting", keywords: ["blank", "white", "screen", "loading", "not showing", "empty"] },
-                { question: "Data is not loading. What should I check?", answer: "Check internet connection, wait a few seconds for data to load, try refreshing. Check browser console for errors.", category: "troubleshooting", keywords: ["data", "not loading", "slow", "stuck", "waiting"] },
-                { question: "I see 'Permission denied' error. What does it mean?", answer: "You don't have access to that data. This could be role-based restriction or Firebase rules issue. Contact admin.", category: "troubleshooting", keywords: ["permission", "denied", "access", "error", "blocked"] },
-                { question: "The camera won't open for barcode scanning. How do I fix it?", answer: "Allow camera permission in browser settings. On mobile: Settings → Apps → Browser → Permissions → Camera → Allow.", category: "troubleshooting", keywords: ["camera", "barcode", "permission", "not working", "scan"] },
-                { question: "Export to Excel is not working. What should I do?", answer: "Check popup blocker settings, try different browser, check downloads folder. File might already be downloaded.", category: "troubleshooting", keywords: ["export", "excel", "not working", "download", "popup"] },
-                { question: "My attendance GPS shows wrong location. Is this a problem?", answer: "Small variations (few hundred meters) are normal. If significantly wrong, check GPS is enabled and try outdoors.", category: "troubleshooting", keywords: ["gps", "location", "wrong", "incorrect", "inaccurate"] },
-                { question: "The app is very slow. How can I speed it up?", answer: "Clear browser cache, close other apps/tabs, check internet speed, try during off-peak hours.", category: "troubleshooting", keywords: ["slow", "speed", "performance", "lag", "fast"] },
-
-                // Other
-                { question: "How do I contact support?", answer: "Contact your Program Manager first. For technical issues, use this help widget to raise a ticket or email anand.joshi@avantifellows.org.", category: "other", keywords: ["contact", "support", "help", "email", "manager"] },
-                { question: "Can I suggest new features?", answer: "Yes! Share feature requests with your Program Manager. Popular requests are considered for future updates.", category: "other", keywords: ["suggest", "feature", "request", "new", "idea"] }
-            ];
-
-            try {
+                
+                this.closeFAQModal();
+                alert('FAQ saved!');
+            },
+            
+            deleteFAQ: async function(id) {
+                if (!confirm('Are you sure you want to delete this FAQ?')) return;
+                await db.collection('helpdesk_faqs').doc(id).delete();
+            },
+            
+            clearAllFAQs: async function() {
+                if (!confirm('Are you sure you want to delete ALL FAQs? This cannot be undone.')) return;
+                
                 const batch = db.batch();
-                let count = 0;
-
-                for (const faq of defaultFAQs) {
-                    const docRef = db.collection('helpdesk_faqs').doc();
-                    batch.set(docRef, {
-                        ...faq,
+                this.faqs.forEach(f => {
+                    batch.delete(db.collection('helpdesk_faqs').doc(f.id));
+                });
+                await batch.commit();
+                alert('All FAQs deleted!');
+            },
+            
+            loadDefaultFAQs: async function() {
+                if (!confirm('This will add all default FAQs. Continue?')) return;
+                
+                const defaultFAQs = [
+                    { question: "What is the Curriculum Tracker?", answer: "The Curriculum Tracker is a comprehensive tool designed for Avanti Fellows to manage and monitor curriculum progress, student attendance, and teacher performance across JNV and EMRS schools.", category: "getting-started", keywords: ["curriculum", "tracker", "what", "about"] },
+                    { question: "What devices can I use?", answer: "You can access the Curriculum Tracker on any device with a web browser - computers, laptops, tablets, and smartphones.", category: "getting-started", keywords: ["device", "mobile", "phone", "computer", "browser"] },
+                    { question: "How do I log in as a student?", answer: "Select Student Login, enter your Student ID and password, then click Login.", category: "login", keywords: ["login", "student", "sign in", "password"] },
+                    { question: "How do I log in as a teacher?", answer: "Select Teacher Login, enter your registered email and password, then click Login.", category: "login", keywords: ["login", "teacher", "email", "password"] },
+                    { question: "I forgot my password", answer: "Teachers: Click Forgot Password and enter your email. Students: Contact your teacher to reset your password.", category: "login", keywords: ["forgot", "password", "reset"] },
+                    { question: "How is attendance marked?", answer: "Attendance is marked daily by teachers. Students can view their attendance in the My Attendance section.", category: "attendance", keywords: ["attendance", "mark", "present", "absent"] },
+                    { question: "My attendance is wrong", answer: "Please inform your teacher immediately. They can correct attendance records within a specific time window.", category: "attendance", keywords: ["attendance", "wrong", "incorrect", "error"] },
+                    { question: "How do I view my progress?", answer: "After logging in, go to the Curriculum or Progress section to see chapters completed, in-progress, and upcoming.", category: "curriculum", keywords: ["progress", "chapters", "syllabus", "view"] },
+                    { question: "How do teachers update progress?", answer: "Go to Curriculum tab, select the subject, mark chapters as completed or in-progress, and save.", category: "curriculum", keywords: ["update", "progress", "teacher", "chapter"] },
+                    { question: "How do I give feedback?", answer: "Go to Teacher Feedback section, select the teacher, rate and write comments, then submit. All feedback is confidential.", category: "feedback", keywords: ["feedback", "teacher", "rate", "review"] },
+                    { question: "Page loading slowly", answer: "Try: 1) Check internet connection, 2) Clear browser cache, 3) Try different browser, 4) Close other tabs.", category: "technical", keywords: ["slow", "loading", "speed", "performance"] },
+                    { question: "Getting an error message", answer: "Note the error, refresh the page, clear cache and try again. If it persists, raise a support ticket with error details.", category: "technical", keywords: ["error", "message", "problem", "bug"] },
+                    { question: "How do I update my profile?", answer: "Click on My Profile or your name in the top corner to update your information.", category: "students", keywords: ["profile", "update", "edit", "change"] },
+                    { question: "What subjects are covered?", answer: "Physics, Chemistry, Mathematics, and Biology for JNV and EMRS schools.", category: "curriculum", keywords: ["subjects", "physics", "chemistry", "math", "biology"] },
+                    { question: "Can I use it offline?", answer: "Internet connection is required. You can install it as a PWA for faster loading when online.", category: "technical", keywords: ["offline", "internet", "pwa", "install"] }
+                ];
+                
+                const batch = db.batch();
+                defaultFAQs.forEach(faq => {
+                    const ref = db.collection('helpdesk_faqs').doc();
+                    batch.set(ref, {
+                        question: faq.question,
+                        answer: faq.answer,
+                        category: faq.category,
+                        keywords: faq.keywords,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    count++;
-                }
-
+                });
+                
                 await batch.commit();
-                showToast(`Successfully added ${count} FAQs!`, 'success');
-            } catch (error) {
-                console.error('Error seeding FAQs:', error);
-                showToast('Failed to load FAQs. Try again.', 'error');
+                alert('Added ' + defaultFAQs.length + ' default FAQs!');
             }
-        }
-
-        // Export tickets to CSV
-        function exportTickets() {
-            if (tickets.length === 0) {
-                showToast('No tickets to export', 'error');
-                return;
-            }
-
-            const headers = ['Ticket ID', 'Subject', 'User', 'Role', 'Student ID', 'Email', 'School', 'Category', 'Status', 'Priority', 'Created', 'Description'];
-            const rows = tickets.map(t => {
-                const created = t.createdAt?.toDate?.() || new Date();
-                return [
-                    t.ticketId || t.id,
-                    `"${t.subject}"`,
-                    `"${t.userName}"`,
-                    t.userRole,
-                    t.studentId || '',
-                    t.userEmail || '',
-                    t.school,
-                    t.category,
-                    t.status,
-                    t.priority,
-                    created.toISOString(),
-                    `"${t.description.replace(/"/g, '""')}"`
-                ].join(',');
-            });
-
-            const csv = [headers.join(','), ...rows].join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `helpdesk-tickets-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-
-            showToast('Tickets exported!', 'success');
-        }
-
-        // Instructions modal
-        function showWidgetInstructions() {
-            document.getElementById('instructionsModal').classList.add('active');
-        }
-
-        function closeInstructionsModal() {
-            document.getElementById('instructionsModal').classList.remove('active');
-        }
-
-        // Navigation
-        function showPage(page) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            document.getElementById(`${page}Page`).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Utilities
-        function formatStatus(status) {
-            const map = {
-                'open': 'Open',
-                'in-progress': 'In Progress',
-                'resolved': 'Resolved',
-                'closed': 'Closed'
-            };
-            return map[status] || status;
-        }
-
-        function formatDate(date) {
-            const now = new Date();
-            const diff = now - date;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-            if (days === 0) return 'Today';
-            if (days === 1) return 'Yesterday';
-            if (days < 7) return `${days} days ago`;
-
-            return date.toLocaleDateString('en-IN', {
-                day: 'numeric',
-                month: 'short'
-            });
-        }
-
-        function formatDateTime(date) {
-            return date.toLocaleString('en-IN', {
-                day: 'numeric',
-                month: 'short',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const icon = document.getElementById('toastIcon');
-            const msg = document.getElementById('toastMessage');
-
-            icon.textContent = type === 'success' ?
+        };
+        
+        AdminApp.init();
+    </script>
+</body>
+</html>
