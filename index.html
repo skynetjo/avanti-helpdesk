@@ -798,6 +798,18 @@
 .replaced-logo { width: 64px; height: auto; display: inline-block; vertical-align: middle; }
 
 </style>
+
+<script>
+function getGreeting() {
+    const hour = new Date().getHours();
+    let greeting = "Namaste";
+    if (hour >= 5 && hour < 12) greeting = "Namaste, Good Morning";
+    else if (hour >= 12 && hour < 17) greeting = "Namaste, Good Afternoon";
+    else if (hour >= 17 && hour < 22) greeting = "Namaste, Good Evening";
+    return greeting;
+}
+</script>
+
 </head>
 <body>
     <!-- Login Page -->
