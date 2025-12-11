@@ -1016,7 +1016,7 @@
                     <div class="user-avatar" id="userAvatar">A</div>
                     <div class="user-details">
                         <h4 id="userName">Admin</h4>
-                        <p id="userEmail">admin@avantifellows.org</p>
+                        <p id="userEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="81e0e5ece8efc1e0f7e0eff5e8e7e4ededeef6f2afeef3e6">[email&#160;protected]</a></p>
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%;" onclick="handleLogout()">
@@ -1299,15 +1299,15 @@
         <span id="toastMessage">Success!</span>
     </div>
 
-    <script>
-        // Firebase Configuration - Use same config as Curriculum Tracker
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Firebase Configuration - Same as Curriculum Tracker
         const firebaseConfig = {
-            apiKey: "AIzaSyBnlHB-T06XR0MDMB8vJxKigKBUaKQ4IJQ",
-            authDomain: "afcurriculumtracker.firebaseapp.com",
-            projectId: "afcurriculumtracker",
-            storageBucket: "afcurriculumtracker.firebasestorage.app",
-            messagingSenderId: "581aborting63687816",
-            appId: "1:581563687816:web:3b3e8b9b8b0f5b0c8b0f5b"
+            apiKey: "AIzaSyDyyGAHNJvhuint86USW36eBJKfw_u3AcA",
+            authDomain: "curriculum-dbb10.firebaseapp.com",
+            projectId: "curriculum-dbb10",
+            storageBucket: "curriculum-dbb10.firebasestorage.app",
+            messagingSenderId: "706387632109",
+            appId: "1:706387632109:web:06c78a304fdbdc12f391e4"
         };
 
         // Initialize Firebase
@@ -2056,12 +2056,4 @@
             const icon = document.getElementById('toastIcon');
             const msg = document.getElementById('toastMessage');
 
-            icon.textContent = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
-            msg.textContent = message;
-
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-    </script>
-</body>
-</html>
+            icon.textContent = type === 'success' ?
