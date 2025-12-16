@@ -1019,6 +1019,7 @@ function getGreeting() {
                         Clear All FAQs
                     </button>
                 </div>
+            </div>
             
             <!-- Notifications Page -->
             <div class="page" id="notificationsPage" style="display: none;">
@@ -1029,9 +1030,33 @@ function getGreeting() {
                     </div>
                 </div>
                 
+                <!-- Stats Cards -->
+                <div class="stats-grid" id="notifStats" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="icon">📤</div>
+                        <div class="value" id="totalSent">0</div>
+                        <div class="label">Total Sent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">👁️</div>
+                        <div class="value" id="totalViews">0</div>
+                        <div class="label">Total Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">👥</div>
+                        <div class="value" id="totalUsers">0</div>
+                        <div class="label">Users Reached</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">📊</div>
+                        <div class="value" id="avgViewRate">0%</div>
+                        <div class="label">Avg View Rate</div>
+                    </div>
+                </div>
+                
                 <div class="settings-section">
-                    <h3>📢 Send Announcement</h3>
-                    <p>This notification will be sent to all users of the Curriculum Tracker.</p>
+                    <h3>📢 Send New Announcement</h3>
+                    <p>This notification will appear in users' notification bell.</p>
                     
                     <div class="form-group" style="margin-top: 20px;">
                         <label style="color: #8a8a9a; font-size: 13px; margin-bottom: 8px; display: block;">Title *</label>
@@ -1043,23 +1068,46 @@ function getGreeting() {
                         <textarea id="notifMessage" placeholder="Enter your message here..." style="width: 100%; padding: 14px 16px; background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 10px; color: #fff; font-size: 15px; min-height: 120px; resize: vertical;"></textarea>
                     </div>
                     
-                    <div class="form-group" style="margin-top: 16px;">
-                        <label style="color: #8a8a9a; font-size: 13px; margin-bottom: 8px; display: block;">Target Audience</label>
-                        <select id="notifAudience" style="width: 100%; padding: 14px 16px; background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 10px; color: #fff; font-size: 15px;">
-                            <option value="all">All Users</option>
-                            <option value="teachers">Teachers Only</option>
-                            <option value="students">Students Only</option>
-                        </select>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                        <div class="form-group">
+                            <label style="color: #8a8a9a; font-size: 13px; margin-bottom: 8px; display: block;">Target Audience</label>
+                            <select id="notifAudience" style="width: 100%; padding: 14px 16px; background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 10px; color: #fff; font-size: 15px;">
+                                <option value="all">👥 All Users</option>
+                                <option value="teachers">👨‍🏫 Teachers Only</option>
+                                <option value="students">👨‍🎓 Students Only</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="color: #8a8a9a; font-size: 13px; margin-bottom: 8px; display: block;">Priority</label>
+                            <select id="notifPriority" style="width: 100%; padding: 14px 16px; background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 10px; color: #fff; font-size: 15px;">
+                                <option value="normal">🔵 Normal</option>
+                                <option value="important">🟡 Important</option>
+                                <option value="urgent">🔴 Urgent</option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="AdminApp.sendNotification()">
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label style="color: #8a8a9a; font-size: 13px; margin-bottom: 8px; display: block;">Link (Optional)</label>
+                        <input type="text" id="notifLink" placeholder="e.g., https://example.com/page" style="width: 100%; padding: 14px 16px; background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 10px; color: #fff; font-size: 15px;">
+                    </div>
+                    
+                    <button class="btn btn-primary" style="margin-top: 20px; padding: 14px 28px;" onclick="AdminApp.sendNotification()">
                         🔔 Send Notification
                     </button>
                 </div>
                 
                 <div class="settings-section" style="margin-top: 30px;">
-                    <h3>📜 Sent Notifications</h3>
-                    <p>History of notifications you've sent</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <h3>📜 Notification History</h3>
+                            <p>Track performance of your notifications</p>
+                        </div>
+                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;" onclick="AdminApp.refreshNotificationStats()">
+                            🔄 Refresh Stats
+                        </button>
+                    </div>
                     <div id="notificationHistory" style="margin-top: 16px;">
                         <div style="color: #5a5a6a; text-align: center; padding: 30px;">Loading...</div>
                     </div>
@@ -1605,6 +1653,8 @@ function getGreeting() {
                 const title = document.getElementById('notifTitle').value.trim();
                 const message = document.getElementById('notifMessage').value.trim();
                 const audience = document.getElementById('notifAudience').value;
+                const priority = document.getElementById('notifPriority').value;
+                const link = document.getElementById('notifLink').value.trim();
                 
                 if (!title || !message) {
                     alert('Please enter both title and message');
@@ -1616,13 +1666,19 @@ function getGreeting() {
                         title: title,
                         message: message,
                         audience: audience,
+                        priority: priority,
+                        link: link || null,
                         sentBy: firebase.auth().currentUser.email,
+                        viewCount: 0,
+                        viewedBy: [],
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     
                     // Clear form
                     document.getElementById('notifTitle').value = '';
                     document.getElementById('notifMessage').value = '';
+                    document.getElementById('notifLink').value = '';
+                    document.getElementById('notifPriority').value = 'normal';
                     
                     alert('✅ Notification sent successfully!');
                     this.loadNotificationHistory();
@@ -1632,7 +1688,7 @@ function getGreeting() {
                 }
             },
             
-            // Load notification history
+            // Load notification history with analytics
             loadNotificationHistory: function() {
                 db.collection('app_notifications')
                     .orderBy('createdAt', 'desc')
@@ -1640,29 +1696,93 @@ function getGreeting() {
                     .onSnapshot(snap => {
                         const container = document.getElementById('notificationHistory');
                         
+                        // Calculate stats
+                        let totalSent = snap.docs.length;
+                        let totalViews = 0;
+                        let usersReached = new Set();
+                        
+                        snap.docs.forEach(doc => {
+                            const n = doc.data();
+                            totalViews += n.viewCount || 0;
+                            (n.viewedBy || []).forEach(u => usersReached.add(u));
+                        });
+                        
+                        // Update stats cards
+                        document.getElementById('totalSent').textContent = totalSent;
+                        document.getElementById('totalViews').textContent = totalViews;
+                        document.getElementById('totalUsers').textContent = usersReached.size;
+                        document.getElementById('avgViewRate').textContent = totalSent > 0 ? Math.round((usersReached.size / Math.max(totalSent, 1)) * 100) + '%' : '0%';
+                        
                         if (snap.empty) {
-                            container.innerHTML = '<div style="color: #5a5a6a; text-align: center; padding: 30px;">No notifications sent yet</div>';
+                            container.innerHTML = '<div style="color: #5a5a6a; text-align: center; padding: 30px;"><div style="font-size: 40px; margin-bottom: 12px;">📭</div><p>No notifications sent yet</p><p style="font-size: 12px; margin-top: 8px;">Send your first announcement above!</p></div>';
                             return;
                         }
                         
                         container.innerHTML = snap.docs.map(doc => {
                             const n = doc.data();
                             const date = n.createdAt?.toDate?.() || new Date();
-                            const timeStr = date.toLocaleDateString('en-IN') + ' ' + date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                            const timeStr = date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
                             
-                            return '<div style="background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 16px; margin-bottom: 12px;">' +
-                                '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">' +
-                                    '<strong style="color: #F4B41A;">' + (n.title || 'No title') + '</strong>' +
-                                    '<span style="color: #5a5a6a; font-size: 12px;">' + timeStr + '</span>' +
+                            const priorityColors = {
+                                'urgent': '#ef4444',
+                                'important': '#f59e0b',
+                                'normal': '#3b82f6'
+                            };
+                            const priorityIcons = {
+                                'urgent': '🔴',
+                                'important': '🟡',
+                                'normal': '🔵'
+                            };
+                            const audienceIcons = {
+                                'all': '👥',
+                                'teachers': '👨‍🏫',
+                                'students': '👨‍🎓'
+                            };
+                            
+                            const viewCount = n.viewCount || 0;
+                            const viewedByCount = (n.viewedBy || []).length;
+                            
+                            return '<div style="background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 3px solid ' + (priorityColors[n.priority] || '#3b82f6') + ';">' +
+                                '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">' +
+                                    '<div style="flex: 1;">' +
+                                        '<strong style="color: #F4B41A; font-size: 15px;">' + (n.title || 'No title') + '</strong>' +
+                                        (n.link ? '<a href="' + n.link + '" target="_blank" style="margin-left: 8px; color: #3b82f6; font-size: 12px;">🔗 Link</a>' : '') +
+                                    '</div>' +
+                                    '<div style="display: flex; gap: 8px; align-items: center;">' +
+                                        '<span style="color: #5a5a6a; font-size: 12px;">' + timeStr + '</span>' +
+                                        '<button onclick="AdminApp.deleteNotification(\'' + doc.id + '\')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px; padding: 4px;" title="Delete">🗑️</button>' +
+                                    '</div>' +
                                 '</div>' +
-                                '<p style="color: #8a8a9a; font-size: 14px; margin-bottom: 8px;">' + (n.message || '') + '</p>' +
-                                '<div style="display: flex; gap: 12px; font-size: 12px; color: #5a5a6a;">' +
-                                    '<span>👤 ' + (n.audience || 'all') + '</span>' +
+                                '<p style="color: #8a8a9a; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">' + (n.message || '') + '</p>' +
+                                '<div style="display: flex; gap: 16px; font-size: 12px; color: #5a5a6a; flex-wrap: wrap; align-items: center;">' +
+                                    '<span>' + (priorityIcons[n.priority] || '🔵') + ' ' + (n.priority || 'normal') + '</span>' +
+                                    '<span>' + (audienceIcons[n.audience] || '👥') + ' ' + (n.audience || 'all') + '</span>' +
                                     '<span>📤 ' + (n.sentBy || 'admin') + '</span>' +
+                                    '<span style="background: #2a2a3a; padding: 4px 10px; border-radius: 12px; color: #10b981;">👁️ ' + viewCount + ' views</span>' +
+                                    '<span style="background: #2a2a3a; padding: 4px 10px; border-radius: 12px; color: #3b82f6;">👤 ' + viewedByCount + ' users</span>' +
                                 '</div>' +
                             '</div>';
                         }).join('');
                     });
+            },
+            
+            // Delete notification
+            deleteNotification: async function(id) {
+                if (!confirm('Are you sure you want to delete this notification?')) return;
+                
+                try {
+                    await db.collection('app_notifications').doc(id).delete();
+                    alert('Notification deleted!');
+                } catch (e) {
+                    console.error('Error deleting notification:', e);
+                    alert('Error deleting notification');
+                }
+            },
+            
+            // Refresh stats manually
+            refreshNotificationStats: function() {
+                this.loadNotificationHistory();
+                alert('Stats refreshed!');
             }
         };
         
