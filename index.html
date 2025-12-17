@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -752,6 +751,149 @@
             color: #8a8a9a;
         }
         
+        /* Image Lightbox */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .lightbox-overlay.show {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            max-width: 95%;
+            max-height: 95%;
+            position: relative;
+        }
+        
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #ef4444;
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        
+        .lightbox-download {
+            position: absolute;
+            top: -40px;
+            right: 50px;
+            background: #3b82f6;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* Multiple attachments grid */
+        .attachments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .attachment-thumb {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #2a2a3a;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #1a1a24;
+        }
+        
+        .attachment-thumb:hover {
+            border-color: #F4B41A;
+            transform: scale(1.02);
+        }
+        
+        .attachment-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Admin notification bell */
+        .notification-bell {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .notification-bell .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notif-permission-banner {
+            background: linear-gradient(135deg, #F4B41A20, #E8A83020);
+            border: 1px solid #F4B41A40;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        
+        .notif-permission-banner.hidden {
+            display: none;
+        }
+        
+        .notif-permission-banner p {
+            color: #F4B41A;
+            font-size: 14px;
+        }
+        
+        .notif-permission-banner button {
+            background: #F4B41A;
+            border: none;
+            color: #0a0a0f;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
         .reply-section {
             margin-top: 24px;
             padding-top: 24px;
@@ -1116,7 +1258,7 @@
                     <div class="user-avatar" id="userAvatar">A</div>
                     <div class="user-details">
                         <h4 id="userName">Admin</h4>
-                        <p id="userEmailDisplay">admin@avanti.org
+                        <p id="userEmailDisplay"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="eb8a8f868285ab8a9d8a859f82c584998c">[email&#160;protected]</a>
                             <span class="twofa-badge" id="twofaBadge">2FA</span>
                         </p>
                     </div>
@@ -1168,6 +1310,12 @@
                         <div class="value" id="resolvedTickets">0</div>
                         <div class="label">Resolved</div>
                     </div>
+                </div>
+                
+                <!-- Notification Permission Banner -->
+                <div class="notif-permission-banner" id="notifPermissionBanner">
+                    <p>🔔 Enable browser notifications to get alerts when new tickets arrive</p>
+                    <button onclick="AdminApp.requestNotificationPermission()">Enable Notifications</button>
                 </div>
                 
                 <!-- Filters -->
@@ -1348,6 +1496,15 @@
         </div>
     </div>
     
+    <!-- Image Lightbox -->
+    <div class="lightbox-overlay" id="imageLightbox" onclick="AdminApp.closeLightbox(event)">
+        <div class="lightbox-content">
+            <button class="lightbox-download" onclick="AdminApp.downloadImage()">⬇️ Download</button>
+            <button class="lightbox-close" onclick="AdminApp.closeLightbox()">×</button>
+            <img id="lightboxImage" src="" alt="Full size image">
+        </div>
+    </div>
+    
     <!-- FAQ Modal -->
     <div class="modal-overlay" id="faqModal">
         <div class="modal">
@@ -1389,7 +1546,7 @@
     </div>
 
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
@@ -1414,10 +1571,15 @@
             editingFaqId: null,
             currentUser: null,
             tempSecret: null, // For 2FA setup
+            previousTicketIds: new Set(), // Track known tickets for notifications
+            currentLightboxUrl: null, // For image lightbox
             
             init: function() {
                 // Setup OTP inputs
                 this.setupOTPInputs();
+                
+                // Check notification permission status
+                this.checkNotificationPermission();
                 
                 auth.onAuthStateChanged(user => {
                     if (user) {
@@ -1427,6 +1589,96 @@
                         this.showLogin();
                     }
                 });
+            },
+            
+            // Check and update notification permission banner
+            checkNotificationPermission: function() {
+                const banner = document.getElementById('notifPermissionBanner');
+                if (!banner) return;
+                
+                if (!('Notification' in window)) {
+                    banner.innerHTML = '<p>⚠️ Your browser does not support notifications</p>';
+                    return;
+                }
+                
+                if (Notification.permission === 'granted') {
+                    banner.classList.add('hidden');
+                } else if (Notification.permission === 'denied') {
+                    banner.innerHTML = '<p>🔕 Notifications blocked. Enable in browser settings to receive alerts.</p>';
+                }
+            },
+            
+            // Request notification permission
+            requestNotificationPermission: async function() {
+                if (!('Notification' in window)) {
+                    alert('Your browser does not support notifications');
+                    return;
+                }
+                
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        document.getElementById('notifPermissionBanner').classList.add('hidden');
+                        // Show test notification
+                        new Notification('Avanti Help Desk', {
+                            body: '✅ Notifications enabled! You will now receive alerts for new tickets.',
+                            icon: 'https://avantifellows.org/favicon.ico'
+                        });
+                    } else {
+                        alert('Notifications denied. You can enable them later in browser settings.');
+                    }
+                    this.checkNotificationPermission();
+                } catch (e) {
+                    console.error('Error requesting notification permission:', e);
+                }
+            },
+            
+            // Show browser notification for new ticket
+            showNewTicketNotification: function(ticket) {
+                if (Notification.permission !== 'granted') return;
+                
+                try {
+                    const notification = new Notification('🎫 New Ticket Received', {
+                        body: `${ticket.userName || 'User'} - ${ticket.subject || 'No subject'}`,
+                        icon: 'https://avantifellows.org/favicon.ico',
+                        tag: 'new-ticket-' + ticket.id,
+                        requireInteraction: true
+                    });
+                    
+                    notification.onclick = () => {
+                        window.focus();
+                        this.viewTicket(ticket.id);
+                        notification.close();
+                    };
+                    
+                    // Auto-close after 10 seconds
+                    setTimeout(() => notification.close(), 10000);
+                } catch (e) {
+                    console.error('Error showing notification:', e);
+                }
+            },
+            
+            // Image lightbox functions
+            openLightbox: function(imageUrl) {
+                this.currentLightboxUrl = imageUrl;
+                document.getElementById('lightboxImage').src = imageUrl;
+                document.getElementById('imageLightbox').classList.add('show');
+            },
+            
+            closeLightbox: function(event) {
+                if (event && event.target !== event.currentTarget) return;
+                document.getElementById('imageLightbox').classList.remove('show');
+            },
+            
+            downloadImage: function() {
+                if (!this.currentLightboxUrl) return;
+                const a = document.createElement('a');
+                a.href = this.currentLightboxUrl;
+                a.download = 'attachment_' + Date.now() + '.jpg';
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             },
             
             // Setup OTP input behavior
@@ -1802,13 +2054,53 @@
                 db.collection('helpdesk_tickets')
                     .orderBy('createdAt', 'desc')
                     .onSnapshot(snap => {
-                        this.tickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        const newTickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        
+                        // Check for new tickets (only after initial load)
+                        if (this.previousTicketIds.size > 0) {
+                            newTickets.forEach(ticket => {
+                                if (!this.previousTicketIds.has(ticket.id) && ticket.status === 'open') {
+                                    // This is a new ticket - show notification
+                                    this.showNewTicketNotification(ticket);
+                                    // Play notification sound
+                                    this.playNotificationSound();
+                                }
+                            });
+                        }
+                        
+                        // Update known ticket IDs
+                        this.previousTicketIds = new Set(newTickets.map(t => t.id));
+                        
+                        this.tickets = newTickets;
                         this.renderTickets();
                         this.updateStats();
                         this.populateSchoolFilter();
                     }, err => {
                         console.error('Error loading tickets:', err);
                     });
+            },
+            
+            // Play notification sound
+            playNotificationSound: function() {
+                try {
+                    // Create a simple beep using Web Audio API
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                } catch (e) {
+                    console.log('Could not play notification sound');
+                }
             },
             
             refreshTickets: function() {
@@ -1871,11 +2163,15 @@
                 }
                 
                 container.innerHTML = filtered.map(t => {
-                    const hasScreenshot = t.screenshotUrl ? 'has-screenshot' : '';
-                    const screenshotIcon = t.screenshotUrl ? ' 📷' : '';
+                    // Check for any attachments
+                    const hasAttachments = t.screenshotUrl || t.imageUrl || t.attachmentUrl || t.screenshot || t.image || 
+                                          (Array.isArray(t.attachments) && t.attachments.length > 0) ||
+                                          (Array.isArray(t.screenshots) && t.screenshots.length > 0) ||
+                                          (Array.isArray(t.images) && t.images.length > 0);
+                    const attachmentIcon = hasAttachments ? ' 📷' : '';
                     
-                    return '<div class="ticket-row ' + hasScreenshot + '" onclick="AdminApp.viewTicket(\'' + t.id + '\')">' +
-                        '<div class="ticket-id">' + (t.ticketId || t.id.slice(0,8)) + screenshotIcon + '</div>' +
+                    return '<div class="ticket-row" onclick="AdminApp.viewTicket(\'' + t.id + '\')">' +
+                        '<div class="ticket-id">' + (t.ticketId || t.id.slice(0,8)) + attachmentIcon + '</div>' +
                         '<div class="ticket-subject">' + (t.subject || 'No subject') + '</div>' +
                         '<div class="ticket-user">' + (t.userName || 'Unknown') + '</div>' +
                         '<div class="ticket-date">' + (t.school || 'N/A') + '</div>' +
@@ -1898,17 +2194,56 @@
                     '</div>';
                 }).join('');
                 
-                // Screenshot section with loading state
-                let screenshotHtml = '';
-                if (t.screenshotUrl) {
-                    screenshotHtml = `
+                // Collect all attachments from various possible fields
+                let attachments = [];
+                
+                // Check for single screenshot URL fields
+                if (t.screenshotUrl) attachments.push(t.screenshotUrl);
+                if (t.imageUrl && !attachments.includes(t.imageUrl)) attachments.push(t.imageUrl);
+                if (t.attachmentUrl && !attachments.includes(t.attachmentUrl)) attachments.push(t.attachmentUrl);
+                if (t.screenshot && !attachments.includes(t.screenshot)) attachments.push(t.screenshot);
+                if (t.image && !attachments.includes(t.image)) attachments.push(t.image);
+                
+                // Check for array of attachments
+                if (Array.isArray(t.attachments)) {
+                    t.attachments.forEach(url => {
+                        if (typeof url === 'string' && !attachments.includes(url)) {
+                            attachments.push(url);
+                        } else if (url && url.url && !attachments.includes(url.url)) {
+                            attachments.push(url.url);
+                        }
+                    });
+                }
+                if (Array.isArray(t.screenshots)) {
+                    t.screenshots.forEach(url => {
+                        if (typeof url === 'string' && !attachments.includes(url)) {
+                            attachments.push(url);
+                        }
+                    });
+                }
+                if (Array.isArray(t.images)) {
+                    t.images.forEach(url => {
+                        if (typeof url === 'string' && !attachments.includes(url)) {
+                            attachments.push(url);
+                        }
+                    });
+                }
+                
+                // Build attachments HTML
+                let attachmentsHtml = '';
+                if (attachments.length > 0) {
+                    attachmentsHtml = `
                         <div class="screenshot-section">
-                            <div class="detail-label">📷 Screenshot Attached</div>
-                            <img src="${t.screenshotUrl}" alt="Screenshot" 
-                                 onclick="window.open('${t.screenshotUrl}', '_blank')"
-                                 onerror="this.parentElement.innerHTML='<div class=\\'screenshot-loading\\'>❌ Failed to load screenshot</div>'"
-                                 onload="this.style.opacity=1"
-                                 style="opacity: 0; transition: opacity 0.3s;">
+                            <div class="detail-label">📷 Attachments (${attachments.length})</div>
+                            <div class="attachments-grid">
+                                ${attachments.map((url, idx) => `
+                                    <div class="attachment-thumb" onclick="AdminApp.openLightbox('${url}')">
+                                        <img src="${url}" alt="Attachment ${idx + 1}" 
+                                             onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:#666;\\'>❌ Failed</div>'"
+                                             loading="lazy">
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                     `;
                 }
@@ -1932,7 +2267,7 @@
                     '</div>' +
                     '<div class="detail-group"><div class="detail-label">Subject</div><div class="detail-value">' + (t.subject || 'N/A') + '</div></div>' +
                     '<div class="detail-group"><div class="detail-label">Description</div><div class="description-box">' + (t.description || 'No description') + '</div></div>' +
-                    screenshotHtml +
+                    attachmentsHtml +
                     (replies ? '<div class="existing-replies"><div class="detail-label">Conversation</div>' + replies + '</div>' : '') +
                     '<div class="reply-section">' +
                         '<h3>Reply</h3>' +
@@ -2375,13 +2710,15 @@
             },
             
             // Refresh stats manually
-            refreshNotificationStats: function() {
+            refreshStats: function() {
                 this.loadNotificationHistory();
-                alert('Stats refreshed!');
             }
         };
         
-        AdminApp.init();
+        // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            AdminApp.init();
+        });
     </script>
 </body>
 </html>
