@@ -1560,7 +1560,6 @@
             previousTicketIds: new Set(),
             currentLightboxUrl: null,
             ticketCounter: null, // For AVANTI ticket numbering
-            isLoggingIn: false, // Flag to track if user clicked login
             
             init: function() {
                 this.setupOTPInputs();
@@ -1569,10 +1568,8 @@
                 auth.onAuthStateChanged(user => {
                     if (user) {
                         this.currentUser = user;
-                        // Only check 2FA if user actually clicked login button
-                        if (this.isLoggingIn) {
-                            this.check2FAStatus(user);
-                        }
+                        // Check 2FA status for both fresh login and returning users
+                        this.check2FAStatus(user);
                     } else {
                         this.showLogin();
                     }
@@ -1822,14 +1819,10 @@
                 btn.innerHTML = '<span class="loading"></span>';
                 error.classList.remove('show');
                 
-                // Set flag that user is actively logging in
-                this.isLoggingIn = true;
-                
                 try {
                     await auth.signInWithEmailAndPassword(email, password);
-                    // Auth state change will handle the 2FA check now
+                    // Auth state change will handle the 2FA check
                 } catch (err) {
-                    this.isLoggingIn = false;
                     error.textContent = err.message;
                     error.classList.add('show');
                     btn.disabled = false;
@@ -2003,13 +1996,11 @@
             },
             
             cancelLogin: async function() {
-                this.isLoggingIn = false;
                 await auth.signOut();
                 this.showLogin();
             },
             
             logout: async function() {
-                this.isLoggingIn = false;
                 await auth.signOut();
             },
             
