@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avanti Help Desk - Admin</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23F4B41A'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='50' font-weight='bold' fill='%230a0a0f' font-family='Arial'%3EA%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23F4B41A'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='50' font-weight='bold' fill='%230a0a0f' font-family='Arial'%3EA%3C/text%3E%3C/svg%3E">
+    
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
     <!-- 2FA Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/otpauth/9.2.2/otpauth.umd.min.js"></script>
@@ -46,8 +51,17 @@
         }
         
         .login-header .logo-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #F4B41A, #E8A830);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: #0a0a0f;
+            margin: 0 auto 16px;
         }
         
         .login-header h1 {
@@ -232,6 +246,30 @@
         
         .skip-2fa-link a:hover {
             color: #F4B41A;
+        }
+        
+        /* Trust Device Checkbox */
+        .trust-device-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0;
+            padding: 12px;
+            background: rgba(244, 180, 26, 0.05);
+            border-radius: 8px;
+        }
+        
+        .trust-device-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #F4B41A;
+            cursor: pointer;
+        }
+        
+        .trust-device-option label {
+            color: #8a8a9a;
+            font-size: 13px;
+            cursor: pointer;
         }
         
         /* Dashboard Layout */
@@ -499,92 +537,75 @@
             flex-wrap: wrap;
         }
         
-        .filter-input {
-            padding: 10px 16px;
-            background: #1a1a24;
+        .filter-input, .filter-select {
+            padding: 12px 16px;
+            background: #12121a;
             border: 1px solid #2a2a3a;
-            border-radius: 8px;
+            border-radius: 10px;
             color: #fff;
             font-size: 14px;
-            min-width: 200px;
             font-family: inherit;
         }
         
-        .filter-input:focus {
+        .filter-input {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-input:focus, .filter-select:focus {
             outline: none;
             border-color: #F4B41A;
         }
         
-        .filter-select {
-            padding: 10px 16px;
-            background: #1a1a24;
-            border: 1px solid #2a2a3a;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        
-        /* Tickets Table */
-        .tickets-table {
+        /* Tickets List */
+        .tickets-container {
             background: #12121a;
             border: 1px solid #2a2a3a;
             border-radius: 16px;
             overflow: hidden;
         }
         
-        .table-header {
+        .tickets-header {
             display: grid;
-            grid-template-columns: 120px 1fr 150px 120px 100px 100px;
+            grid-template-columns: 150px 1fr 150px 120px 100px 80px;
             padding: 16px 20px;
             background: #1a1a24;
-            border-bottom: 1px solid #2a2a3a;
-            font-weight: 600;
             color: #8a8a9a;
             font-size: 13px;
+            font-weight: 500;
+            border-bottom: 1px solid #2a2a3a;
         }
         
         .ticket-row {
             display: grid;
-            grid-template-columns: 120px 1fr 150px 120px 100px 100px;
+            grid-template-columns: 150px 1fr 150px 120px 100px 80px;
             padding: 16px 20px;
             border-bottom: 1px solid #2a2a3a;
-            align-items: center;
             cursor: pointer;
             transition: background 0.2s;
+            align-items: center;
         }
         
         .ticket-row:hover {
             background: rgba(244, 180, 26, 0.05);
         }
         
-        .ticket-row:last-child {
-            border-bottom: none;
-        }
-        
-        .ticket-row.has-screenshot {
-            border-left: 3px solid #3b82f6;
-        }
-        
         .ticket-id {
             font-family: 'Space Mono', monospace;
             color: #F4B41A;
-            font-size: 13px;
+            font-size: 12px;
         }
         
         .ticket-subject {
-            font-weight: 500;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        .ticket-user {
+        .ticket-user, .ticket-date {
             color: #8a8a9a;
-            font-size: 13px;
-        }
-        
-        .ticket-date {
-            color: #8a8a9a;
-            font-size: 13px;
+            font-size: 14px;
         }
         
         .status-badge {
@@ -592,32 +613,32 @@
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 500;
         }
         
         .status-badge.open {
-            background: rgba(239, 68, 68, 0.15);
+            background: rgba(239, 68, 68, 0.2);
             color: #ef4444;
         }
         
         .status-badge.in-progress {
-            background: rgba(245, 158, 11, 0.15);
+            background: rgba(245, 158, 11, 0.2);
             color: #f59e0b;
         }
         
         .status-badge.resolved {
-            background: rgba(16, 185, 129, 0.15);
+            background: rgba(16, 185, 129, 0.2);
             color: #10b981;
         }
         
         .action-btn {
-            padding: 6px 12px;
-            background: #2a2a3a;
-            border: none;
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid #F4B41A;
+            color: #F4B41A;
             border-radius: 6px;
-            color: #fff;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             transition: all 0.2s;
             font-family: inherit;
         }
@@ -630,20 +651,21 @@
         /* Modal */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: rgba(0, 0, 0, 0.8);
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
             padding: 20px;
         }
         
         .modal-overlay.show {
-            display: flex;
+            opacity: 1;
+            visibility: visible;
         }
         
         .modal {
@@ -652,7 +674,7 @@
             width: 100%;
             max-width: 700px;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: auto;
             border: 1px solid #2a2a3a;
         }
         
@@ -662,41 +684,51 @@
             align-items: center;
             padding: 24px;
             border-bottom: 1px solid #2a2a3a;
+            position: sticky;
+            top: 0;
+            background: #12121a;
+            z-index: 10;
         }
         
         .modal-header h2 {
+            color: #F4B41A;
             font-size: 20px;
-            color: #fff;
         }
         
         .modal-close {
-            width: 36px;
-            height: 36px;
-            background: #2a2a3a;
+            background: none;
             border: none;
-            border-radius: 50%;
-            color: #fff;
+            color: #8a8a9a;
+            font-size: 28px;
             cursor: pointer;
-            font-size: 18px;
-            transition: all 0.2s;
+            line-height: 1;
         }
         
         .modal-close:hover {
-            background: #ef4444;
+            color: #fff;
         }
         
         .modal-body {
             padding: 24px;
         }
         
-        .detail-group {
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-bottom: 20px;
+        }
+        
+        .detail-group {
+            margin-bottom: 16px;
         }
         
         .detail-label {
             color: #8a8a9a;
             font-size: 12px;
             margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .detail-value {
@@ -704,116 +736,24 @@
             font-size: 15px;
         }
         
-        .detail-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
         .description-box {
             background: #1a1a24;
-            border-radius: 10px;
-            padding: 16px;
-            line-height: 1.6;
-        }
-        
-        .screenshot-section {
-            margin-top: 20px;
-            background: #1a1a24;
-            border-radius: 12px;
-            padding: 16px;
-        }
-        
-        .screenshot-section .detail-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .screenshot-section img {
-            max-width: 100%;
-            border-radius: 10px;
             border: 1px solid #2a2a3a;
-            cursor: pointer;
-            transition: transform 0.2s;
+            border-radius: 10px;
+            padding: 16px;
+            color: #fff;
+            line-height: 1.6;
+            white-space: pre-wrap;
         }
         
-        .screenshot-section img:hover {
-            transform: scale(1.02);
+        /* Screenshot/Attachment Styles */
+        .screenshot-section {
+            margin: 20px 0;
         }
         
-        .screenshot-loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            color: #8a8a9a;
-        }
-        
-        /* Image Lightbox */
-        .lightbox-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-        
-        .lightbox-overlay.show {
-            display: flex;
-        }
-        
-        .lightbox-content {
-            max-width: 95%;
-            max-height: 95%;
-            position: relative;
-        }
-        
-        .lightbox-content img {
-            max-width: 100%;
-            max-height: 90vh;
-            border-radius: 8px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-        
-        .lightbox-close {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            background: #ef4444;
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-        }
-        
-        .lightbox-download {
-            position: absolute;
-            top: -40px;
-            right: 50px;
-            background: #3b82f6;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        /* Multiple attachments grid */
         .attachments-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 12px;
             margin-top: 12px;
         }
@@ -822,15 +762,15 @@
             aspect-ratio: 1;
             border-radius: 10px;
             overflow: hidden;
-            border: 1px solid #2a2a3a;
             cursor: pointer;
+            border: 2px solid #2a2a3a;
             transition: all 0.2s;
             background: #1a1a24;
         }
         
         .attachment-thumb:hover {
             border-color: #F4B41A;
-            transform: scale(1.02);
+            transform: scale(1.05);
         }
         
         .attachment-thumb img {
@@ -839,32 +779,217 @@
             object-fit: cover;
         }
         
-        /* Admin notification bell */
-        .notification-bell {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-        .notification-bell .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
+        /* Lightbox */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
         
+        .lightbox-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
+        }
+        
+        .lightbox-download {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #F4B41A;
+            border: none;
+            color: #0a0a0f;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Reply Section */
+        .reply-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #2a2a3a;
+        }
+        
+        .reply-section h3 {
+            color: #F4B41A;
+            margin-bottom: 16px;
+        }
+        
+        .reply-input {
+            width: 100%;
+            padding: 16px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .reply-input:focus {
+            outline: none;
+            border-color: #F4B41A;
+        }
+        
+        .reply-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .existing-replies {
+            margin-top: 20px;
+        }
+        
+        .reply-item {
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .reply-item.admin {
+            border-left: 3px solid #F4B41A;
+        }
+        
+        .reply-meta {
+            font-size: 12px;
+            color: #8a8a9a;
+            margin-bottom: 8px;
+        }
+        
+        /* Pages */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* FAQ Page */
+        .faq-grid {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .faq-card {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .faq-card h3 {
+            color: #F4B41A;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .faq-card p {
+            color: #8a8a9a;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .faq-card .faq-meta {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-card .category-tag {
+            background: rgba(244, 180, 26, 0.1);
+            color: #F4B41A;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .faq-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .faq-actions button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+        
+        .faq-actions .edit-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        
+        .faq-actions .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        /* Settings */
+        .settings-section {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .settings-section h3 {
+            color: #F4B41A;
+            margin-bottom: 12px;
+        }
+        
+        .settings-section p {
+            color: #8a8a9a;
+            font-size: 14px;
+        }
+        
+        /* Notification permission banner */
         .notif-permission-banner {
-            background: linear-gradient(135deg, #F4B41A20, #E8A83020);
-            border: 1px solid #F4B41A40;
+            background: rgba(244, 180, 26, 0.1);
+            border: 1px solid rgba(244, 180, 26, 0.3);
             border-radius: 12px;
             padding: 16px 20px;
             margin-bottom: 20px;
@@ -883,204 +1008,39 @@
             font-size: 14px;
         }
         
-        .notif-permission-banner button {
-            background: #F4B41A;
-            border: none;
-            color: #0a0a0f;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        
-        .reply-section {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #2a2a3a;
-        }
-        
-        .reply-section h3 {
-            margin-bottom: 16px;
-            font-size: 16px;
-        }
-        
-        .reply-input {
-            width: 100%;
-            padding: 14px;
-            background: #1a1a24;
-            border: 1px solid #2a2a3a;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 14px;
-            min-height: 100px;
-            resize: vertical;
-            font-family: inherit;
-            margin-bottom: 12px;
-        }
-        
-        .reply-input:focus {
-            outline: none;
-            border-color: #F4B41A;
-        }
-        
-        .reply-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .existing-replies {
-            margin-top: 20px;
-        }
-        
-        .reply-item {
-            background: #1a1a24;
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .reply-item.admin {
-            border-left: 3px solid #F4B41A;
-        }
-        
-        .reply-meta {
-            font-size: 12px;
-            color: #8a8a9a;
-            margin-bottom: 6px;
-        }
-        
-        /* FAQ Section */
-        .faq-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .faq-card {
-            background: #12121a;
-            border: 1px solid #2a2a3a;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .faq-card .icon {
-            color: #F4B41A;
-            font-size: 24px;
-        }
-        
-        .faq-card .content {
-            flex: 1;
-        }
-        
-        .faq-card h4 {
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-        
-        .faq-card p {
-            color: #8a8a9a;
-            font-size: 13px;
-        }
-        
-        .faq-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .faq-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.2s;
-        }
-        
-        .faq-btn.edit {
-            background: #2a2a3a;
-            color: #fff;
-        }
-        
-        .faq-btn.edit:hover {
-            background: #3b82f6;
-        }
-        
-        .faq-btn.delete {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-        
-        .faq-btn.delete:hover {
-            background: #ef4444;
-            color: white;
-        }
-        
-        /* Settings Section */
-        .settings-section {
-            background: #12121a;
-            border: 1px solid #2a2a3a;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        
-        .settings-section h3 {
-            color: #F4B41A;
-            margin-bottom: 8px;
-        }
-        
-        .settings-section p {
-            color: #8a8a9a;
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-        
+        /* Form row */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
         
-        /* Notification Stats Cards */
-        .notification-stats {
+        /* Notification stats cards */
+        .notif-stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         
-        .notification-stat {
+        .notif-stat-card {
             background: #1a1a24;
+            border: 1px solid #2a2a3a;
             border-radius: 12px;
             padding: 16px;
             text-align: center;
         }
         
-        .notification-stat .value {
+        .notif-stat-card .value {
             font-size: 28px;
             font-weight: 700;
             color: #F4B41A;
         }
         
-        .notification-stat .label {
-            color: #8a8a9a;
+        .notif-stat-card .label {
             font-size: 12px;
+            color: #8a8a9a;
             margin-top: 4px;
-        }
-        
-        /* Page sections */
-        .page {
-            display: none;
-        }
-        
-        .page.active {
-            display: block;
         }
         
         /* Responsive */
@@ -1089,21 +1049,19 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .notification-stats {
+            .tickets-header, .ticket-row {
+                grid-template-columns: 130px 1fr 100px 100px;
+            }
+            
+            .tickets-header > div:nth-child(3),
+            .ticket-row > div:nth-child(3),
+            .tickets-header > div:nth-child(6),
+            .ticket-row > div:nth-child(6) {
+                display: none;
+            }
+            
+            .notif-stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .table-header,
-            .ticket-row {
-                grid-template-columns: 100px 1fr 120px 100px 80px;
-            }
-            
-            .ticket-row > div:nth-child(4) {
-                display: none;
-            }
-            
-            .table-header > div:nth-child(4) {
-                display: none;
             }
         }
         
@@ -1114,40 +1072,43 @@
             
             .main-content {
                 margin-left: 0;
-                padding: 20px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
             }
             
             .detail-row {
                 grid-template-columns: 1fr;
             }
             
-            .reply-actions {
-                flex-direction: column;
+            .form-row {
+                grid-template-columns: 1fr;
             }
             
-            .reply-actions .btn {
-                width: 100%;
-                justify-content: center;
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .tickets-header, .ticket-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .tickets-header > div:nth-child(n+3),
+            .ticket-row > div:nth-child(n+3) {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
     <!-- Login Page -->
-    <div class="login-container" id="loginPage">
+    <div id="loginPage" class="login-container">
         <div class="login-box">
-            <div class="login-header">
-                <img src="./logo.png" alt="Avanti Logo" style="width:64px;">
-                <h1>Avanti Help Desk</h1>
-                <p>Admin Dashboard</p>
-            </div>
-            
-            <!-- Step 1: Email/Password -->
+            <!-- Login Step -->
             <div class="twofa-step active" id="loginStep">
+                <div class="login-header">
+                    <div class="logo-icon">A</div>
+                    <h1>Avanti Help Desk</h1>
+                    <p>Admin Dashboard</p>
+                </div>
+                
                 <div class="login-error" id="loginError"></div>
                 
                 <div class="form-group">
@@ -1157,7 +1118,7 @@
                 
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" onkeypress="if(event.key==='Enter')AdminApp.login()">
+                    <input type="password" id="loginPassword" placeholder="••••••••" onkeypress="if(event.key==='Enter')AdminApp.login()">
                 </div>
                 
                 <button class="login-btn" id="loginBtn" onclick="AdminApp.login()">
@@ -1165,91 +1126,98 @@
                 </button>
             </div>
             
-            <!-- Step 2: 2FA Verification -->
+            <!-- 2FA Verification Step -->
             <div class="twofa-step" id="verifyStep">
-                <div class="twofa-info">
-                    <h4>🔐 Two-Factor Authentication</h4>
-                    <p>Enter the 6-digit code from your authenticator app.</p>
+                <div class="login-header">
+                    <div class="logo-icon">🔐</div>
+                    <h1>Verify Identity</h1>
+                    <p>Enter the 6-digit code from your authenticator app</p>
                 </div>
                 
                 <div class="login-error" id="verifyError"></div>
                 
                 <div class="otp-input-container">
-                    <input type="text" class="otp-input" maxlength="1" data-index="0">
-                    <input type="text" class="otp-input" maxlength="1" data-index="1">
-                    <input type="text" class="otp-input" maxlength="1" data-index="2">
-                    <input type="text" class="otp-input" maxlength="1" data-index="3">
-                    <input type="text" class="otp-input" maxlength="1" data-index="4">
-                    <input type="text" class="otp-input" maxlength="1" data-index="5">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
                 </div>
                 
-                <button class="login-btn" id="verifyBtn" onclick="AdminApp.verify2FA()">
+                <div class="trust-device-option">
+                    <input type="checkbox" id="trustDevice" checked>
+                    <label for="trustDevice">Trust this device for 15 days</label>
+                </div>
+                
+                <button class="login-btn" onclick="AdminApp.verify2FA()">
                     Verify & Continue
                 </button>
                 
                 <div class="skip-2fa-link">
-                    <a onclick="AdminApp.cancelLogin()">← Back to login</a>
+                    <a onclick="AdminApp.cancelLogin()">← Back to Login</a>
                 </div>
             </div>
             
-            <!-- Step 3: 2FA Setup (for new users) -->
+            <!-- 2FA Setup Step (First Time) -->
             <div class="twofa-step" id="setupStep">
+                <div class="login-header">
+                    <div class="logo-icon">🛡️</div>
+                    <h1>Secure Your Account</h1>
+                    <p>Set up Two-Factor Authentication (optional but recommended)</p>
+                </div>
+                
                 <div class="twofa-info">
-                    <h4>🛡️ Set Up Two-Factor Authentication</h4>
-                    <p>Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.)</p>
+                    <h4>📱 How to setup:</h4>
+                    <p>1. Download Google Authenticator or any TOTP app<br>
+                    2. Scan the QR code below or enter the secret key<br>
+                    3. Enter the 6-digit code to confirm</p>
                 </div>
                 
                 <div class="qr-container" id="qrCode"></div>
                 
-                <p style="color: #8a8a9a; font-size: 12px; text-align: center; margin-bottom: 12px;">
-                    Can't scan? Enter this code manually:
-                </p>
                 <div class="secret-key" id="secretKey"></div>
                 
                 <div class="form-group">
-                    <label>Enter verification code to confirm setup</label>
-                    <input type="text" id="setupCode" placeholder="000000" maxlength="6" style="text-align: center; font-size: 20px; letter-spacing: 8px;">
+                    <label>Enter the 6-digit code to confirm setup</label>
+                    <input type="text" id="setupCode" placeholder="000000" maxlength="6" style="text-align: center; font-family: 'Space Mono', monospace; font-size: 24px; letter-spacing: 8px;">
                 </div>
                 
                 <button class="login-btn" onclick="AdminApp.confirmSetup()">
-                    Confirm & Enable 2FA
+                    Enable 2FA & Continue
                 </button>
                 
                 <div class="skip-2fa-link">
-                    <a onclick="AdminApp.skipSetup()">Skip for now (not recommended)</a>
+                    <a onclick="AdminApp.skipSetup()">Skip for now →</a>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- Dashboard -->
-    <div class="dashboard" id="dashboard">
-        <!-- Sidebar -->
-        <div class="sidebar">
+    <div id="dashboard" class="dashboard">
+        <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>
-  <img src="./logo.png" alt="Avanti" style="height:28px;vertical-align:middle;margin-right:8px;">
-  Help Desk
-</h2>
+                <h2>🎫 Avanti Help Desk</h2>
             </div>
             
             <nav class="sidebar-nav">
                 <button class="nav-item active" onclick="AdminApp.showPage('tickets')">
                     <span class="icon">📋</span>
-                    <span>Tickets</span>
+                    Tickets
                     <span class="badge" id="openCount">0</span>
                 </button>
-                <button class="nav-item" onclick="AdminApp.showPage('faqs')">
+                <button class="nav-item" onclick="AdminApp.showPage('faq')">
                     <span class="icon">❓</span>
-                    <span>FAQ Articles</span>
+                    FAQ Manager
                 </button>
                 <button class="nav-item" onclick="AdminApp.showPage('notifications')">
                     <span class="icon">📢</span>
-                    <span>Notifications</span>
+                    Announcements
                 </button>
                 <button class="nav-item" onclick="AdminApp.showPage('settings')">
                     <span class="icon">⚙️</span>
-                    <span>Settings</span>
+                    Settings
                 </button>
             </nav>
             
@@ -1258,19 +1226,17 @@
                     <div class="user-avatar" id="userAvatar">A</div>
                     <div class="user-details">
                         <h4 id="userName">Admin</h4>
-                        <p id="userEmailDisplay"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="eb8a8f868285ab8a9d8a859f82c584998c">[email&#160;protected]</a>
-                            <span class="twofa-badge" id="twofaBadge">2FA</span>
-                        </p>
+                        <p id="userEmailDisplay">admin@example.com</p>
+                        <span class="twofa-badge disabled" id="twofaBadge">2FA ✗</span>
                     </div>
                 </div>
                 <button class="logout-btn" onclick="AdminApp.logout()">
                     🚪 Logout
                 </button>
             </div>
-        </div>
+        </aside>
         
-        <!-- Main Content -->
-        <div class="main-content">
+        <main class="main-content">
             <!-- Tickets Page -->
             <div class="page active" id="ticketsPage">
                 <div class="page-header">
@@ -1280,7 +1246,7 @@
                     </div>
                     <div class="header-actions">
                         <button class="btn btn-secondary" onclick="AdminApp.exportTickets()">
-                            📥 Export CSV
+                            📤 Export CSV
                         </button>
                         <button class="btn btn-primary" onclick="AdminApp.refreshTickets()">
                             🔄 Refresh
@@ -1288,10 +1254,17 @@
                     </div>
                 </div>
                 
-                <!-- Stats -->
+                <!-- Notification Permission Banner -->
+                <div class="notif-permission-banner" id="notifPermissionBanner">
+                    <p>🔔 Enable notifications to get alerts when new tickets arrive</p>
+                    <button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="AdminApp.requestNotificationPermission()">
+                        Enable Notifications
+                    </button>
+                </div>
+                
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="icon">📋</div>
+                        <div class="icon">📊</div>
                         <div class="value" id="totalTickets">0</div>
                         <div class="label">Total Tickets</div>
                     </div>
@@ -1312,17 +1285,10 @@
                     </div>
                 </div>
                 
-                <!-- Notification Permission Banner -->
-                <div class="notif-permission-banner" id="notifPermissionBanner">
-                    <p>🔔 Enable browser notifications to get alerts when new tickets arrive</p>
-                    <button onclick="AdminApp.requestNotificationPermission()">Enable Notifications</button>
-                </div>
-                
-                <!-- Filters -->
                 <div class="filters-bar">
-                    <input type="text" class="filter-input" id="searchInput" placeholder="🔍 Search tickets..." oninput="AdminApp.filterTickets()">
+                    <input type="text" class="filter-input" id="searchInput" placeholder="🔍 Search by ticket ID, subject, or name..." oninput="AdminApp.filterTickets()">
                     <select class="filter-select" id="statusFilter" onchange="AdminApp.filterTickets()">
-                        <option value="">All Statuses</option>
+                        <option value="">All Status</option>
                         <option value="open">Open</option>
                         <option value="in-progress">In Progress</option>
                         <option value="resolved">Resolved</option>
@@ -1332,9 +1298,8 @@
                     </select>
                 </div>
                 
-                <!-- Tickets Table -->
-                <div class="tickets-table">
-                    <div class="table-header">
+                <div class="tickets-container">
+                    <div class="tickets-header">
                         <div>Ticket ID</div>
                         <div>Subject</div>
                         <div>User</div>
@@ -1342,61 +1307,70 @@
                         <div>Status</div>
                         <div>Action</div>
                     </div>
-                    <div id="ticketsList"></div>
+                    <div id="ticketsList">
+                        <div style="text-align: center; padding: 40px; color: #5a5a6a;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">⏳</div>
+                            <p>Loading tickets...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- FAQs Page -->
-            <div class="page" id="faqsPage">
+            <!-- FAQ Page -->
+            <div class="page" id="faqPage">
                 <div class="page-header">
                     <div>
-                        <h1>FAQ Articles</h1>
-                        <p>Manage help articles shown to users</p>
+                        <h1>FAQ Manager</h1>
+                        <p>Manage frequently asked questions for the help widget</p>
                     </div>
                     <div class="header-actions">
                         <button class="btn btn-secondary" onclick="AdminApp.addDefaultFAQs()">
-                            📚 Add Defaults
+                            📥 Add Defaults
                         </button>
-                        <button class="btn btn-primary" onclick="AdminApp.showAddFAQ()">
+                        <button class="btn btn-primary" onclick="AdminApp.openFAQModal()">
                             ➕ Add FAQ
                         </button>
                     </div>
                 </div>
                 
-                <div class="faq-grid" id="faqsList"></div>
+                <div class="faq-grid" id="faqList">
+                    <div style="text-align: center; padding: 40px; color: #5a5a6a;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">⏳</div>
+                        <p>Loading FAQs...</p>
+                    </div>
+                </div>
             </div>
             
             <!-- Notifications Page -->
             <div class="page" id="notificationsPage">
                 <div class="page-header">
                     <div>
-                        <h1>Push Notifications</h1>
-                        <p>Send announcements to all users</p>
+                        <h1>Announcements</h1>
+                        <p>Send notifications to app users</p>
                     </div>
                 </div>
                 
-                <!-- Notification Stats -->
-                <div class="notification-stats">
-                    <div class="notification-stat">
+                <div class="notif-stats-grid">
+                    <div class="notif-stat-card">
                         <div class="value" id="totalSent">0</div>
                         <div class="label">Total Sent</div>
                     </div>
-                    <div class="notification-stat">
+                    <div class="notif-stat-card">
                         <div class="value" id="totalViews">0</div>
                         <div class="label">Total Views</div>
                     </div>
-                    <div class="notification-stat">
+                    <div class="notif-stat-card">
                         <div class="value" id="totalUsers">0</div>
                         <div class="label">Users Reached</div>
                     </div>
-                    <div class="notification-stat">
+                    <div class="notif-stat-card">
                         <div class="value" id="avgViewRate">0%</div>
                         <div class="label">Avg View Rate</div>
                     </div>
                 </div>
                 
                 <div class="settings-section">
-                    <h3>📢 Send New Notification</h3>
+                    <h3>📝 New Announcement</h3>
                     <p>This will be sent to all users via push notification and in-app notification center.</p>
                     
                     <div class="form-group">
@@ -1474,6 +1448,9 @@
                         <button class="btn btn-secondary" id="disable2faBtn" onclick="AdminApp.disable2FA()" style="display: none;">
                             🔓 Disable 2FA
                         </button>
+                        <button class="btn btn-secondary" id="clearTrust2faBtn" onclick="AdminApp.clearDeviceTrust()" style="display: none; margin-left: 10px;">
+                            🗑️ Clear Trusted Devices
+                        </button>
                     </div>
                 </div>
                 
@@ -1481,8 +1458,14 @@
                     <h3>📊 Database Status</h3>
                     <p>Connection: <span style="color: #10b981;">✓ Connected to Firebase</span></p>
                 </div>
+                
+                <div class="settings-section">
+                    <h3>ℹ️ About</h3>
+                    <p>Avanti Help Desk Admin Dashboard v2.0</p>
+                    <p style="margin-top: 8px;">Ticket Format: AVANTI000001</p>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
     
     <!-- Ticket Modal -->
@@ -1546,7 +1529,7 @@
     </div>
 
     <!-- Firebase -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
@@ -1565,33 +1548,98 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
+        // Device Trust Duration (15 days in milliseconds)
+        const TRUST_DURATION = 15 * 24 * 60 * 60 * 1000;
+        
         const AdminApp = {
             tickets: [],
             faqs: [],
             editingFaqId: null,
             currentUser: null,
-            tempSecret: null, // For 2FA setup
-            previousTicketIds: new Set(), // Track known tickets for notifications
-            currentLightboxUrl: null, // For image lightbox
+            tempSecret: null,
+            previousTicketIds: new Set(),
+            currentLightboxUrl: null,
+            ticketCounter: null, // For AVANTI ticket numbering
+            isLoggingIn: false, // Flag to track if user clicked login
             
             init: function() {
-                // Setup OTP inputs
                 this.setupOTPInputs();
-                
-                // Check notification permission status
                 this.checkNotificationPermission();
                 
                 auth.onAuthStateChanged(user => {
                     if (user) {
                         this.currentUser = user;
-                        this.check2FAStatus(user);
+                        // Only check 2FA if user actually clicked login button
+                        if (this.isLoggingIn) {
+                            this.check2FAStatus(user);
+                        }
                     } else {
                         this.showLogin();
                     }
                 });
             },
             
-            // Check and update notification permission banner
+            // Check if device is trusted for 2FA
+            isDeviceTrusted: function(userId) {
+                const trustKey = 'avanti_2fa_trust_' + userId;
+                const trustData = localStorage.getItem(trustKey);
+                
+                if (!trustData) return false;
+                
+                try {
+                    const { timestamp, deviceId } = JSON.parse(trustData);
+                    const now = Date.now();
+                    
+                    // Check if trust is still valid (15 days)
+                    if (now - timestamp < TRUST_DURATION) {
+                        return true;
+                    } else {
+                        // Trust expired, remove it
+                        localStorage.removeItem(trustKey);
+                        return false;
+                    }
+                } catch (e) {
+                    localStorage.removeItem(trustKey);
+                    return false;
+                }
+            },
+            
+            // Trust this device for 15 days
+            trustDevice: function(userId) {
+                const trustKey = 'avanti_2fa_trust_' + userId;
+                const deviceId = this.generateDeviceId();
+                
+                localStorage.setItem(trustKey, JSON.stringify({
+                    timestamp: Date.now(),
+                    deviceId: deviceId
+                }));
+            },
+            
+            // Generate a unique device ID
+            generateDeviceId: function() {
+                const nav = window.navigator;
+                const screen = window.screen;
+                let deviceId = nav.userAgent + screen.width + screen.height + screen.colorDepth;
+                
+                // Simple hash
+                let hash = 0;
+                for (let i = 0; i < deviceId.length; i++) {
+                    const char = deviceId.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return 'device_' + Math.abs(hash).toString(36);
+            },
+            
+            // Clear device trust
+            clearDeviceTrust: function() {
+                if (!this.currentUser) return;
+                
+                const trustKey = 'avanti_2fa_trust_' + this.currentUser.uid;
+                localStorage.removeItem(trustKey);
+                alert('✅ Device trust cleared. You will need to enter 2FA code on next login.');
+            },
+            
             checkNotificationPermission: function() {
                 const banner = document.getElementById('notifPermissionBanner');
                 if (!banner) return;
@@ -1608,7 +1656,6 @@
                 }
             },
             
-            // Request notification permission
             requestNotificationPermission: async function() {
                 if (!('Notification' in window)) {
                     alert('Your browser does not support notifications');
@@ -1619,10 +1666,9 @@
                     const permission = await Notification.requestPermission();
                     if (permission === 'granted') {
                         document.getElementById('notifPermissionBanner').classList.add('hidden');
-                        // Show test notification
                         new Notification('Avanti Help Desk', {
                             body: '✅ Notifications enabled! You will now receive alerts for new tickets.',
-                            icon: 'https://avantifellows.org/favicon.ico'
+                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23F4B41A"/%3E%3Ctext x="50" y="68" text-anchor="middle" font-size="50" font-weight="bold" fill="%230a0a0f"%3EA%3C/text%3E%3C/svg%3E'
                         });
                     } else {
                         alert('Notifications denied. You can enable them later in browser settings.');
@@ -1633,14 +1679,13 @@
                 }
             },
             
-            // Show browser notification for new ticket
             showNewTicketNotification: function(ticket) {
                 if (Notification.permission !== 'granted') return;
                 
                 try {
                     const notification = new Notification('🎫 New Ticket Received', {
-                        body: `${ticket.userName || 'User'} - ${ticket.subject || 'No subject'}`,
-                        icon: 'https://avantifellows.org/favicon.ico',
+                        body: `${ticket.userName || 'User'} - ${ticket.subject || 'No subject'}\n${this.formatTicketId(ticket)}`,
+                        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23F4B41A"/%3E%3Ctext x="50" y="68" text-anchor="middle" font-size="50" font-weight="bold" fill="%230a0a0f"%3EA%3C/text%3E%3C/svg%3E',
                         tag: 'new-ticket-' + ticket.id,
                         requireInteraction: true
                     });
@@ -1651,14 +1696,28 @@
                         notification.close();
                     };
                     
-                    // Auto-close after 10 seconds
                     setTimeout(() => notification.close(), 10000);
                 } catch (e) {
                     console.error('Error showing notification:', e);
                 }
             },
             
-            // Image lightbox functions
+            // Format ticket ID as AVANTI000001
+            formatTicketId: function(ticket) {
+                // If ticket already has a formatted ticketId, use it
+                if (ticket.ticketId && ticket.ticketId.startsWith('AVANTI')) {
+                    return ticket.ticketId;
+                }
+                
+                // If ticket has ticketNumber, format it
+                if (ticket.ticketNumber) {
+                    return 'AVANTI' + String(ticket.ticketNumber).padStart(6, '0');
+                }
+                
+                // Fallback: use first 6 chars of Firebase ID
+                return 'AVANTI' + ticket.id.slice(0, 6).toUpperCase();
+            },
+            
             openLightbox: function(imageUrl) {
                 this.currentLightboxUrl = imageUrl;
                 document.getElementById('lightboxImage').src = imageUrl;
@@ -1681,7 +1740,6 @@
                 document.body.removeChild(a);
             },
             
-            // Setup OTP input behavior
             setupOTPInputs: function() {
                 const inputs = document.querySelectorAll('.otp-input');
                 inputs.forEach((input, index) => {
@@ -1691,7 +1749,6 @@
                             inputs[index + 1].focus();
                         }
                         if (val && index === inputs.length - 1) {
-                            // Auto-verify when all filled
                             const code = Array.from(inputs).map(i => i.value).join('');
                             if (code.length === 6) {
                                 this.verify2FA();
@@ -1719,23 +1776,27 @@
                 });
             },
             
-            // Check 2FA status
+            // Check 2FA status after successful login
             check2FAStatus: async function(user) {
                 try {
                     const doc = await db.collection('admin_2fa').doc(user.uid).get();
                     
                     if (doc.exists && doc.data().enabled) {
-                        // 2FA enabled - show verification step
-                        this.show2FAVerify();
+                        // 2FA is enabled - check if device is trusted
+                        if (this.isDeviceTrusted(user.uid)) {
+                            // Device is trusted, skip 2FA
+                            this.showDashboard(user);
+                        } else {
+                            // Show 2FA verification
+                            this.show2FAVerify();
+                        }
                     } else {
-                        // Check if first time - offer setup
+                        // 2FA not enabled - check if first time setup offer
                         const hasSetup = localStorage.getItem('2fa_setup_offered_' + user.uid);
                         
                         if (!hasSetup) {
-                            // First time - offer 2FA setup
                             this.show2FASetup();
                         } else {
-                            // Already offered but skipped
                             this.showDashboard(user);
                         }
                     }
@@ -1761,10 +1822,14 @@
                 btn.innerHTML = '<span class="loading"></span>';
                 error.classList.remove('show');
                 
+                // Set flag that user is actively logging in
+                this.isLoggingIn = true;
+                
                 try {
                     await auth.signInWithEmailAndPassword(email, password);
-                    // Auth state change will handle the rest
+                    // Auth state change will handle the 2FA check now
                 } catch (err) {
+                    this.isLoggingIn = false;
                     error.textContent = err.message;
                     error.classList.add('show');
                     btn.disabled = false;
@@ -1777,7 +1842,6 @@
                 document.getElementById('setupStep').classList.remove('active');
                 document.getElementById('verifyStep').classList.add('active');
                 
-                // Clear and focus first input
                 const inputs = document.querySelectorAll('.otp-input');
                 inputs.forEach(i => i.value = '');
                 inputs[0].focus();
@@ -1788,13 +1852,11 @@
                 document.getElementById('verifyStep').classList.remove('active');
                 document.getElementById('setupStep').classList.add('active');
                 
-                // Generate secret
                 const secret = this.generateSecret();
                 this.tempSecret = secret;
                 
                 const email = this.currentUser.email;
                 
-                // Create TOTP URI
                 const totp = new OTPAuth.TOTP({
                     issuer: 'Avanti Help Desk',
                     label: email,
@@ -1806,10 +1868,8 @@
                 
                 const uri = totp.toString();
                 
-                // Show secret key
                 document.getElementById('secretKey').textContent = secret;
                 
-                // Generate QR code
                 const qrContainer = document.getElementById('qrCode');
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, {
@@ -1839,7 +1899,6 @@
                     return;
                 }
                 
-                // Verify the code
                 const totp = new OTPAuth.TOTP({
                     issuer: 'Avanti Help Desk',
                     label: this.currentUser.email,
@@ -1856,7 +1915,6 @@
                     return;
                 }
                 
-                // Save to Firestore
                 try {
                     await db.collection('admin_2fa').doc(this.currentUser.uid).set({
                         enabled: true,
@@ -1865,6 +1923,10 @@
                     });
                     
                     localStorage.setItem('2fa_setup_offered_' + this.currentUser.uid, 'true');
+                    
+                    // Trust this device after setup
+                    this.trustDevice(this.currentUser.uid);
+                    
                     alert('✅ Two-Factor Authentication enabled successfully!');
                     this.showDashboard(this.currentUser);
                 } catch (e) {
@@ -1886,6 +1948,7 @@
                 const inputs = document.querySelectorAll('.otp-input');
                 const code = Array.from(inputs).map(i => i.value).join('');
                 const error = document.getElementById('verifyError');
+                const trustCheckbox = document.getElementById('trustDevice');
                 
                 if (code.length !== 6) {
                     error.textContent = 'Please enter all 6 digits';
@@ -1924,6 +1987,12 @@
                     }
                     
                     error.classList.remove('show');
+                    
+                    // Trust device if checkbox is checked
+                    if (trustCheckbox && trustCheckbox.checked) {
+                        this.trustDevice(this.currentUser.uid);
+                    }
+                    
                     this.showDashboard(this.currentUser);
                     
                 } catch (e) {
@@ -1934,11 +2003,13 @@
             },
             
             cancelLogin: async function() {
+                this.isLoggingIn = false;
                 await auth.signOut();
                 this.showLogin();
             },
             
             logout: async function() {
+                this.isLoggingIn = false;
                 await auth.signOut();
             },
             
@@ -1946,12 +2017,10 @@
                 document.getElementById('loginPage').style.display = 'flex';
                 document.getElementById('dashboard').classList.remove('show');
                 
-                // Reset to login step
                 document.getElementById('loginStep').classList.add('active');
                 document.getElementById('verifyStep').classList.remove('active');
                 document.getElementById('setupStep').classList.remove('active');
                 
-                // Clear inputs
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
                 document.getElementById('loginBtn').disabled = false;
@@ -1980,42 +2049,65 @@
                     }
                 } catch (e) {}
                 
+                // Initialize ticket counter
+                await this.initTicketCounter();
+                
                 this.loadTickets();
                 this.loadFAQs();
                 this.loadNotificationHistory();
                 this.updateSettingsPage();
             },
             
-            // Update settings page 2FA status
+            // Initialize ticket counter for AVANTI format
+            initTicketCounter: async function() {
+                try {
+                    const counterDoc = await db.collection('helpdesk_config').doc('ticket_counter').get();
+                    if (counterDoc.exists) {
+                        this.ticketCounter = counterDoc.data().count || 0;
+                    } else {
+                        // Initialize counter based on existing tickets
+                        const ticketsSnap = await db.collection('helpdesk_tickets').get();
+                        this.ticketCounter = ticketsSnap.size;
+                        await db.collection('helpdesk_config').doc('ticket_counter').set({ count: this.ticketCounter });
+                    }
+                } catch (e) {
+                    console.error('Error initializing ticket counter:', e);
+                    this.ticketCounter = 0;
+                }
+            },
+            
             updateSettingsPage: async function() {
                 try {
                     const doc = await db.collection('admin_2fa').doc(this.currentUser.uid).get();
                     const statusEl = document.getElementById('twofaStatus');
                     const setupBtn = document.getElementById('setup2faBtn');
                     const disableBtn = document.getElementById('disable2faBtn');
+                    const clearTrustBtn = document.getElementById('clearTrust2faBtn');
                     
                     if (doc.exists && doc.data().enabled) {
                         statusEl.innerHTML = '<span style="color: #10b981;">✓ Two-Factor Authentication is enabled</span>';
                         setupBtn.style.display = 'none';
                         disableBtn.style.display = 'inline-flex';
+                        clearTrustBtn.style.display = 'inline-flex';
                     } else {
-                        statusEl.innerHTML = '<span style="color: #ef4444;">✗ Two-Factor Authentication is not enabled</span>';
+                        statusEl.innerHTML = '<span style="color: #f59e0b;">⚠️ Two-Factor Authentication is not enabled</span>';
                         setupBtn.style.display = 'inline-flex';
                         disableBtn.style.display = 'none';
+                        clearTrustBtn.style.display = 'none';
                     }
                 } catch (e) {
-                    document.getElementById('twofaStatus').textContent = 'Error loading 2FA status';
+                    console.error('Error updating settings:', e);
                 }
             },
             
             setup2FA: function() {
-                this.show2FASetup();
                 document.getElementById('loginPage').style.display = 'flex';
                 document.getElementById('dashboard').classList.remove('show');
+                this.show2FASetup();
             },
             
             disable2FA: async function() {
-                if (!confirm('Are you sure you want to disable 2FA? This will reduce account security.')) {
+                if (!confirm('Are you sure you want to disable 2FA? This will make your account less secure.')) {
                     return;
                 }
                 
@@ -2024,14 +2116,18 @@
                         enabled: false
                     });
                     
-                    alert('2FA has been disabled');
+                    // Clear device trust
+                    const trustKey = 'avanti_2fa_trust_' + this.currentUser.uid;
+                    localStorage.removeItem(trustKey);
+                    
+                    alert('2FA has been disabled.');
                     this.updateSettingsPage();
                     
-                    // Update badge
                     const badge = document.getElementById('twofaBadge');
                     badge.textContent = '2FA ✗';
                     badge.className = 'twofa-badge disabled';
                 } catch (e) {
+                    console.error('Error disabling 2FA:', e);
                     alert('Error disabling 2FA');
                 }
             },
@@ -2041,13 +2137,7 @@
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 
                 document.getElementById(page + 'Page').classList.add('active');
-                document.querySelector(`[onclick="AdminApp.showPage('${page}')"]`).classList.add('active');
-                
-                if (page === 'notifications') {
-                    this.loadNotificationHistory();
-                } else if (page === 'settings') {
-                    this.updateSettingsPage();
-                }
+                event.target.closest('.nav-item').classList.add('active');
             },
             
             loadTickets: function() {
@@ -2056,19 +2146,16 @@
                     .onSnapshot(snap => {
                         const newTickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                         
-                        // Check for new tickets (only after initial load)
+                        // Check for new tickets
                         if (this.previousTicketIds.size > 0) {
                             newTickets.forEach(ticket => {
                                 if (!this.previousTicketIds.has(ticket.id) && ticket.status === 'open') {
-                                    // This is a new ticket - show notification
                                     this.showNewTicketNotification(ticket);
-                                    // Play notification sound
                                     this.playNotificationSound();
                                 }
                             });
                         }
                         
-                        // Update known ticket IDs
                         this.previousTicketIds = new Set(newTickets.map(t => t.id));
                         
                         this.tickets = newTickets;
@@ -2080,10 +2167,8 @@
                     });
             },
             
-            // Play notification sound
             playNotificationSound: function() {
                 try {
-                    // Create a simple beep using Web Audio API
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     const oscillator = audioContext.createOscillator();
                     const gainNode = audioContext.createGain();
@@ -2106,6 +2191,42 @@
             refreshTickets: function() {
                 this.loadTickets();
                 alert('Tickets refreshed!');
+            },
+            
+            // Export tickets to CSV
+            exportTickets: function() {
+                if (this.tickets.length === 0) {
+                    alert('No tickets to export');
+                    return;
+                }
+                
+                const headers = ['Ticket ID', 'Subject', 'User Name', 'User Email', 'School', 'Category', 'Status', 'Created Date', 'Description'];
+                const rows = this.tickets.map(t => {
+                    const date = t.createdAt && t.createdAt.toDate ? t.createdAt.toDate().toLocaleString() : 'N/A';
+                    return [
+                        this.formatTicketId(t),
+                        `"${(t.subject || '').replace(/"/g, '""')}"`,
+                        `"${(t.userName || '').replace(/"/g, '""')}"`,
+                        t.userEmail || '',
+                        t.school || '',
+                        t.category || '',
+                        t.status || '',
+                        date,
+                        `"${(t.description || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
+                    ].join(',');
+                });
+                
+                const csv = [headers.join(','), ...rows].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'avanti_tickets_' + new Date().toISOString().split('T')[0] + '.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
             },
             
             updateStats: function() {
@@ -2143,7 +2264,7 @@
                     filtered = filtered.filter(t => 
                         (t.subject || '').toLowerCase().includes(search) ||
                         (t.userName || '').toLowerCase().includes(search) ||
-                        (t.ticketId || '').toLowerCase().includes(search)
+                        this.formatTicketId(t).toLowerCase().includes(search)
                     );
                 }
                 
@@ -2163,15 +2284,15 @@
                 }
                 
                 container.innerHTML = filtered.map(t => {
-                    // Check for any attachments
                     const hasAttachments = t.screenshotUrl || t.imageUrl || t.attachmentUrl || t.screenshot || t.image || 
                                           (Array.isArray(t.attachments) && t.attachments.length > 0) ||
                                           (Array.isArray(t.screenshots) && t.screenshots.length > 0) ||
                                           (Array.isArray(t.images) && t.images.length > 0);
                     const attachmentIcon = hasAttachments ? ' 📷' : '';
+                    const ticketIdFormatted = this.formatTicketId(t);
                     
                     return '<div class="ticket-row" onclick="AdminApp.viewTicket(\'' + t.id + '\')">' +
-                        '<div class="ticket-id">' + (t.ticketId || t.id.slice(0,8)) + attachmentIcon + '</div>' +
+                        '<div class="ticket-id">' + ticketIdFormatted + attachmentIcon + '</div>' +
                         '<div class="ticket-subject">' + (t.subject || 'No subject') + '</div>' +
                         '<div class="ticket-user">' + (t.userName || 'Unknown') + '</div>' +
                         '<div class="ticket-date">' + (t.school || 'N/A') + '</div>' +
@@ -2186,25 +2307,37 @@
                 if (!t) return;
                 
                 const date = t.createdAt && t.createdAt.toDate ? t.createdAt.toDate() : new Date();
+                const formattedDate = date.toLocaleDateString('en-IN', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
                 const replies = (t.replies || []).map(r => {
                     const rDate = r.timestamp && r.timestamp.toDate ? r.timestamp.toDate() : new Date(r.timestamp);
+                    const rFormattedDate = rDate.toLocaleDateString('en-IN', { 
+                        day: '2-digit', 
+                        month: 'short', 
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
                     return '<div class="reply-item ' + (r.isAdmin ? 'admin' : '') + '">' +
-                        '<div class="reply-meta">' + (r.isAdmin ? '👤 Admin' : '👤 User') + ' • ' + rDate.toLocaleString() + '</div>' +
+                        '<div class="reply-meta">' + (r.isAdmin ? '👤 Admin' : '👤 User') + ' • ' + rFormattedDate + '</div>' +
                         '<div>' + r.message + '</div>' +
                     '</div>';
                 }).join('');
                 
-                // Collect all attachments from various possible fields
                 let attachments = [];
                 
-                // Check for single screenshot URL fields
                 if (t.screenshotUrl) attachments.push(t.screenshotUrl);
                 if (t.imageUrl && !attachments.includes(t.imageUrl)) attachments.push(t.imageUrl);
                 if (t.attachmentUrl && !attachments.includes(t.attachmentUrl)) attachments.push(t.attachmentUrl);
                 if (t.screenshot && !attachments.includes(t.screenshot)) attachments.push(t.screenshot);
                 if (t.image && !attachments.includes(t.image)) attachments.push(t.image);
                 
-                // Check for array of attachments
                 if (Array.isArray(t.attachments)) {
                     t.attachments.forEach(url => {
                         if (typeof url === 'string' && !attachments.includes(url)) {
@@ -2229,7 +2362,6 @@
                     });
                 }
                 
-                // Build attachments HTML
                 let attachmentsHtml = '';
                 if (attachments.length > 0) {
                     attachmentsHtml = `
@@ -2248,7 +2380,9 @@
                     `;
                 }
                 
-                document.getElementById('modalTitle').textContent = 'Ticket #' + (t.ticketId || t.id.slice(0,8));
+                const ticketIdFormatted = this.formatTicketId(t);
+                
+                document.getElementById('modalTitle').textContent = 'Ticket #' + ticketIdFormatted;
                 document.getElementById('modalBody').innerHTML = 
                     '<div class="detail-row">' +
                         '<div class="detail-group"><div class="detail-label">User Name</div><div class="detail-value">' + (t.userName || 'N/A') + '</div></div>' +
@@ -2260,7 +2394,7 @@
                     '</div>' +
                     '<div class="detail-row">' +
                         '<div class="detail-group"><div class="detail-label">Category</div><div class="detail-value">' + (t.category || 'N/A') + '</div></div>' +
-                        '<div class="detail-group"><div class="detail-label">Created</div><div class="detail-value">' + date.toLocaleString() + '</div></div>' +
+                        '<div class="detail-group"><div class="detail-label">Created</div><div class="detail-value">' + formattedDate + '</div></div>' +
                     '</div>' +
                     '<div class="detail-row">' +
                         '<div class="detail-group"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge ' + t.status + '">' + t.status.replace('-',' ') + '</span></div></div>' +
@@ -2287,191 +2421,104 @@
             },
             
             updateStatus: async function(id, status) {
-                const ticket = this.tickets.find(t => t.id === id);
-                
                 await db.collection('helpdesk_tickets').doc(id).update({
                     status: status,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
-                // Send notification to user about status change
-                const statusMessages = {
-                    'open': 'Your ticket has been reopened',
-                    'in-progress': 'Your ticket is being worked on',
-                    'resolved': 'Your ticket has been resolved',
-                    'closed': 'Your ticket has been closed'
-                };
-                
-                await this.sendTicketNotification(ticket, 'Ticket Status Updated', statusMessages[status] || 'Status changed to ' + status);
-                
                 alert('Status updated to: ' + status.replace('-', ' '));
             },
             
-            // NEW: Send reply only (without resolving)
             sendReplyOnly: async function(id) {
-                const text = document.getElementById('replyText').value.trim();
-                if (!text) {
+                const replyText = document.getElementById('replyText').value.trim();
+                
+                if (!replyText) {
                     alert('Please enter a reply message');
-                    return;
-                }
-                
-                const ticket = this.tickets.find(t => t.id === id);
-                const replies = ticket.replies || [];
-                
-                replies.push({
-                    message: text,
-                    isAdmin: true,
-                    timestamp: new Date()
-                });
-                
-                await db.collection('helpdesk_tickets').doc(id).update({
-                    replies: replies,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                // Send notification to user about reply
-                await this.sendTicketNotification(ticket, 'New Reply on Your Ticket', text.substring(0, 100) + (text.length > 100 ? '...' : ''));
-                
-                alert('Reply sent successfully!');
-                this.closeModal();
-            },
-            
-            // RENAMED: Send reply and resolve
-            sendReplyAndResolve: async function(id) {
-                const text = document.getElementById('replyText').value.trim();
-                if (!text) {
-                    alert('Please enter a reply message');
-                    return;
-                }
-                
-                const ticket = this.tickets.find(t => t.id === id);
-                const replies = ticket.replies || [];
-                
-                replies.push({
-                    message: text,
-                    isAdmin: true,
-                    timestamp: new Date()
-                });
-                
-                await db.collection('helpdesk_tickets').doc(id).update({
-                    replies: replies,
-                    status: 'resolved',
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                // Send notification to user about reply AND resolution
-                await this.sendTicketNotification(ticket, '✅ Ticket Resolved', text.substring(0, 100) + (text.length > 100 ? '...' : ''));
-                
-                alert('Reply sent and ticket resolved!');
-                this.closeModal();
-            },
-            
-            // FIXED: Send notification to ticket user
-            sendTicketNotification: async function(ticket, title, message) {
-                if (!ticket) {
-                    console.log('[Admin] No ticket provided for notification');
                     return;
                 }
                 
                 try {
-                    // Create notification in user's notification collection
-                    const userId = ticket.studentId || ticket.userEmail;
-                    if (!userId) {
-                        console.log('[Admin] No userId found for notification');
-                        return;
-                    }
+                    await db.collection('helpdesk_tickets').doc(id).update({
+                        replies: firebase.firestore.FieldValue.arrayUnion({
+                            message: replyText,
+                            isAdmin: true,
+                            timestamp: new Date()
+                        }),
+                        hasAdminReply: true,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                     
-                    const notificationData = {
-                        userId: String(userId),
-                        userEmail: ticket.userEmail || '',
-                        studentId: ticket.studentId ? String(ticket.studentId) : '',
-                        ticketId: ticket.ticketId || ticket.id,
-                        title: title,
-                        message: message,
-                        type: 'ticket_update',
-                        read: false,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    
-                    console.log('[Admin] Sending notification:', notificationData);
-                    
-                    await db.collection('user_notifications').add(notificationData);
-                    
-                    console.log('[Admin] ✓ Notification sent to user:', userId);
+                    alert('✅ Reply sent successfully!');
+                    this.closeModal();
                 } catch (e) {
-                    console.error('[Admin] Error sending notification:', e);
+                    console.error('Error sending reply:', e);
+                    alert('Error sending reply: ' + e.message);
                 }
             },
             
-            exportTickets: function() {
-                const headers = ['Ticket ID', 'Subject', 'User', 'Email', 'Student ID', 'School', 'Category', 'Status', 'Description', 'Screenshot', 'Created'];
-                const rows = this.tickets.map(t => {
-                    const date = t.createdAt && t.createdAt.toDate ? t.createdAt.toDate() : new Date();
-                    return [
-                        t.ticketId || t.id.slice(0,8),
-                        (t.subject || '').replace(/,/g, ';'),
-                        (t.userName || '').replace(/,/g, ';'),
-                        t.userEmail || '',
-                        t.studentId || '',
-                        t.school || '',
-                        t.category || '',
-                        t.status,
-                        (t.description || '').replace(/,/g, ';').replace(/\n/g, ' '),
-                        t.screenshotUrl ? 'Yes' : 'No',
-                        date.toISOString()
-                    ].join(',');
-                });
+            sendReplyAndResolve: async function(id) {
+                const replyText = document.getElementById('replyText').value.trim();
                 
-                const csv = [headers.join(',')].concat(rows).join('\n');
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'tickets_' + new Date().toISOString().split('T')[0] + '.csv';
-                a.click();
+                if (!replyText) {
+                    alert('Please enter a reply message');
+                    return;
+                }
+                
+                try {
+                    await db.collection('helpdesk_tickets').doc(id).update({
+                        status: 'resolved',
+                        replies: firebase.firestore.FieldValue.arrayUnion({
+                            message: replyText,
+                            isAdmin: true,
+                            timestamp: new Date()
+                        }),
+                        hasAdminReply: true,
+                        resolvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    alert('✅ Ticket resolved!');
+                    this.closeModal();
+                } catch (e) {
+                    console.error('Error resolving ticket:', e);
+                    alert('Error: ' + e.message);
+                }
             },
             
-            // FAQ Methods
+            // FAQ Functions
             loadFAQs: function() {
                 db.collection('helpdesk_faqs')
                     .orderBy('createdAt', 'desc')
                     .onSnapshot(snap => {
                         this.faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                         this.renderFAQs();
-                    }, err => {
-                        console.log('FAQ load error:', err);
-                        // Try without orderBy
-                        db.collection('helpdesk_faqs').get().then(snap => {
-                            this.faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                            this.renderFAQs();
-                        });
                     });
             },
             
             renderFAQs: function() {
-                const container = document.getElementById('faqsList');
+                const container = document.getElementById('faqList');
                 
                 if (this.faqs.length === 0) {
-                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: #5a5a6a;"><div style="font-size: 48px; margin-bottom: 12px;">📚</div><p>No FAQs yet</p><p style="margin-top: 8px; font-size: 13px;">Click "Add FAQ" to create your first article</p></div>';
+                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: #5a5a6a;"><div style="font-size: 48px; margin-bottom: 12px;">📝</div><p>No FAQs yet</p><p style="margin-top: 8px; font-size: 13px;">Click "Add FAQ" or "Add Defaults" to get started</p></div>';
                     return;
                 }
                 
-                container.innerHTML = this.faqs.map(f => 
-                    '<div class="faq-card">' +
-                        '<div class="icon">❓</div>' +
-                        '<div class="content">' +
-                            '<h4>' + (f.question || 'No question') + '</h4>' +
-                            '<p>' + (f.answer || '').substring(0, 80) + (f.answer?.length > 80 ? '...' : '') + '</p>' +
-                        '</div>' +
-                        '<div class="faq-actions">' +
-                            '<button class="faq-btn edit" onclick="AdminApp.editFAQ(\'' + f.id + '\')">✏️</button>' +
-                            '<button class="faq-btn delete" onclick="AdminApp.deleteFAQ(\'' + f.id + '\')">🗑️</button>' +
-                        '</div>' +
-                    '</div>'
-                ).join('');
+                container.innerHTML = this.faqs.map(faq => `
+                    <div class="faq-card">
+                        <h3>${faq.question}</h3>
+                        <p>${faq.answer}</p>
+                        <div class="faq-meta">
+                            <span class="category-tag">${faq.category || 'general'}</span>
+                            <div class="faq-actions">
+                                <button class="edit-btn" onclick="AdminApp.editFAQ('${faq.id}')">✏️ Edit</button>
+                                <button class="delete-btn" onclick="AdminApp.deleteFAQ('${faq.id}')">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
             },
             
-            showAddFAQ: function() {
+            openFAQModal: function() {
                 this.editingFaqId = null;
                 document.getElementById('faqModalTitle').textContent = 'Add FAQ';
                 document.getElementById('faqQuestion').value = '';
@@ -2481,21 +2528,21 @@
                 document.getElementById('faqModal').classList.add('show');
             },
             
+            closeFAQModal: function() {
+                document.getElementById('faqModal').classList.remove('show');
+            },
+            
             editFAQ: function(id) {
                 const faq = this.faqs.find(f => f.id === id);
                 if (!faq) return;
                 
                 this.editingFaqId = id;
                 document.getElementById('faqModalTitle').textContent = 'Edit FAQ';
-                document.getElementById('faqQuestion').value = faq.question || '';
-                document.getElementById('faqAnswer').value = faq.answer || '';
+                document.getElementById('faqQuestion').value = faq.question;
+                document.getElementById('faqAnswer').value = faq.answer;
                 document.getElementById('faqCategory').value = faq.category || 'other';
                 document.getElementById('faqKeywords').value = (faq.keywords || []).join(', ');
                 document.getElementById('faqModal').classList.add('show');
-            },
-            
-            closeFAQModal: function() {
-                document.getElementById('faqModal').classList.remove('show');
             },
             
             saveFAQ: async function() {
@@ -2509,26 +2556,27 @@
                     return;
                 }
                 
-                const data = {
-                    question,
-                    answer,
-                    category,
-                    keywords,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
                 try {
+                    const data = {
+                        question,
+                        answer,
+                        category,
+                        keywords,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
                     if (this.editingFaqId) {
                         await db.collection('helpdesk_faqs').doc(this.editingFaqId).update(data);
-                        alert('FAQ updated!');
                     } else {
                         data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                         await db.collection('helpdesk_faqs').add(data);
-                        alert('FAQ added!');
                     }
+                    
                     this.closeFAQModal();
+                    alert('FAQ saved!');
                 } catch (e) {
-                    alert('Error saving FAQ: ' + e.message);
+                    console.error('Error saving FAQ:', e);
+                    alert('Error saving FAQ');
                 }
             },
             
@@ -2539,18 +2587,17 @@
                     await db.collection('helpdesk_faqs').doc(id).delete();
                     alert('FAQ deleted!');
                 } catch (e) {
+                    console.error('Error deleting FAQ:', e);
                     alert('Error deleting FAQ');
                 }
             },
             
             addDefaultFAQs: async function() {
-                if (!confirm('This will add 10+ default FAQ articles. Continue?')) return;
+                if (!confirm('This will add default FAQs. Continue?')) return;
                 
                 const defaultFAQs = [
-                    { question: "How do I login?", answer: "Students: Enter your Student ID. Teachers: Use your registered email and password.", category: "login", keywords: ["login", "signin", "access", "enter"] },
-                    { question: "Forgot my password", answer: "Click 'Forgot Password' on login page. Teachers can reset via email. Students should contact their teacher.", category: "login", keywords: ["forgot", "password", "reset", "recover"] },
-                    { question: "How do I mark attendance?", answer: "Go to Attendance section, select date and period, then mark students present/absent.", category: "attendance", keywords: ["attendance", "mark", "present", "absent"] },
-                    { question: "My attendance is wrong", answer: "Please inform your teacher immediately. They can correct attendance records within a specific time window.", category: "attendance", keywords: ["attendance", "wrong", "incorrect", "error"] },
+                    { question: "How do I login?", answer: "Students: Use your Student ID and date of birth (DDMMYYYY format).\nTeachers: Use your registered email and password.", category: "login", keywords: ["login", "sign in", "access", "password"] },
+                    { question: "Forgot my password", answer: "Teachers can reset password using 'Forgot Password' link. Students should contact their teacher or school coordinator.", category: "login", keywords: ["forgot", "password", "reset", "recover"] },
                     { question: "How do I view my progress?", answer: "After logging in, go to the Curriculum or Progress section to see chapters completed, in-progress, and upcoming.", category: "curriculum", keywords: ["progress", "chapters", "syllabus", "view"] },
                     { question: "How do teachers update progress?", answer: "Go to Curriculum tab, select the subject, mark chapters as completed or in-progress, and save.", category: "curriculum", keywords: ["update", "progress", "teacher", "chapter"] },
                     { question: "How do I give feedback?", answer: "Go to Teacher Feedback section, select the teacher, rate and write comments, then submit. All feedback is confidential.", category: "feedback", keywords: ["feedback", "teacher", "rate", "review"] },
@@ -2578,7 +2625,7 @@
                 alert('Added ' + defaultFAQs.length + ' default FAQs!');
             },
             
-            // Send notification to all users
+            // Notification functions
             sendNotification: async function() {
                 const title = document.getElementById('notifTitle').value.trim();
                 const message = document.getElementById('notifMessage').value.trim();
@@ -2604,7 +2651,6 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     
-                    // Clear form
                     document.getElementById('notifTitle').value = '';
                     document.getElementById('notifMessage').value = '';
                     document.getElementById('notifLink').value = '';
@@ -2618,7 +2664,6 @@
                 }
             },
             
-            // Load notification history with analytics
             loadNotificationHistory: function() {
                 db.collection('app_notifications')
                     .orderBy('createdAt', 'desc')
@@ -2626,7 +2671,6 @@
                     .onSnapshot(snap => {
                         const container = document.getElementById('notificationHistory');
                         
-                        // Calculate stats
                         let totalSent = snap.docs.length;
                         let totalViews = 0;
                         let usersReached = new Set();
@@ -2637,7 +2681,6 @@
                             (n.viewedBy || []).forEach(u => usersReached.add(u));
                         });
                         
-                        // Update stats cards
                         document.getElementById('totalSent').textContent = totalSent;
                         document.getElementById('totalViews').textContent = totalViews;
                         document.getElementById('totalUsers').textContent = usersReached.size;
@@ -2696,7 +2739,6 @@
                     });
             },
             
-            // Delete notification
             deleteNotification: async function(id) {
                 if (!confirm('Are you sure you want to delete this notification?')) return;
                 
@@ -2709,8 +2751,7 @@
                 }
             },
             
-            // Refresh stats manually
-            refreshStats: function() {
+            refreshNotificationStats: function() {
                 this.loadNotificationHistory();
             }
         };
