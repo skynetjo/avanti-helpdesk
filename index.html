@@ -2811,4 +2811,14 @@
             },
             
             refreshNotificationStats: function() {
-                this.loadNotificationH
+                this.loadNotificationHistory();
+            }
+        };
+        
+        // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            AdminApp.init();
+        });
+    </script>
+</body>
+</html>
