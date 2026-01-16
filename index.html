@@ -1226,7 +1226,7 @@
                     <div class="user-avatar" id="userAvatar">A</div>
                     <div class="user-details">
                         <h4 id="userName">Admin</h4>
-                        <p id="userEmailDisplay">admin@example.com</p>
+                        <p id="userEmailDisplay"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8cede8e1e5e2cce9f4ede1fce0e9a2efe3e1">[email&#160;protected]</a></p>
                         <span class="twofa-badge disabled" id="twofaBadge">2FA ✗</span>
                     </div>
                 </div>
@@ -1529,7 +1529,7 @@
     </div>
 
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
@@ -2429,6 +2429,10 @@
                 }
                 
                 try {
+                    // Get ticket info for notification
+                    const ticketDoc = await db.collection('helpdesk_tickets').doc(id).get();
+                    const ticket = ticketDoc.data();
+                    
                     await db.collection('helpdesk_tickets').doc(id).update({
                         replies: firebase.firestore.FieldValue.arrayUnion({
                             message: replyText,
@@ -2436,8 +2440,12 @@
                             timestamp: new Date()
                         }),
                         hasAdminReply: true,
+                        hasUnreadReply: true, // Flag for widget to show notification
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                    
+                    // Send notification to user
+                    await this.sendUserNotification(ticket, 'reply', replyText);
                     
                     alert('✅ Reply sent successfully!');
                     this.closeModal();
@@ -2456,6 +2464,10 @@
                 }
                 
                 try {
+                    // Get ticket info for notification
+                    const ticketDoc = await db.collection('helpdesk_tickets').doc(id).get();
+                    const ticket = ticketDoc.data();
+                    
                     await db.collection('helpdesk_tickets').doc(id).update({
                         status: 'resolved',
                         replies: firebase.firestore.FieldValue.arrayUnion({
@@ -2464,9 +2476,13 @@
                             timestamp: new Date()
                         }),
                         hasAdminReply: true,
+                        hasUnreadReply: true,
                         resolvedAt: firebase.firestore.FieldValue.serverTimestamp(),
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                    
+                    // Send notification to user
+                    await this.sendUserNotification(ticket, 'resolved', replyText);
                     
                     alert('✅ Ticket resolved!');
                     this.closeModal();
@@ -2477,6 +2493,58 @@
             },
             
             // FAQ Functions
+            
+            // Send notification to user when ticket is replied/resolved
+            sendUserNotification: async function(ticket, type, message) {
+                try {
+                    const userId = ticket.studentId || ticket.userEmail;
+                    if (!userId) {
+                        console.log('No user ID for notification');
+                        return;
+                    }
+                    
+                    // Create notification document
+                    await db.collection('user_notifications').add({
+                        userId: String(userId),
+                        ticketId: ticket.ticketId,
+                        type: type, // 'reply' or 'resolved'
+                        title: type === 'resolved' 
+                            ? '✅ Ticket Resolved!' 
+                            : '💬 New Reply on Your Ticket',
+                        body: type === 'resolved'
+                            ? `Your ticket "${ticket.subject}" has been resolved.`
+                            : `Admin replied to your ticket "${ticket.subject}"`,
+                        message: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+                        read: false,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    console.log('✓ Notification sent to user:', userId);
+                    
+                    // If user has FCM token, try to send push notification
+                    if (ticket.userFCMToken) {
+                        await this.sendFCMNotification(ticket.userFCMToken, {
+                            title: type === 'resolved' ? '✅ Ticket Resolved!' : '💬 New Reply',
+                            body: type === 'resolved'
+                                ? `Your ticket "${ticket.subject}" has been resolved.`
+                                : `Admin replied: ${message.substring(0, 50)}...`
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error sending notification:', e);
+                }
+            },
+            
+            // Send FCM push notification (requires Cloud Functions for full implementation)
+            sendFCMNotification: async function(token, notification) {
+                // Note: For true background push notifications, you need Firebase Cloud Functions
+                // This is a placeholder that logs the attempt
+                console.log('[FCM] Would send notification to token:', token, notification);
+                
+                // To implement: Set up a Cloud Function that receives these requests
+                // and uses admin SDK to send the actual FCM message
+            },
+            
             loadFAQs: function() {
                 db.collection('helpdesk_faqs')
                     .orderBy('createdAt', 'desc')
@@ -2743,14 +2811,4 @@
             },
             
             refreshNotificationStats: function() {
-                this.loadNotificationHistory();
-            }
-        };
-        
-        // Initialize the app when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            AdminApp.init();
-        });
-    </script>
-</body>
-</html>
+                this.loadNotificationH
